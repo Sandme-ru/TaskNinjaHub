@@ -46,8 +46,7 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     /// </summary>
     /// <returns>System.Nullable&lt;IEnumerable&lt;TEntity&gt;&gt;.</returns>
     [HttpGet("filter")]
-    public async Task<IEnumerable<TEntity>?> GetAllByFilter(
-        [FromQuery] IDictionary<string, string?> query)
+    public async Task<IEnumerable<TEntity>?> GetAllByFilter([FromQuery] IDictionary<string, string?> query)
     {
         var entities = await _repository.GetAllByFilter(query);
         return entities ?? null;
