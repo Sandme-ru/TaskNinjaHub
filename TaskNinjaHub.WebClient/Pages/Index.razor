@@ -1,0 +1,33 @@
+﻿@page "/"
+
+<AuthorizeView Roles="Developer,Analyst,Support,Tester">
+    <Authorized>
+        <div class="card-container">
+            <Tabs DefaultActiveKey="1" @bind-ActiveKey="@ActiveKey" Centered>
+                <TabPane Tab="MAIN" Key="Tab1">
+                    <Paragraph>MAIN WINDOW</Paragraph>
+                </TabPane>
+                <TabPane Tab="TASKS" Key="Tab2">
+                    <TaskList />
+                </TabPane>
+                <TabPane Tab="NEW TASK" Key="Tab3">
+                    <TaskCreateForm />
+                </TabPane>
+            </Tabs>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <Paragraph>
+            There is no access.
+        </Paragraph>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code
+{
+    /// <summary>
+    /// Gets or sets the active key.
+    /// </summary>
+    /// <value>The active key.</value>
+    protected string? ActiveKey { get; set; }
+}

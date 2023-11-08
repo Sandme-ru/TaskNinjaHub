@@ -1,0 +1,74 @@
+@using TaskNinjaHub.Application.Entities.Authors.Domain
+@using TaskNinjaHub.Application.Entities.Priorities.Domain
+<br/>
+<Form Model="@CreatedCatalogTask"
+      LabelColSpan="8"
+      WrapperColSpan="16"
+      OnFinish="OnFinish"
+      OnFinishFailed="OnFinishFailed"
+      Size="AntSizeLDSType.Small">
+    <FormItem Label="Name">
+        <Input @bind-Value="@context.Name"/>
+    </FormItem>
+    <FormItem Label="Description">
+        <TextArea @bind-Value="@context.Description"></TextArea>
+    </FormItem>
+    <FormItem Label="Task author">
+        <Input @bind-Value="@CurrentUser!.Author!.Name" Disabled/>
+    </FormItem>
+    <FormItem Label="Task executor">
+        <Select Mode="default"
+                DataSource="@AuthorsList"
+                @bind-Value="@context.TaskExecutorId"
+                LabelName="@nameof(Author.Name)"
+                ValueName="@nameof(Author.Id)">
+        </Select>
+    </FormItem>
+    <FormItem Label="Priority">
+        <Select Mode="default"
+                DataSource="@PriorityList"
+                @bind-Value="@context.PriorityId"
+                LabelName="@nameof(Priority.Name)"
+                ValueName="@nameof(Priority.Id)">
+        </Select>
+    </FormItem>
+    <FormItem Label="Information system">
+        <Select Mode="default"
+                DataSource="@InformationSystemList"
+                @bind-Value="@context.InformationSystemId"
+                LabelName="@nameof(Priority.Name)"
+                ValueName="@nameof(Priority.Id)">
+        </Select>
+    </FormItem>
+    <FormItem Label="Task status">
+        <Input @bind-Value="@DefaultStatus!.Name" Disabled/>
+    </FormItem>
+    <FormItem Label="Task files">
+        @*TODO issues with localhost*@
+        <Upload
+            Name="file"
+            Action="https://localhost:7033/api/file/upload"
+            ListType="picture-card"
+            BeforeUpload="BeforeUpload"
+            OnChange="HandleChange"
+            OnPreview="OnPreview"
+            OnRemove="OnRemove">
+            <div>
+                <Icon Type="plus"></Icon>
+                <div className="ant-upload-text">Upload</div>
+            </div>
+        </Upload>
+        <Modal
+            Footer="null"
+            Visible="IsPreviewVisible"
+            Title="@FilePreviewTitle"
+            OnCancel="() => IsPreviewVisible = false">
+            <img style="width: 100%" src="@FilePreviewUrl"/>
+        </Modal>
+    </FormItem>
+    <FormItem WrapperColOffset="8" WrapperColSpan="16">
+        <Button Type="@ButtonType.Primary" HtmlType="submit" OnClick="CreateTask">
+            Create task
+        </Button>
+    </FormItem>
+</Form>

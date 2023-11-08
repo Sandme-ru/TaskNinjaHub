@@ -1,0 +1,70 @@
+﻿@page "/userprofile"
+
+<div class="main_place">
+    <h2>UserProfile</h2>
+    <Form Model="@CurrentUser"
+          ValidateOnChange="@true"
+          LabelColSpan="2"
+          WrapperColSpan="8">
+        <FormItem>
+            @if (avatar == null)
+            {
+                <Avatar Size="10rem">@context?.Username</Avatar>
+            }
+            else
+            {
+                <Avatar Size="10rem"
+                        Src="@avatar.ToString()" />
+            }
+            <InputFile OnChange="OnInputFileChange" id="input_file" class="input input_file" />
+            <label class="input_file-button" for="input_file">
+                <span class="input_file-icon-wrapper"><Icon Type="Edit" /></span>
+                <span class="input_file-button-text">Change</span>
+            </label>
+        </FormItem>
+
+        @if (!_enableEdit)
+        {
+            <FormItem>
+                <label class="username">@context.Username</label>
+            </FormItem>
+            <FormItem>
+                <Button OnClick="EnableEdit" Class="edit_btn">Edit profile</Button>
+            </FormItem>
+        }
+        else
+        {
+            <FormItem Label="Username">
+                <Input @bind-Value="@context.Username" />
+            </FormItem>
+            <FormItem Label="Password">
+                <InputPassword @bind-Value="@context.Password" OnChange="PasswordChanged" />
+            </FormItem>
+
+            <FormItem Label="Repeat password">
+                <InputPassword @bind-Value="@repeatPassword" Disabled="@_repeatDisabled" />
+            </FormItem>
+
+            <FormItem>
+                <Button Type="@ButtonType.Primary" HtmlType="submit" OnClick="EditUser">
+                    Save
+                </Button>
+                <Button OnClick="HandleCancel">
+                    Cancel
+                </Button>
+            </FormItem>
+        }
+    </Form>
+
+    <Modal Title="New avatar"
+           Visible="@_visibleModal"
+           OnOk="@UploadAvatar"
+           OnCancel="@UploadAvatarCancel"
+           Width="200">
+        <Form Model="@CurrentUser">
+            <Avatar Size="10rem"
+                    Src="@newAvatar" />
+        </Form>
+    </Modal>
+
+</div>
