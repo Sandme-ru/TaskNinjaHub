@@ -1,0 +1,31 @@
+<PageHeader BackIcon="true" OnBack="RedirectBack" Class="site-page-header">
+    <PageHeaderTitle>TASK BOOK</PageHeaderTitle>
+    <PageHeaderSubtitle>This is a task book</PageHeaderSubtitle>
+    <PageHeaderExtra>
+        <Paragraph>
+            @if (UserAuthenticationName == "Anonymous (Anonymous)")
+            {
+                @($"Hello, {UserAuthenticationName}!")
+            }
+            else
+            {
+                <Button OnClick="ShowUserProfile" Type="@ButtonType.Link">
+                    @($"Hello, {UserAuthenticationName}!")
+                </Button>
+            }
+        </Paragraph>
+        @if (UserAuthenticationName == "Anonymous (Anonymous)")
+        {
+            <Button Type="@ButtonType.Primary" OnClick="LoginHandler">LOGIN</Button>
+        }
+        else
+        {
+            <Icon OnClick="TryLogout" Type="logout" Theme="outline" />
+        }
+    </PageHeaderExtra>
+</PageHeader>
+
+@if (AuthenticationVisibility)
+{
+    <Authentication @bind-Visibility="AuthenticationVisibility" />
+}

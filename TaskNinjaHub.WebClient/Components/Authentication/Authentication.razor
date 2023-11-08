@@ -1,0 +1,35 @@
+﻿<Modal Visible="Visibility"
+       OnOk="@TryLogin"
+       OnCancel="@HandleCancel">
+    <div class="modal-content">
+        <div class="modal-header text-center">
+            <h5 class="modal-title">LOG IN TO YOUR PERSONAL ACCOUNT</h5>
+        </div>
+        <div class="modal-body">
+            <AuthorizeView Context="Account">
+                <NotAuthorized>
+                    <EditForm Model="User" Context="Login">
+                        <div>
+                            <Paragraph>
+                                Login:
+                                <Input @bind-Value="User.Username"></Input>
+                            </Paragraph>
+                        </div>
+                        <div>
+                            <Paragraph>
+                                Password:
+                                <Input type="password" @bind-Value="User.Password"></Input>
+                            </Paragraph>
+                        </div>
+                    </EditForm>
+                </NotAuthorized>
+                <Authorized>
+                    <Button Danger Type="@ButtonType.Primary" @onclick="TryLogout">Logout</Button>
+                </Authorized>
+                <Authorizing>
+                    The authorization process is underway...
+                </Authorizing>
+            </AuthorizeView>
+        </div>
+    </div>
+</Modal>
