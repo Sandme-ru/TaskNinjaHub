@@ -30,7 +30,7 @@ public static class ApplicationServiceCollectionExtensions
     /// <param name="services">The services.</param>
     /// <param name="configuration">The configuration.</param>
     /// <returns>IServiceCollection.</returns>
-    public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
         #region REPOSITORY
 
