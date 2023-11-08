@@ -3,9 +3,39 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{3CA80E77-E0FA-47C4-9337-A22A51EF6165}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{8CD15378-8A8D-467D-BE8A-8F0EFAAE7C6D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{194A6235-EEFC-4683-8090-1FE24A0D8C8A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{490319CC-B214-4E9A-9F20-BEAA277A9D59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskNinjaHub.Application", "TaskNinjaHub.Application\TaskNinjaHub.Application.csproj", "{324BFA40-0EF4-4630-A8E2-2E505888009E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskNinjaHub.Persistence", "TaskNinjaHub.Persistence\TaskNinjaHub.Persistence.csproj", "{AAB9F238-1F73-42BC-9C44-7623B53D3EE7}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{324BFA40-0EF4-4630-A8E2-2E505888009E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{324BFA40-0EF4-4630-A8E2-2E505888009E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{324BFA40-0EF4-4630-A8E2-2E505888009E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{324BFA40-0EF4-4630-A8E2-2E505888009E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAB9F238-1F73-42BC-9C44-7623B53D3EE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAB9F238-1F73-42BC-9C44-7623B53D3EE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAB9F238-1F73-42BC-9C44-7623B53D3EE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAB9F238-1F73-42BC-9C44-7623B53D3EE7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{324BFA40-0EF4-4630-A8E2-2E505888009E} = {3CA80E77-E0FA-47C4-9337-A22A51EF6165}
+		{AAB9F238-1F73-42BC-9C44-7623B53D3EE7} = {8CD15378-8A8D-467D-BE8A-8F0EFAAE7C6D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6D37B967-A8E2-4562-AF5F-B6FE2127E138}
