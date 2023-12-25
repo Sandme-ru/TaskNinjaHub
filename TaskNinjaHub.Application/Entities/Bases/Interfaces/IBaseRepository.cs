@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using TaskNinjaHub.Application.Interfaces.Haves;
+using TaskNinjaHub.Application.Utilities.OperationResults;
 
 namespace TaskNinjaHub.Application.Entities.Bases.Interfaces;
 
@@ -40,19 +41,19 @@ public interface IBaseRepository<T> where T : class, IHaveId
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>System.Threading.Tasks.Task.</returns>
-    Task AddAsync(T entity);
+    Task<OperationResult> AddAsync(T entity);
 
     /// <summary>
     /// Updates the specified entity.
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>System.Threading.Tasks.Task.</returns>
-    Task UpdateAsync(T entity);
+    Task<OperationResult> UpdateAsync(T entity);
 
     /// <summary>
     /// Removes the specified entity.
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>System.Threading.Tasks.Task.</returns>
-    Task RemoveAsync(T entity);
+    Task<OperationResult> RemoveAsync(T entity);
 }
