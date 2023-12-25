@@ -108,7 +108,7 @@ public class CatalogTask : BaseUserCU, IHaveId, IHaveName
     /// Gets or sets the task identifier.
     /// </summary>
     /// <value>The task identifier.</value>
-    public int? CatalogTaskID { get; set; }
+    public int? OriginalTaskId { get; set; }
 
     /// <summary>
     /// Gets or sets the original task.

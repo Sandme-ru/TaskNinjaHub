@@ -49,7 +49,7 @@ public partial class TaskList
     /// </summary>
     /// <value>The task service.</value>
     [Inject]
-    private TaskService TaskService { get; set; } = null!;
+    private CatalogTaskService CatalogTaskService { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the task status service.
@@ -291,7 +291,7 @@ public partial class TaskList
         InformationSystemList =
             (await InformationSystemService.GetAllAsync() ?? Array.Empty<InformationSystem>()).ToList();
         TaskStatusList = (await TaskStatusService.GetAllAsync() ?? Array.Empty<TaskStatus>()).ToList();
-        CatalogTasks = (await TaskService.GetAllAsync() ?? Array.Empty<CatalogTask>()).ToList();
+        CatalogTasks = (await CatalogTaskService.GetAllAsync() ?? Array.Empty<CatalogTask>()).ToList();
 
         StateHasChanged();
     }
@@ -305,10 +305,10 @@ public partial class TaskList
         {
             if (CatalogTasks != null)
             {
-                foreach (var task in CatalogTasks.Where(t => t.CatalogTaskID == DeletedTask.Id))
-                    await TaskService.DeleteAsync(task.Id);
+                foreach (var task in CatalogTasks.Where(t => t.OriginalTaskId == DeletedTask.Id))
+                    await CatalogTaskService.DeleteAsync(task.Id);
 
-                var response = await TaskService.DeleteAsync(DeletedTask.Id);
+                var response = await CatalogTaskService.DeleteAsync(DeletedTask.Id);
                 if (response.IsSuccessStatusCode)
                 {
                     CatalogTasks.Remove(DeletedTask);
@@ -511,7 +511,7 @@ public partial class TaskList
         }
         else
             DefaultFileList = new(); 
-        CatalogTasksForChangelog = CatalogTasks!.Where(t => t.CatalogTaskID == catalogTask.Id).OrderByDescending(t => t.DateCreated).ToList();
+        CatalogTasksForChangelog = CatalogTasks!.Where(t => t.OriginalTaskId == catalogTask.Id).OrderByDescending(t => t.DateCreated).ToList();
         if (CatalogTasksForChangelog.Any())
         {
             var prev = new CatalogTask();
@@ -687,7 +687,7 @@ public partial class TaskList
                 EditedTask.UserUpdated = CurrentUser?.Username;
                 EditedTask.DateUpdated = DateTime.Now;
 
-                var changeRet = await TaskService.UpdateAsync(EditedTask!);
+                var changeRet = await CatalogTaskService.UpdateAsync(EditedTask!);
                 if (changeRet.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"{EditedTask?.Id} {EditedTask?.Name} is updated.");
@@ -714,13 +714,13 @@ public partial class TaskList
                     InformationSystemId = _cloneTask.InformationSystemId,
                     PriorityId = _cloneTask.PriorityId,
                     TaskStatusId = _cloneTask.TaskStatusId,
-                    CatalogTaskID = EditedTask.Id,
+                    OriginalTaskId = EditedTask.Id,
                     DateCreated = EditedTask.DateUpdated,
                     UserCreated = EditedTask.UserUpdated,
                     Files = EditedTask.Files
                 };
 
-                var createRet = await TaskService.CreateAsync(CatalogTaskForChangelog);
+                var createRet = await CatalogTaskService.CreateAsync(CatalogTaskForChangelog);
                 if (createRet.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"{EditedTask?.Id} {EditedTask?.Name} is updated.");
@@ -737,7 +737,7 @@ public partial class TaskList
                         foreach (var fileEntity in CatalogTaskForChangelog.Files!)
                             await FileService.DeleteAsync(fileEntity.Id);
 
-                    CatalogTasks = (await TaskService.GetAllAsync() ?? Array.Empty<CatalogTask>()).ToList();
+                    CatalogTasks = (await CatalogTaskService.GetAllAsync() ?? Array.Empty<CatalogTask>()).ToList();
                 }
                 _visibleModal = false;
                 StateHasChanged();
@@ -791,7 +791,7 @@ public partial class TaskList
             TaskExecutorId = SelectedExecutor?.Id
         };
 
-        var result = (await TaskService.GetAllByFilterAsync(filter))!.Where(t => t.CatalogTaskID == null).ToList();
+        var result = (await CatalogTaskService.GetAllByFilterAsync(filter))!.Where(t => t.OriginalTaskId == null).ToList();
         CatalogTasks = new List<CatalogTask>(result);
     }
 

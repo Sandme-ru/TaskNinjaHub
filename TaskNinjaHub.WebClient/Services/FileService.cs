@@ -22,7 +22,7 @@ public class FileService
     private readonly HttpClient _httpClient;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TaskService" /> class.
+    /// Initializes a new instance of the <see cref="CatalogTaskService" /> class.
     /// </summary>
     /// <param name="httpClient">The HTTP client.</param>
     public FileService(HttpClient httpClient)
