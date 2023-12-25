@@ -85,49 +85,49 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     /// Gets or sets the tasks.
     /// </summary>
     /// <value>The tasks.</value>
-    public DbSet<CatalogTask> CatalogTasks { get; set; }
+    public DbSet<CatalogTask> CatalogTasks { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the authors.
     /// </summary>
     /// <value>The authors.</value>
-    public DbSet<Author> Authors { get; set; }
+    public DbSet<Author> Authors { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the information systems.
     /// </summary>
     /// <value>The information systems.</value>
-    public DbSet<InformationSystem> InformationSystems { get; set; }
+    public DbSet<InformationSystem> InformationSystems { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the priorities.
     /// </summary>
     /// <value>The priorities.</value>
-    public DbSet<Priority> Priorities { get; set; }
+    public DbSet<Priority> Priorities { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the roles.
     /// </summary>
     /// <value>The roles.</value>
-    public DbSet<Role> Roles { get; set; }
+    public DbSet<Role> Roles { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the task statuses.
     /// </summary>
     /// <value>The task statuses.</value>
-    public DbSet<TaskStatus> TaskStatuses { get; set; }
+    public DbSet<TaskStatus> TaskStatuses { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the users.
     /// </summary>
     /// <value>The users.</value>
-    public DbSet<User> Users { get; set; }
-    
+    public DbSet<User> Users { get; set; } = null!;
+
     /// <summary>
     /// Gets or sets the files.
     /// </summary>
     /// <value>The users.</value>
-    public DbSet<File> Files { get; set; }
+    public DbSet<File> Files { get; set; } = null!;
 
     #endregion
 }
