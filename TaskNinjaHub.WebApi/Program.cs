@@ -1,3 +1,4 @@
+using Microsoft.OpenApi.Models;
 using TaskNinjaHub.Application.DependencyInjection;
 using TaskNinjaHub.Persistence.DependencyInjection;
 
@@ -21,20 +22,27 @@ public class Program
 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "TaskNinjaHub", Version = "v1" });
+        });
+
 
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "TaskNinjaHub");
+            });
         }
 
+        app.UseRouting();
+        app.UseStaticFiles();
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
-        
         app.MapControllers();
 
         app.Run();

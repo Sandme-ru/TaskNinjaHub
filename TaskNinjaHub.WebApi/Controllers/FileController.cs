@@ -46,7 +46,7 @@ public class FileController : ControllerBase
         if (taskId <= 0)
             return null!;
 
-        var files = await _repository.Find(f => f.TaskId == taskId);
+        var files = await _repository.FindAsync(f => f.TaskId == taskId);
 
         return files ?? Array.Empty<File>();
     }
@@ -63,7 +63,7 @@ public class FileController : ControllerBase
         if (path is null or { Length: 0 })
             return null;
 
-        var files = await _repository.GetAll();
+        var files = await _repository.GetAllAsync();
         var file = files!.FirstOrDefault(f => f.Path == path);
         if (file is null)
             return null;
@@ -118,7 +118,7 @@ public class FileController : ControllerBase
         {
             Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? throw new("Directory name is null"));
 
-            await _repository.Add(fileEntity);
+            await _repository.AddAsync(fileEntity);
 
             if (System.IO.File.Exists(filePath))
                 System.IO.File.Delete(filePath);
@@ -147,20 +147,20 @@ public class FileController : ControllerBase
         if (fileOwnershipDto.FileId == 0 || fileOwnershipDto.TaskId == 0)
             return null;
 
-        var files = await _repository.GetAll();
+        var files = await _repository.GetAllAsync();
         var file = files!.FirstOrDefault(f => f.Id == fileOwnershipDto.FileId);
         if (file is null)
             return null;
 
         file.TaskId = fileOwnershipDto.TaskId;
 
-        await _repository.Update(file);
+        await _repository.UpdateAsync(file);
 
         return file;
     }
 
     /// <summary>
-    /// Remove file by id.
+    /// RemoveAsync file by id.
     /// </summary>
     /// <returns>System.Nullable&lt;File&gt;&gt;.</returns>
     [HttpDelete("/api/file/{id}")]
@@ -169,7 +169,7 @@ public class FileController : ControllerBase
         if (id <= 0)
             return null;
 
-        var files = await _repository.GetAll();
+        var files = await _repository.GetAllAsync();
         var file = files!.FirstOrDefault(f => f.Id == id);
 
         if (file is null)
@@ -181,7 +181,7 @@ public class FileController : ControllerBase
             return null;
 
         System.IO.File.Delete(filePath);
-        await _repository.Remove(file);
+        await _repository.RemoveAsync(file);
 
         return file;
     }

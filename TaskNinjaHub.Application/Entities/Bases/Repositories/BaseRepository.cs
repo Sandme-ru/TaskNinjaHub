@@ -32,7 +32,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
     /// </summary>
     /// <param name="id">The identifier.</param>
     /// <returns>Task&lt;T&gt;.</returns>
-    public async Task<T?> GetById(int id)
+    public async Task<T?> GetByIdAsync(int id)
     {
         if (Context != null)
             return await Context.Set<T>().FindAsync(id);
@@ -43,7 +43,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
     /// Gets all.
     /// </summary>
     /// <returns>Task&lt;IQueryable&lt;T&gt;&gt;.</returns>
-    public async Task<IEnumerable<T>?> GetAll()
+    public async Task<IEnumerable<T>?> GetAllAsync()
     {
         return await Context?.Set<T>().ToListAsync()!;
     }
@@ -53,7 +53,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
     /// </summary>
     /// <param name="filter">The filter.</param>
     /// <returns>Task&lt;IQueryable&lt;T&gt;&gt;.</returns>
-    public async Task<IEnumerable<T>?> GetAllByFilter(IDictionary<string, string?> filter)
+    public async Task<IEnumerable<T>?> GetAllByFilterAsync(IDictionary<string, string?> filter)
     {
         Expression<Func<T, bool>> predicate = _ => true;
 
@@ -73,9 +73,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
                         entity => string.Equals(entity
                             .GetType()
                             .GetProperties()
-                            .First(
-                                p =>
-                                    Equals(p.Name.Trim(), property.Key.Trim()))!
+                            .First(p => Equals(p.Name.Trim(), property.Key.Trim()))
                             .GetValue(entity)!
                             .ToString(), property.Value, StringComparison.Ordinal);
                     predicate = Expression.Lambda<Func<T, bool>>(
@@ -94,7 +92,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
     /// </summary>
     /// <param name="expression">The expression.</param>
     /// <returns>Task&lt;IEnumerable&lt;T&gt;&gt;.</returns>
-    public Task<IEnumerable<T>?> Find(Expression<Func<T, bool>> expression)
+    public Task<IEnumerable<T>?> FindAsync(Expression<Func<T, bool>> expression)
     {
         return Task.FromResult<IEnumerable<T>?>(Context?.Set<T>().Where(expression));
     }
@@ -104,9 +102,9 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>System.Threading.Tasks.Task.</returns>
-    public async Task Add(T entity)
+    public async Task AddAsync(T entity)
     {
-        Context?.Set<T>().Add(entity);
+        await (Context?.Set<T>()!).AddAsync(entity);
         await Context?.SaveChangesAsync()!;
     }
 
@@ -115,7 +113,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>System.Threading.Tasks.Task.</returns>
-    public async Task Update(T entity)
+    public async Task UpdateAsync(T entity)
     {
         Context?.Set<T>().Update(entity);
         await Context?.SaveChangesAsync()!;
@@ -126,7 +124,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>System.Threading.Tasks.Task.</returns>
-    public async Task Remove(T entity)
+    public async Task RemoveAsync(T entity)
     {
         Context?.Set<T>().Remove(entity);
         await Context?.SaveChangesAsync()!;

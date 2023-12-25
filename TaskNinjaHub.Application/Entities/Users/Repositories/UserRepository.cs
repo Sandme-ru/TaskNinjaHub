@@ -13,7 +13,7 @@ namespace TaskNinjaHub.Application.Entities.Users.Repositories;
 /// </summary>
 /// <seealso cref="User" />
 /// <seealso cref="IUserRepository" />
-public class UserRepository : BaseRepository<Domain.User>, IUserRepository
+public class UserRepository : BaseRepository<User>, IUserRepository
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="UserRepository"/> class.

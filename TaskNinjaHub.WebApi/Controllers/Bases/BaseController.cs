@@ -11,9 +11,10 @@ namespace TaskNinjaHub.WebApi.Controllers.Bases;
 /// <typeparam name="TEntity">The type of the t entity.</typeparam>
 /// <typeparam name="TRepository">The type of the t repository.</typeparam>
 /// <seealso cref="ControllerBase" />
+[ApiController]
 [Route("api/[controller]")]
-public class BaseController<TEntity, TRepository> : ControllerBase 
-    where TEntity : class, IHaveId 
+public class BaseController<TEntity, TRepository> : ControllerBase
+    where TEntity : class, IHaveId
     where TRepository : class, IBaseRepository<TEntity>
 {
     /// <summary>
@@ -37,10 +38,10 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     [HttpGet]
     public async Task<IEnumerable<TEntity>?> GetAll()
     {
-        var entities = await _repository.GetAll();
+        var entities = await _repository.GetAllAsync();
         return entities ?? null;
     }
-    
+
     /// <summary>
     /// Gets all by filterModel.
     /// </summary>
@@ -48,7 +49,7 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     [HttpGet("filter")]
     public async Task<IEnumerable<TEntity>?> GetAllByFilter([FromQuery] IDictionary<string, string?> query)
     {
-        var entities = await _repository.GetAllByFilter(query);
+        var entities = await _repository.GetAllByFilterAsync(query);
         return entities ?? null;
     }
 
@@ -60,7 +61,7 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<TEntity?> Get(int id)
     {
-        var entity = await _repository.GetById(id);
+        var entity = await _repository.GetByIdAsync(id);
         return entity ?? null;
     }
 
@@ -72,13 +73,11 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     [HttpPost("Create")]
     public async Task<TEntity?> Create([FromBody] TEntity? entity)
     {
-        if (entity != null)
-        {
-            await _repository.Add(entity);
-            return entity;
-        }
+        if (entity == null)
+            return null;
 
-        return null;
+        await _repository.AddAsync(entity);
+        return entity;
     }
 
     /// <summary>
@@ -86,16 +85,14 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>System.Nullable&lt;TEntity&gt;.</returns>
-    [HttpPut("Update")]
+    [HttpPut("UpdateAsync")]
     public async Task<TEntity?> Put([FromBody] TEntity? entity)
     {
-        if (entity != null)
-        {
-            await _repository.Update(entity);
-            return entity;
-        }
+        if (entity == null)
+            return null;
 
-        return null;
+        await _repository.UpdateAsync(entity);
+        return entity;
     }
 
     /// <summary>
@@ -106,11 +103,11 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     [HttpDelete("{id}")]
     public async Task<TEntity?> Delete(int id)
     {
-        var entity = (_repository.Find(x => x.Id == id).Result ?? Array.Empty<TEntity>()).FirstOrDefault();
+        var entity = (_repository.FindAsync(x => x.Id == id).Result ?? Array.Empty<TEntity>()).FirstOrDefault();
 
         if (entity != null)
         {
-            await _repository.Remove(entity);
+            await _repository.RemoveAsync(entity);
             return entity;
         }
 

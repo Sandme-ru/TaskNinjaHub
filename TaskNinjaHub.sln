@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskNinjaHub.Persistence", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskNinjaHub.WebApi", "TaskNinjaHub.WebApi\TaskNinjaHub.WebApi.csproj", "{3010E8A6-2AA7-4B77-A556-BD39EDA62971}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskNinjaHub.WebClient", "TaskNinjaHub.WebClient\TaskNinjaHub.WebClient.csproj", "{3BFE3EF2-E465-4A12-A6BF-08049414C0E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskNinjaHub.WebClient", "TaskNinjaHub.WebClient\TaskNinjaHub.WebClient.csproj", "{3BFE3EF2-E465-4A12-A6BF-08049414C0E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

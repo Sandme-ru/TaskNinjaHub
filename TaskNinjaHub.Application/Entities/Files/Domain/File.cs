@@ -49,6 +49,5 @@ public class File : IHaveId, IHaveName, IHaveDateCreated
     /// Gets or sets the task.
     /// </summary>
     /// <value>The task.</value>
-    [JsonIgnore]
     public virtual CatalogTask? Task { get; set; }
 }
