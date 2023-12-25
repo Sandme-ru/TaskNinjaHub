@@ -13,7 +13,7 @@ namespace TaskNinjaHub.Application.Entities.Roles.Repositories;
 /// </summary>
 /// <seealso cref="Role" />
 /// <seealso cref="IRoleRepository" />
-public class RoleRepository : BaseRepository<Domain.Role>, IRoleRepository
+public class RoleRepository : BaseRepository<Role>, IRoleRepository
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RoleRepository"/> class.

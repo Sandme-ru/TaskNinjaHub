@@ -24,11 +24,4 @@ public class Priority : IHaveId, IHaveName
     /// </summary>
     /// <value>The name.</value>
     public string? Name { get; set; }
-
-    /// <summary>
-    /// Gets or sets the tasks.
-    /// </summary>
-    /// <value>The tasks.</value>
-    [JsonIgnore]
-    public virtual List<CatalogTask> Tasks { get; set; }
 }

@@ -17,6 +17,5 @@ public class AuthorController : BaseController<Author, IAuthorRepository>
     /// <param name="repository">The repository.</param>
     public AuthorController(IAuthorRepository repository) : base(repository)
     {
-
     }
 }

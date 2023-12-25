@@ -13,7 +13,7 @@ namespace TaskNinjaHub.Application.Entities.Priorities.Repositories;
 /// </summary>
 /// <seealso cref="Priority" />
 /// <seealso cref="IPriorityRepository" />
-public class PriorityRepository : BaseRepository<Domain.Priority>, IPriorityRepository
+public class PriorityRepository : BaseRepository<Priority>, IPriorityRepository
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PriorityRepository"/> class.

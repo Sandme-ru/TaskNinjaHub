@@ -115,11 +115,4 @@ public class CatalogTask : BaseUserCU, IHaveId, IHaveName
     /// </summary>
     /// <value>The original task.</value>
     public virtual CatalogTask? OriginalTask { get; set; }
-
-    /// <summary>
-    /// Gets or sets the tasks.
-    /// </summary>
-    /// <value>The tasks.</value>
-    [JsonIgnore]
-    public virtual List<CatalogTask>? CatalogTasks { get; set; }
 }

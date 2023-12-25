@@ -14,45 +14,45 @@ public interface IBaseRepository<T> where T : class, IHaveId
     /// </summary>
     /// <param name="id">The identifier.</param>
     /// <returns>Task&lt;T&gt;.</returns>
-    Task<T?> GetById(int id);
+    Task<T?> GetByIdAsync(int id);
 
     /// <summary>
     /// Gets all.
     /// </summary>
     /// <returns>Task&lt;IQueryable&lt;T&gt;&gt;.</returns>
-    Task<IEnumerable<T>?> GetAll();
+    Task<IEnumerable<T>?> GetAllAsync();
     
     /// <summary>
     /// Gets all by filter.
     /// </summary>
     /// <returns>Task&lt;IQueryable&lt;T&gt;&gt;.</returns>
-    Task<IEnumerable<T>?> GetAllByFilter(IDictionary<string, string?> filter);
+    Task<IEnumerable<T>?> GetAllByFilterAsync(IDictionary<string, string?> filter);
 
     /// <summary>
     /// Finds the specified expression.
     /// </summary>
     /// <param name="expression">The expression.</param>
     /// <returns>Task&lt;IEnumerable&lt;T&gt;&gt;.</returns>
-    Task<IEnumerable<T>?> Find(Expression<Func<T, bool>> expression);
+    Task<IEnumerable<T>?> FindAsync(Expression<Func<T, bool>> expression);
 
     /// <summary>
     /// Adds the specified entity.
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>System.Threading.Tasks.Task.</returns>
-    Task Add(T entity);
+    Task AddAsync(T entity);
 
     /// <summary>
     /// Updates the specified entity.
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>System.Threading.Tasks.Task.</returns>
-    Task Update(T entity);
+    Task UpdateAsync(T entity);
 
     /// <summary>
     /// Removes the specified entity.
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>System.Threading.Tasks.Task.</returns>
-    Task Remove(T entity);
+    Task RemoveAsync(T entity);
 }
