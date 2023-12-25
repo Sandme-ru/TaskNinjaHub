@@ -42,7 +42,7 @@ public partial class TaskCreateForm
     /// </summary>
     /// <value>The task service.</value>
     [Inject]
-    private TaskService TaskService { get; set; } = null!;
+    private CatalogTaskService CatalogTaskService { get; set; } = null!;
     
     /// <summary>
     /// Gets or sets the file service.
@@ -186,14 +186,16 @@ public partial class TaskCreateForm
     /// </summary>
     private async Task CreateTask()
     {
-        CreatedCatalogTask.TaskAuthorId = CurrentUser?.AuthorId;
+        CreatedCatalogTask.TaskAuthorId = CurrentUser?.AuthorId;6
         CreatedCatalogTask.TaskStatusId = DefaultStatus?.Id;
         CreatedCatalogTask.UserCreated = CurrentUser?.Username;
-        CreatedCatalogTask.DateCreated = DateTime.Now;
-        var ret = await TaskService.CreateAsync(CreatedCatalogTask);
-        if (ret.IsSuccessStatusCode)
+        CreatedCatalogTask.DateCreated = DateTime.UtcNow;
+
+        var responseMessage = await CatalogTaskService.CreateAsync(CreatedCatalogTask);
+
+        if (responseMessage.IsSuccessStatusCode)
         {
-            var createdTaskStream = await ret.Content.ReadAsStreamAsync();
+            var createdTaskStream = await responseMessage.Content.ReadAsStreamAsync();
             var createdTask = await JsonSerializer.DeserializeAsync<CatalogTask>(
                 createdTaskStream, 
                 new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
@@ -205,7 +207,7 @@ public partial class TaskCreateForm
         {
             foreach (var fileEntity in UploadedFileList)
                 await FileService.DeleteAsync(fileEntity.Id);
-            await Message.Error(ret.ReasonPhrase);
+            await Message.Error(responseMessage.ReasonPhrase);
         }
 
         CreatedCatalogTask = new CatalogTask();

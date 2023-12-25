@@ -17,6 +17,8 @@ public class Program
     /// <param name="args">The arguments.</param>
     public static void Main(string[] args)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddRazorPages();
@@ -34,7 +36,7 @@ public class Program
         builder.Services.AddScoped<PriorityService>();
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<RoleService>();
-        builder.Services.AddScoped<TaskService>();
+        builder.Services.AddScoped<CatalogTaskService>();
         builder.Services.AddScoped<FileService>();
         builder.Services.AddScoped<TaskStatusService>();
         builder.Services.AddSingleton<IUserAuthenticationService, UserAuthenticationService>();

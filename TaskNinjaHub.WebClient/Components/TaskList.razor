@@ -51,7 +51,7 @@
     <Divider/>
     <AntList Grid="_grid" DataSource="@CatalogTasks">
         <ListItem>
-            @if (context.CatalogTaskID == null)
+            @if (context.OriginalTaskId == null)
             {
                 <Card Bordered Title="@($"{context.Id.ToString()}. {context.TaskAuthor?.Name}")" Id="MainCard">
                     <Extra>
