@@ -186,7 +186,7 @@ public partial class TaskCreateForm
     /// </summary>
     private async Task CreateTask()
     {
-        CreatedCatalogTask.TaskAuthorId = CurrentUser?.AuthorId;6
+        CreatedCatalogTask.TaskAuthorId = CurrentUser?.AuthorId;
         CreatedCatalogTask.TaskStatusId = DefaultStatus?.Id;
         CreatedCatalogTask.UserCreated = CurrentUser?.Username;
         CreatedCatalogTask.DateCreated = DateTime.UtcNow;

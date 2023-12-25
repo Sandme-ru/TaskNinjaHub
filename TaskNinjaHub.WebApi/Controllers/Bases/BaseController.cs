@@ -71,13 +71,17 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     /// <param name="entity">The entity.</param>
     /// <returns>System.Nullable&lt;TEntity&gt;.</returns>
     [HttpPost("Create")]
-    public async Task<TEntity?> Create([FromBody] TEntity? entity)
+    public async Task<ActionResult<TEntity>?> Create([FromBody] TEntity? entity)
     {
         if (entity == null)
-            return null;
+            return BadRequest("An empty object was passed to add");
 
-        await _repository.AddAsync(entity);
-        return entity;
+        var result = await _repository.AddAsync(entity);
+
+        if (result.Success)
+            return Ok(entity);
+        else
+            return BadRequest(result.ErrorMessage);
     }
 
     /// <summary>
@@ -86,13 +90,17 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     /// <param name="entity">The entity.</param>
     /// <returns>System.Nullable&lt;TEntity&gt;.</returns>
     [HttpPut("UpdateAsync")]
-    public async Task<TEntity?> Put([FromBody] TEntity? entity)
+    public async Task<ActionResult<TEntity>?> Put([FromBody] TEntity? entity)
     {
         if (entity == null)
-            return null;
+            return BadRequest("An empty object was passed to update");
 
-        await _repository.UpdateAsync(entity);
-        return entity;
+        var result = await _repository.UpdateAsync(entity);
+
+        if (result.Success)
+            return Ok(entity);
+        else
+            return BadRequest(result.ErrorMessage);
     }
 
     /// <summary>
@@ -101,16 +109,20 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     /// <param name="id">The identifier.</param>
     /// <returns>TEntity.</returns>
     [HttpDelete("{id}")]
-    public async Task<TEntity?> Delete(int id)
+    public async Task<ActionResult<TEntity>?> Delete(int id)
     {
         var entity = (_repository.FindAsync(x => x.Id == id).Result ?? Array.Empty<TEntity>()).FirstOrDefault();
 
         if (entity != null)
         {
-            await _repository.RemoveAsync(entity);
-            return entity;
+            var result = await _repository.RemoveAsync(entity);
+
+            if (result.Success)
+                return Ok(entity);
+            else
+                return BadRequest(result.ErrorMessage);
         }
 
-        return null;
+        return BadRequest("The object to delete was not found");
     }
 }

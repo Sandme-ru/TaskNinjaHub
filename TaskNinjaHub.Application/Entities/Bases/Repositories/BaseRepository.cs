@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TaskNinjaHub.Application.Entities.Bases.Interfaces;
 using TaskNinjaHub.Application.Interfaces.Haves;
+using TaskNinjaHub.Application.Utilities.OperationResults;
 
 namespace TaskNinjaHub.Application.Entities.Bases.Repositories;
 
@@ -102,10 +103,18 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>System.Threading.Tasks.Task.</returns>
-    public async Task AddAsync(T entity)
+    public async Task<OperationResult> AddAsync(T entity)
     {
-        await (Context?.Set<T>()!).AddAsync(entity);
-        await Context?.SaveChangesAsync()!;
+        try
+        {
+            await (Context?.Set<T>()!).AddAsync(entity);
+            await Context?.SaveChangesAsync()!;
+            return OperationResult.SuccessResult();
+        }
+        catch (Exception ex)
+        {
+            return OperationResult.FailedResult($"Failed to add entity: {ex.Message}");
+        }
     }
 
     /// <summary>
@@ -113,10 +122,18 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>System.Threading.Tasks.Task.</returns>
-    public async Task UpdateAsync(T entity)
+    public async Task<OperationResult> UpdateAsync(T entity)
     {
-        Context?.Set<T>().Update(entity);
-        await Context?.SaveChangesAsync()!;
+        try
+        {
+            Context?.Set<T>().Update(entity);
+            await Context?.SaveChangesAsync()!;
+            return OperationResult.SuccessResult();
+        }
+        catch (Exception ex)
+        {
+            return OperationResult.FailedResult($"Failed to update entity: {ex.Message}");
+        }
     }
 
     /// <summary>
@@ -124,9 +141,17 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
     /// </summary>
     /// <param name="entity">The entity.</param>
     /// <returns>System.Threading.Tasks.Task.</returns>
-    public async Task RemoveAsync(T entity)
+    public async Task<OperationResult> RemoveAsync(T entity)
     {
-        Context?.Set<T>().Remove(entity);
-        await Context?.SaveChangesAsync()!;
+        try
+        {
+            Context?.Set<T>().Remove(entity);
+            await Context?.SaveChangesAsync()!;
+            return OperationResult.SuccessResult();
+        }
+        catch (Exception ex)
+        {
+            return OperationResult.FailedResult($"Failed to remove entity: {ex.Message}");
+        }
     }
 }
