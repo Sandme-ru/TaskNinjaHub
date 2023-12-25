@@ -2,21 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TaskNinjaHub.Persistence;
 
 #nullable disable
 
-namespace TaskNinjaHub.Persistence.Migrations
+namespace TaskNinjaHub.Persistence.TaskNinjaHub
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231108090348_Initial")]
-    partial class Initial
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,44 +21,52 @@ namespace TaskNinjaHub.Persistence.Migrations
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("TaskNinjaHub.Application.Entities.Authors.Domain.Author", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_created");
 
                     b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_updated");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
                     b.Property<int?>("RoleId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("role_id");
 
                     b.Property<string>("UserCreated")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("user_created");
 
                     b.Property<string>("UserUpdated")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("user_updated");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_authors");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_authors_role_id");
 
-                    b.ToTable("Authors");
+                    b.ToTable("authors", (string)null);
 
                     b.HasData(
                         new
@@ -118,58 +123,71 @@ namespace TaskNinjaHub.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_created");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
                     b.Property<string>("Path")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("path");
 
                     b.Property<int?>("TaskId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("task_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_files");
 
-                    b.HasIndex("TaskId");
+                    b.HasIndex("TaskId")
+                        .HasDatabaseName("ix_files_task_id");
 
-                    b.ToTable("Files");
+                    b.ToTable("files", (string)null);
                 });
 
             modelBuilder.Entity("TaskNinjaHub.Application.Entities.InformationSystems.Domain.InformationSystem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_created");
 
                     b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_updated");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
                     b.Property<string>("UserCreated")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("user_created");
 
                     b.Property<string>("UserUpdated")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("user_updated");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_information_systems");
 
-                    b.ToTable("InformationSystems");
+                    b.ToTable("information_systems", (string)null);
 
                     b.HasData(
                         new
@@ -183,17 +201,19 @@ namespace TaskNinjaHub.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_priorities");
 
-                    b.ToTable("Priorities");
+                    b.ToTable("priorities", (string)null);
 
                     b.HasData(
                         new
@@ -222,17 +242,19 @@ namespace TaskNinjaHub.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_roles");
 
-                    b.ToTable("Roles");
+                    b.ToTable("roles", (string)null);
 
                     b.HasData(
                         new
@@ -261,31 +283,37 @@ namespace TaskNinjaHub.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_created");
 
                     b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_updated");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
                     b.Property<string>("UserCreated")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("user_created");
 
                     b.Property<string>("UserUpdated")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("user_updated");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_task_statuses");
 
-                    b.ToTable("TaskStatuses");
+                    b.ToTable("task_statuses", (string)null);
 
                     b.HasData(
                         new
@@ -314,97 +342,124 @@ namespace TaskNinjaHub.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("CatalogTaskID")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("catalog_task_id");
 
                     b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_created");
 
                     b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_updated");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<int?>("InformationSystemId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("information_system_id");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("name");
 
                     b.Property<int?>("PriorityId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("priority_id");
 
                     b.Property<int?>("TaskAuthorId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("task_author_id");
 
                     b.Property<int?>("TaskExecutorId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("task_executor_id");
 
                     b.Property<int?>("TaskStatusId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("task_status_id");
 
                     b.Property<string>("UserCreated")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("user_created");
 
                     b.Property<string>("UserUpdated")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("user_updated");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_catalog_tasks");
 
-                    b.HasIndex("CatalogTaskID");
+                    b.HasIndex("CatalogTaskID")
+                        .HasDatabaseName("ix_catalog_tasks_catalog_task_id");
 
                     b.HasIndex("Id")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_catalog_tasks_id");
 
-                    b.HasIndex("InformationSystemId");
+                    b.HasIndex("InformationSystemId")
+                        .HasDatabaseName("ix_catalog_tasks_information_system_id");
 
-                    b.HasIndex("PriorityId");
+                    b.HasIndex("PriorityId")
+                        .HasDatabaseName("ix_catalog_tasks_priority_id");
 
-                    b.HasIndex("TaskAuthorId");
+                    b.HasIndex("TaskAuthorId")
+                        .HasDatabaseName("ix_catalog_tasks_task_author_id");
 
-                    b.HasIndex("TaskExecutorId");
+                    b.HasIndex("TaskExecutorId")
+                        .HasDatabaseName("ix_catalog_tasks_task_executor_id");
 
-                    b.HasIndex("TaskStatusId");
+                    b.HasIndex("TaskStatusId")
+                        .HasDatabaseName("ix_catalog_tasks_task_status_id");
 
-                    b.ToTable("CatalogTasks");
+                    b.ToTable("catalog_tasks", (string)null);
                 });
 
             modelBuilder.Entity("TaskNinjaHub.Application.Entities.Users.Domain.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AuthorId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("author_id");
 
                     b.Property<string>("AvatarPath")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("avatar_path");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("password");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("username");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_users");
 
-                    b.HasIndex("AuthorId");
+                    b.HasIndex("AuthorId")
+                        .HasDatabaseName("ix_users_author_id");
 
-                    b.ToTable("Users");
+                    b.ToTable("users", (string)null);
 
                     b.HasData(
                         new
@@ -469,7 +524,8 @@ namespace TaskNinjaHub.Persistence.Migrations
                 {
                     b.HasOne("TaskNinjaHub.Application.Entities.Roles.Domain.Role", "Role")
                         .WithMany("Authors")
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("RoleId")
+                        .HasConstraintName("fk_authors_roles_role_id");
 
                     b.Navigation("Role");
                 });
@@ -479,7 +535,8 @@ namespace TaskNinjaHub.Persistence.Migrations
                     b.HasOne("TaskNinjaHub.Application.Entities.Tasks.Domain.CatalogTask", "Task")
                         .WithMany("Files")
                         .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_files_catalog_tasks_task_id");
 
                     b.Navigation("Task");
                 });
@@ -488,29 +545,35 @@ namespace TaskNinjaHub.Persistence.Migrations
                 {
                     b.HasOne("TaskNinjaHub.Application.Entities.Tasks.Domain.CatalogTask", "OriginalTask")
                         .WithMany("CatalogTasks")
-                        .HasForeignKey("CatalogTaskID");
+                        .HasForeignKey("CatalogTaskID")
+                        .HasConstraintName("fk_catalog_tasks_catalog_tasks_catalog_task_id");
 
                     b.HasOne("TaskNinjaHub.Application.Entities.InformationSystems.Domain.InformationSystem", "InformationSystem")
                         .WithMany("Tasks")
-                        .HasForeignKey("InformationSystemId");
+                        .HasForeignKey("InformationSystemId")
+                        .HasConstraintName("fk_catalog_tasks_information_systems_information_system_id");
 
                     b.HasOne("TaskNinjaHub.Application.Entities.Priorities.Domain.Priority", "Priority")
                         .WithMany("Tasks")
-                        .HasForeignKey("PriorityId");
+                        .HasForeignKey("PriorityId")
+                        .HasConstraintName("fk_catalog_tasks_priorities_priority_id");
 
                     b.HasOne("TaskNinjaHub.Application.Entities.Authors.Domain.Author", "TaskAuthor")
                         .WithMany("AssignedTasks")
                         .HasForeignKey("TaskAuthorId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_catalog_tasks_authors_task_author_id");
 
                     b.HasOne("TaskNinjaHub.Application.Entities.Authors.Domain.Author", "TaskExecutor")
                         .WithMany("ExecutableTasks")
                         .HasForeignKey("TaskExecutorId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_catalog_tasks_authors_task_executor_id");
 
                     b.HasOne("TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskStatus", "TaskStatus")
                         .WithMany()
-                        .HasForeignKey("TaskStatusId");
+                        .HasForeignKey("TaskStatusId")
+                        .HasConstraintName("fk_catalog_tasks_task_statuses_task_status_id");
 
                     b.Navigation("InformationSystem");
 
@@ -531,7 +594,8 @@ namespace TaskNinjaHub.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_users_authors_author_id");
 
                     b.Navigation("Author");
                 });

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using TaskNinjaHub.Application.Interfaces;
 
 namespace TaskNinjaHub.Persistence.DependencyInjection;
@@ -18,16 +19,28 @@ public static class PersistenceServiceCollectionExtensions
     /// <returns>IServiceCollection.</returns>
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration["DbConnection"];
-        
+        bool.TryParse(configuration["Logging:Console:Enabled"], out var consoleEnabled);
+
+        var connectionString = configuration["ConnectionStrings:TaskNinjaHub"];
         services.AddDbContext<ApplicationDbContext>(options =>
         {
+            if (consoleEnabled)
+            {
+                options.UseLoggerFactory(LoggerFactory.Create(builder => { builder.AddConsole(); }));
+                options.EnableSensitiveDataLogging();
+                options.EnableDetailedErrors();
+            }
+
             options.UseLazyLoadingProxies();
-            options.UseSqlServer(connectionString);
-            options.EnableSensitiveDataLogging();
+            options.UseNpgsql(connectionString, o =>
+            {
+                o.CommandTimeout(600);
+                o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                o.MigrationsHistoryTable("__ef_migrations_history");
+            }).UseSnakeCaseNamingConvention();
         });
-        
-        services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>()!);
+
+        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         return services;
     }
 }
