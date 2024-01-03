@@ -27,9 +27,6 @@ public partial class Header
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
-    [Inject]
-    private IHttpContextAccessor HttpContextAccessor { get; set; } = null!;
-
     /// <summary>
     /// Gets the name of the user authentication.
     /// </summary>
