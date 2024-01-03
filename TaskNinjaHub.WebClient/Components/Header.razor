@@ -20,12 +20,7 @@
         }
         else
         {
-            <Icon OnClick="TryLogout" Type="logout" Theme="outline" />
+            <a href="@($"LogoutPage")">Выход</a>
         }
     </PageHeaderExtra>
 </PageHeader>
-
-@if (AuthenticationVisibility)
-{
-    <Authentication @bind-Visibility="AuthenticationVisibility" />
-}

@@ -91,7 +91,7 @@ public partial class TaskCreateForm
     /// </summary>
     /// <value>The user authentication service.</value>
     [Inject]
-    private IUserAuthenticationService UserAuthenticationService { get; set; } = null!;
+    private IUserProviderService UserProviderService { get; set; } = null!;
 
     #endregion
 
@@ -119,7 +119,11 @@ public partial class TaskCreateForm
     /// Gets the current user.
     /// </summary>
     /// <value>The current user.</value>
-    private User? CurrentUser => UserAuthenticationService.AuthorizedUser;
+    private string? CurrentUser
+    {
+        get => UserProviderService.UserName;
+        set => UserProviderService.UserName = value;
+    }
 
     /// <summary>
     /// Gets or sets the created catalog task.
@@ -186,9 +190,9 @@ public partial class TaskCreateForm
     /// </summary>
     private async Task CreateTask()
     {
-        CreatedCatalogTask.TaskAuthorId = CurrentUser?.AuthorId;
+        //CreatedCatalogTask.TaskAuthorId = CurrentUser?.AuthorId; todo TASK AUTHOR NAME
         CreatedCatalogTask.TaskStatusId = DefaultStatus?.Id;
-        CreatedCatalogTask.UserCreated = CurrentUser?.Username;
+        CreatedCatalogTask.UserCreated = CurrentUser;
         CreatedCatalogTask.DateCreated = DateTime.UtcNow;
 
         var responseMessage = await CatalogTaskService.CreateAsync(CreatedCatalogTask);

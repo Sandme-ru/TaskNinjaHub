@@ -3,3 +3,14 @@
 <TaskNinjaHub.WebClient.Components.Header />
 <br />
 <main> @Body </main>
+
+@code
+{
+    [Inject]
+    private IUserProviderService UserProviderService { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UserProviderService.GetUser();
+    }
+}

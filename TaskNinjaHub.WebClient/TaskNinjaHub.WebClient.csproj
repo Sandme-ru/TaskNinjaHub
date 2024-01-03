@@ -11,12 +11,23 @@
   <ItemGroup>
     <PackageReference Include="AntDesign" Version="0.16.1" />
     <PackageReference Include="DiffMatchPatch" Version="2.0.0" />
+    <PackageReference Include="Duende.AccessTokenManagement.OpenIdConnect" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.14" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.0.3" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.0.3" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="OpenIddict" Version="5.0.1" />
+    <PackageReference Include="OpenIddict.Server.AspNetCore" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TaskNinjaHub.Application\TaskNinjaHub.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\Authentication\" />
   </ItemGroup>
 
 </Project>
