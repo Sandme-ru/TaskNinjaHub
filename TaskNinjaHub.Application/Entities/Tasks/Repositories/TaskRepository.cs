@@ -19,7 +19,7 @@ public class TaskRepository : BaseRepository<CatalogTask>, ITaskRepository
     /// Initializes a new instance of the <see cref="TaskRepository"/> class.
     /// </summary>
     /// <param name="context">The context.</param>
-    public TaskRepository(IApplicationDbContext? context) : base((DbContext)context!)
+    public TaskRepository(ITaskNinjaHubDbContext? context) : base((DbContext)context!)
     {
         
     }

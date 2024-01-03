@@ -18,7 +18,7 @@ public class FileRepository : BaseRepository<Domain.File>, IFileRepository
     /// Initializes a new instance of the <see cref="FileRepository"/> class.
     /// </summary>
     /// <param name="context">The context.</param>
-    public FileRepository(IApplicationDbContext? context) : base((DbContext)context!)
+    public FileRepository(ITaskNinjaHubDbContext? context) : base((DbContext)context!)
     {
         
     }

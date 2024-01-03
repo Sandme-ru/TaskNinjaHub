@@ -6,39 +6,18 @@ using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 
 namespace TaskNinjaHub.WebApi.Controllers;
 
-/// <summary>
-/// Class FileController.
-/// Implements the <see cref="IFileRepository" />
-/// </summary>
-/// <seealso cref="IFileRepository" />
 public class FileController : ControllerBase
 {
-    /// <summary>
-    /// The repository
-    /// </summary>
     private readonly IFileRepository _repository;
 
-    /// <summary>
-    /// The environment
-    /// </summary>
     private readonly IWebHostEnvironment _environment;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FileController" /> class.
-    /// </summary>
-    /// <param name="repository">The repository.</param>
-    /// <param name="environment">The WebHostEnvironment.</param>
     public FileController(IFileRepository repository, IWebHostEnvironment environment)
     {
         _repository = repository;
         _environment = environment;
     }
 
-    /// <summary>
-    /// Gets all files by task id.
-    /// </summary>
-    /// <param name="taskId">The task identifier.</param>
-    /// <returns>System.Nullable&lt;IEnumerable&lt;File&gt;&gt;.</returns>
     [HttpGet("/api/file")]
     public async Task<IEnumerable<File?>> GetAllByTaskId(
         [FromQuery] int taskId)
@@ -51,11 +30,6 @@ public class FileController : ControllerBase
         return files ?? Array.Empty<File>();
     }
 
-    /// <summary>
-    /// Download file by path.
-    /// </summary>
-    /// <param name="path">The path.</param>
-    /// <returns>System.Nullable&lt;File&gt;&gt;.</returns>
     [HttpGet("{*path}")]
     public async Task<ActionResult<File?>?> Download(
         [FromRoute] string path)
@@ -74,10 +48,6 @@ public class FileController : ControllerBase
         return File(fileData, "application/octet-stream");
     }
 
-    /// <summary>
-    /// Upload file with form data.
-    /// </summary>
-    /// <returns>System.Nullable&lt;File&gt;&gt;.</returns>
     [HttpPost("/api/file/upload")]
     [RequestSizeLimit(8 * 1024 * 1024)]
     public async Task<File?> Upload(
@@ -136,10 +106,6 @@ public class FileController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// Change files owner.
-    /// </summary>
-    /// <returns>System.Nullable&lt;File&gt;&gt;.</returns>
     [HttpPut("/api/file/owner-change")]
     public async Task<File?> OwnerChange(
         [FromBody] FileOwnershipDto fileOwnershipDto)
@@ -159,10 +125,6 @@ public class FileController : ControllerBase
         return file;
     }
 
-    /// <summary>
-    /// RemoveAsync file by id.
-    /// </summary>
-    /// <returns>System.Nullable&lt;File&gt;&gt;.</returns>
     [HttpDelete("/api/file/{id}")]
     public async Task<ActionResult<File?>?> Remove([FromRoute] int id)
     {

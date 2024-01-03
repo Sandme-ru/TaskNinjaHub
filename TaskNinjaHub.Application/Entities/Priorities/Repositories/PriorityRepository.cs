@@ -19,7 +19,7 @@ public class PriorityRepository : BaseRepository<Priority>, IPriorityRepository
     /// Initializes a new instance of the <see cref="PriorityRepository"/> class.
     /// </summary>
     /// <param name="context">The context.</param>
-    public PriorityRepository(IApplicationDbContext? context) : base((DbContext)context!)
+    public PriorityRepository(ITaskNinjaHubDbContext? context) : base((DbContext)context!)
     {
 
     }

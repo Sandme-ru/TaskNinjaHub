@@ -2,21 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TaskNinjaHub.Persistence;
 
 #nullable disable
 
-namespace TaskNinjaHub.Persistence.TaskNinjaHub
+namespace TaskNinjaHub.Persistence.ApplicationDbContext
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231225181334_AddOriginalTaskField")]
-    partial class AddOriginalTaskField
+    [DbContext(typeof(TaskNinjaHubDbContext))]
+    partial class TaskNinjaHubDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,9 +46,9 @@ namespace TaskNinjaHub.Persistence.TaskNinjaHub
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<int?>("RoleId")
-                        .HasColumnType("integer")
-                        .HasColumnName("role_id");
+                    b.Property<string>("RoleName")
+                        .HasColumnType("text")
+                        .HasColumnName("role_name");
 
                     b.Property<string>("UserCreated")
                         .HasMaxLength(500)
@@ -66,60 +63,7 @@ namespace TaskNinjaHub.Persistence.TaskNinjaHub
                     b.HasKey("Id")
                         .HasName("pk_authors");
 
-                    b.HasIndex("RoleId")
-                        .HasDatabaseName("ix_authors_role_id");
-
                     b.ToTable("authors", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "First developer",
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Second developer",
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "First analyst",
-                            RoleId = 2
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Second analyst",
-                            RoleId = 2
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "First support",
-                            RoleId = 3
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Second support",
-                            RoleId = 3
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "First tester",
-                            RoleId = 4
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Second tester",
-                            RoleId = 4
-                        });
                 });
 
             modelBuilder.Entity("TaskNinjaHub.Application.Entities.Files.Domain.File", b =>
@@ -238,47 +182,6 @@ namespace TaskNinjaHub.Persistence.TaskNinjaHub
                         {
                             Id = 4,
                             Name = "Low"
-                        });
-                });
-
-            modelBuilder.Entity("TaskNinjaHub.Application.Entities.Roles.Domain.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("pk_roles");
-
-                    b.ToTable("roles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Developer"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Analyst"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Support"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Tester"
                         });
                 });
 
@@ -429,110 +332,6 @@ namespace TaskNinjaHub.Persistence.TaskNinjaHub
                     b.ToTable("catalog_tasks", (string)null);
                 });
 
-            modelBuilder.Entity("TaskNinjaHub.Application.Entities.Users.Domain.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("integer")
-                        .HasColumnName("author_id");
-
-                    b.Property<string>("AvatarPath")
-                        .HasColumnType("text")
-                        .HasColumnName("avatar_path");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("password");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("username");
-
-                    b.HasKey("Id")
-                        .HasName("pk_users");
-
-                    b.HasIndex("AuthorId")
-                        .HasDatabaseName("ix_users_author_id");
-
-                    b.ToTable("users", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AuthorId = 1,
-                            Password = "user1",
-                            Username = "user1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AuthorId = 2,
-                            Password = "user2",
-                            Username = "user2"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AuthorId = 3,
-                            Password = "user3",
-                            Username = "user3"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AuthorId = 4,
-                            Password = "user4",
-                            Username = "user4"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AuthorId = 5,
-                            Password = "user5",
-                            Username = "user5"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AuthorId = 6,
-                            Password = "user6",
-                            Username = "user6"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AuthorId = 7,
-                            Password = "user7",
-                            Username = "user7"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            AuthorId = 8,
-                            Password = "user8",
-                            Username = "user8"
-                        });
-                });
-
-            modelBuilder.Entity("TaskNinjaHub.Application.Entities.Authors.Domain.Author", b =>
-                {
-                    b.HasOne("TaskNinjaHub.Application.Entities.Roles.Domain.Role", "Role")
-                        .WithMany("Authors")
-                        .HasForeignKey("RoleId")
-                        .HasConstraintName("fk_authors_roles_role_id");
-
-                    b.Navigation("Role");
-                });
-
             modelBuilder.Entity("TaskNinjaHub.Application.Entities.Files.Domain.File", b =>
                 {
                     b.HasOne("TaskNinjaHub.Application.Entities.Tasks.Domain.CatalogTask", "Task")
@@ -591,28 +390,11 @@ namespace TaskNinjaHub.Persistence.TaskNinjaHub
                     b.Navigation("TaskStatus");
                 });
 
-            modelBuilder.Entity("TaskNinjaHub.Application.Entities.Users.Domain.User", b =>
-                {
-                    b.HasOne("TaskNinjaHub.Application.Entities.Authors.Domain.Author", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_users_authors_author_id");
-
-                    b.Navigation("Author");
-                });
-
             modelBuilder.Entity("TaskNinjaHub.Application.Entities.Authors.Domain.Author", b =>
                 {
                     b.Navigation("AssignedTasks");
 
                     b.Navigation("ExecutableTasks");
-                });
-
-            modelBuilder.Entity("TaskNinjaHub.Application.Entities.Roles.Domain.Role", b =>
-                {
-                    b.Navigation("Authors");
                 });
 
             modelBuilder.Entity("TaskNinjaHub.Application.Entities.Tasks.Domain.CatalogTask", b =>

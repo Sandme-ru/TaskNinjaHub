@@ -18,7 +18,7 @@ public class TaskStatusRepository : BaseRepository<Domain.TaskStatus>, ITaskStat
     /// Initializes a new instance of the <see cref="TaskStatusRepository" /> class.
     /// </summary>
     /// <param name="context">The context.</param>
-    public TaskStatusRepository(IApplicationDbContext? context) : base((DbContext)context!)
+    public TaskStatusRepository(ITaskNinjaHubDbContext? context) : base((DbContext)context!)
     {
 
     }

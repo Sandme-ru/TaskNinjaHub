@@ -1,6 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 using TaskNinjaHub.Application.BaseUsers;
-using TaskNinjaHub.Application.Entities.Roles.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Interfaces.Haves;
 
@@ -33,13 +32,7 @@ public class Author: BaseUserCU, IHaveId, IHaveName
     /// Gets or sets the role identifier.
     /// </summary>
     /// <value>The role identifier.</value>
-    public int? RoleId { get; set; }
-
-    /// <summary>
-    /// Gets or sets the role.
-    /// </summary>
-    /// <value>The role.</value>
-    public virtual Role? Role { get; set; }
+    public string? RoleName { get; set; }
 
     /// <summary>
     /// Gets or sets the executable tasks.

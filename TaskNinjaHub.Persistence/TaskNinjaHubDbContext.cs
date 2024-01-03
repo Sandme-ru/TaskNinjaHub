@@ -3,9 +3,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
-using TaskNinjaHub.Application.Entities.Roles.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
-using TaskNinjaHub.Application.Entities.Users.Domain;
 using TaskNinjaHub.Application.Interfaces;
 using TaskNinjaHub.Persistence.DataSeeders;
 using TaskNinjaHub.Persistence.EntityTypeConfigurations;
@@ -14,13 +12,13 @@ using TaskStatus = TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskSta
 
 namespace TaskNinjaHub.Persistence;
 
-public class ApplicationDbContext : DbContext, IApplicationDbContext
+public class TaskNinjaHubDbContext : DbContext, ITaskNinjaHubDbContext
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ApplicationDbContext" /> class.
+    /// Initializes a new instance of the <see cref="TaskNinjaHubDbContext" /> class.
     /// </summary>
     /// <param name="options">The options.</param>
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    public TaskNinjaHubDbContext(DbContextOptions<TaskNinjaHubDbContext> options) : base(options)
     {
 
     }
@@ -45,12 +43,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         modelBuilder.ApplyConfiguration(new TaskConfiguration());
 
-        modelBuilder = DataSeederRole.SeedData(modelBuilder);
-        modelBuilder = DataSeederAuthor.SeedData(modelBuilder);
         modelBuilder = DataSeederInformationSystem.SeedData(modelBuilder);
         modelBuilder = DataSeederPriority.SeedData(modelBuilder);
         modelBuilder = DataSeederTaskStatus.SeedData(modelBuilder);
-        modelBuilder = DataSeederUser.SeedData(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
     }
@@ -79,7 +74,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             .ConfigureWarnings(x => x.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
     }
 
-    #region Entities
+    #region ENTITIES
 
     /// <summary>
     /// Gets or sets the tasks.
@@ -106,22 +101,10 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Priority> Priorities { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets the roles.
-    /// </summary>
-    /// <value>The roles.</value>
-    public DbSet<Role> Roles { get; set; } = null!;
-
-    /// <summary>
     /// Gets or sets the task statuses.
     /// </summary>
     /// <value>The task statuses.</value>
     public DbSet<TaskStatus> TaskStatuses { get; set; } = null!;
-
-    /// <summary>
-    /// Gets or sets the users.
-    /// </summary>
-    /// <value>The users.</value>
-    public DbSet<User> Users { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the files.

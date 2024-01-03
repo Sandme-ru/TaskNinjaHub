@@ -18,7 +18,7 @@ public class InformationSystemRepository: BaseRepository<Domain.InformationSyste
     /// Initializes a new instance of the <see cref="InformationSystemRepository"/> class.
     /// </summary>
     /// <param name="context">The context.</param>
-    public InformationSystemRepository(IApplicationDbContext? context) : base((DbContext)context!)
+    public InformationSystemRepository(ITaskNinjaHubDbContext? context) : base((DbContext)context!)
     {
     }
 }
