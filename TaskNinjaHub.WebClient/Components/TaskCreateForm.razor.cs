@@ -105,16 +105,12 @@ public partial class TaskCreateForm
     /// </summary>
     /// <value>The file preview title.</value>
     private string? FilePreviewTitle { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Gets the current user.
     /// </summary>
     /// <value>The current user.</value>
-    private string? CurrentUser
-    {
-        get => UserProviderService.User.Name;
-        set => UserProviderService.User.Name = value;
-    }
+    private Author? CurrentUser { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the created catalog task.
@@ -169,6 +165,8 @@ public partial class TaskCreateForm
     /// <returns>A <see cref="T:System.Threading.Tasks.Task" /> representing any asynchronous operation.</returns>
     protected override async Task OnInitializedAsync()
     {
+        CurrentUser = UserProviderService.User;
+
         AuthorsList = (await AuthorService.GetAllAsync() ?? Array.Empty<Author>()).ToList();
         PriorityList = (await PriorityService.GetAllAsync() ?? Array.Empty<Priority>()).ToList();
         InformationSystemList = (await InformationSystemService.GetAllAsync() ?? Array.Empty<InformationSystem>()).ToList();
@@ -181,9 +179,9 @@ public partial class TaskCreateForm
     /// </summary>
     private async Task CreateTask()
     {
-        //CreatedCatalogTask.TaskAuthorId = CurrentUser?.AuthorId; todo TASK AUTHOR NAME
+        CreatedCatalogTask.TaskAuthorId = CurrentUser?.Id;
         CreatedCatalogTask.TaskStatusId = DefaultStatus?.Id;
-        CreatedCatalogTask.UserCreated = CurrentUser;
+        CreatedCatalogTask.UserCreated = CurrentUser.Name;
         CreatedCatalogTask.DateCreated = DateTime.UtcNow;
 
         var responseMessage = await CatalogTaskService.CreateAsync(CreatedCatalogTask);
