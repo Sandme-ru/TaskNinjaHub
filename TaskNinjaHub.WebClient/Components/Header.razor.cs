@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
-using TaskNinjaHub.WebClient.Data.Authentication;
-using TaskNinjaHub.WebClient.Services.Bases;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Components;
+using TaskNinjaHub.WebClient.Services;
 
 namespace TaskNinjaHub.WebClient.Components;
 
@@ -17,19 +17,8 @@ public partial class Header
     /// <value><c>true</c> if [authentication visibility]; otherwise, <c>false</c>.</value>
     private bool AuthenticationVisibility { get; set; } = false;
 
-    /// <summary>
-    /// Gets or sets the user authentication service.
-    /// </summary>
-    /// <value>The user authentication service.</value>
-    [Inject]
-    private IUserAuthenticationService UserAuthenticationService { get; set; } = null!;
-
-    /// <summary>
-    /// Gets or sets the website authenticator.
-    /// </summary>
-    /// <value>The website authenticator.</value>
-    [Inject]
-    private WebsiteAuthenticator? WebsiteAuthenticator { get; set; }
+    [Inject] 
+    private IUserProviderService UserProviderService { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the navigation manager.
@@ -38,11 +27,14 @@ public partial class Header
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
+    [Inject]
+    private IHttpContextAccessor HttpContextAccessor { get; set; } = null!;
+
     /// <summary>
     /// Gets the name of the user authentication.
     /// </summary>
     /// <value>The name of the user authentication.</value>
-    private string UserAuthenticationName => $"{UserAuthenticationService.AuthorizedUser?.Username ?? "Anonymous"} ({UserAuthenticationService.AuthorizedUser?.Author?.Role?.Name ?? "Anonymous"})";
+    private string UserAuthenticationName => $"{UserProviderService.UserName ?? "Anonymous"} ({UserProviderService.UserName ?? "Anonymous"})";
 
     /// <summary>
     /// Logins the handler.
@@ -52,15 +44,6 @@ public partial class Header
         AuthenticationVisibility = true;
     }
 
-    /// <summary>
-    /// Tries the logout.
-    /// </summary>
-    private async Task TryLogout()
-    {
-        await WebsiteAuthenticator?.LogoutAsync()!;
-        StateHasChanged();
-        NavigationManager.NavigateTo("/");
-    }
 
     /// <summary>
     /// Shows the user profile.

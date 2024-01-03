@@ -105,7 +105,7 @@ public partial class TaskList
     /// </summary>
     /// <value>The user authentication service.</value>
     [Inject]
-    private IUserAuthenticationService UserAuthenticationService { get; set; } = null!;
+    private IUserProviderService UserProviderService { get; set; } = null!;
 
     #endregion
 
@@ -133,7 +133,11 @@ public partial class TaskList
     /// Gets the current user.
     /// </summary>
     /// <value>The current user.</value>
-    private User? CurrentUser => UserAuthenticationService.AuthorizedUser;
+    private string? CurrentUser
+    {
+        get => UserProviderService.UserName;
+        set => UserProviderService.UserName = value;
+    }
 
     /// <summary>
     /// Gets or sets the selected catalog task.
@@ -684,7 +688,7 @@ public partial class TaskList
             {
                 Console.WriteLine($"{EditedTask?.Id} {EditedTask?.Name} is updated.");
                 UpdatingDependentAttributes();
-                EditedTask.UserUpdated = CurrentUser?.Username;
+                EditedTask.UserUpdated = CurrentUser;
                 EditedTask.DateUpdated = DateTime.Now;
 
                 var changeRet = await CatalogTaskService.UpdateAsync(EditedTask!);

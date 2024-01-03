@@ -14,7 +14,7 @@
         <TextArea @bind-Value="@context.Description"></TextArea>
     </FormItem>
     <FormItem Label="Task author">
-        <Input @bind-Value="@CurrentUser!.Author!.Name" Disabled/>
+        <Input @bind-Value="@CurrentUser" Disabled/>
     </FormItem>
     <FormItem Label="Task executor">
         <Select Mode="default"
