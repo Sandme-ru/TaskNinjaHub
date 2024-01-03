@@ -12,7 +12,7 @@ public partial class Header
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
-    private string UserName => $"{UserProviderService.User.Name ?? "Anonymous"} ({UserProviderService.User.Name ?? "Anonymous"})";
+    private string UserName => $"{UserProviderService.User.Name ?? "Anonymous"} ({UserProviderService.User.RoleName ?? "Anonymous"})";
 
     private void ShowUserProfile()
     {

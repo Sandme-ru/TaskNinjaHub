@@ -25,10 +25,12 @@ public class UserProviderService : IUserProviderService
     {
         var authenticationState = await _stateProvider.GetAuthenticationStateAsync();
         var shortName = authenticationState.User?.FindFirst("short_name")?.Value;
+        var roleName = authenticationState.User?.FindFirst("role_name")?.Value;
 
         User = new Author
         {
-            Name = shortName ?? string.Empty
+            Name = shortName ?? string.Empty,
+            RoleName = roleName
         };
     }
 }
