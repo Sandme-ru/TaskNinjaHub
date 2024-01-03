@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 
 namespace TaskNinjaHub.WebClient.Services;
@@ -14,21 +15,31 @@ public class UserProviderService : IUserProviderService
 {
     private readonly AuthenticationStateProvider _stateProvider;
 
-    public Author User { get; set; } = null!;
+    private readonly AuthorService _authorService;
 
-    public UserProviderService(AuthenticationStateProvider stateProvider)
+    public Author User { get; set; } = new();
+
+    public UserProviderService(AuthenticationStateProvider stateProvider, AuthorService authorService)
     {
         _stateProvider = stateProvider;
+        _authorService = authorService;
     }
-    
+
     public async Task GetUser()
     {
         var authenticationState = await _stateProvider.GetAuthenticationStateAsync();
-        var shortName = authenticationState.User?.FindFirst("short_name")?.Value;
+        var shortName = authenticationState.User.FindFirst("short_name")?.Value;
 
         User = new Author
         {
-            Name = shortName ?? string.Empty
+            Name = shortName,
         };
+
+        var user = ((await _authorService.GetAllByFilterAsync(User))!).FirstOrDefault()!;
+
+        if (user != null)
+        {
+            User = user;
+        }
     }
 }
