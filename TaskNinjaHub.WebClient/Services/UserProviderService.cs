@@ -28,11 +28,14 @@ public class UserProviderService : IUserProviderService
     public async Task GetUser()
     {
         var authenticationState = await _stateProvider.GetAuthenticationStateAsync();
+
         var shortName = authenticationState.User.FindFirst("short_name")?.Value;
+        var roleName = authenticationState.User?.FindFirst("role_name")?.Value;
 
         User = new Author
         {
-            Name = shortName,
+            Name = shortName ?? string.Empty,
+            RoleName = roleName
         };
 
         var user = ((await _authorService.GetAllByFilterAsync(User))!).FirstOrDefault()!;
