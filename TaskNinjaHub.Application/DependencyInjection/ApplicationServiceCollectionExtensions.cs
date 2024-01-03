@@ -8,14 +8,10 @@ using TaskNinjaHub.Application.Entities.InformationSystems.Interfaces;
 using TaskNinjaHub.Application.Entities.InformationSystems.Repositories;
 using TaskNinjaHub.Application.Entities.Priorities.Interfaces;
 using TaskNinjaHub.Application.Entities.Priorities.Repositories;
-using TaskNinjaHub.Application.Entities.Roles.Interfaces;
-using TaskNinjaHub.Application.Entities.Roles.Repositories;
 using TaskNinjaHub.Application.Entities.Tasks.Interfaces;
 using TaskNinjaHub.Application.Entities.Tasks.Repositories;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Interfaces;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Repositories;
-using TaskNinjaHub.Application.Entities.Users.Interfaces;
-using TaskNinjaHub.Application.Entities.Users.Repositories;
 
 namespace TaskNinjaHub.Application.DependencyInjection;
 
@@ -38,10 +34,8 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<IFileRepository, FileRepository>();
         services.AddScoped<IInformationSystemRepository, InformationSystemRepository>();
         services.AddScoped<IPriorityRepository, PriorityRepository>();
-        services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<ITaskRepository, TaskRepository>();
         services.AddScoped<ITaskStatusRepository, TaskStatusRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
 
         #endregion
 

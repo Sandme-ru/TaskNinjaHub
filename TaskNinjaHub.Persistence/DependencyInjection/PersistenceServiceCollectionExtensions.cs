@@ -22,7 +22,7 @@ public static class PersistenceServiceCollectionExtensions
         bool.TryParse(configuration["Logging:Console:Enabled"], out var consoleEnabled);
 
         var connectionString = configuration["ConnectionStrings:TaskNinjaHub"];
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<TaskNinjaHubDbContext>(options =>
         {
             if (consoleEnabled)
             {
@@ -40,7 +40,7 @@ public static class PersistenceServiceCollectionExtensions
             }).UseSnakeCaseNamingConvention();
         });
 
-        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+        services.AddScoped<ITaskNinjaHubDbContext>(provider => provider.GetRequiredService<TaskNinjaHubDbContext>());
         return services;
     }
 }

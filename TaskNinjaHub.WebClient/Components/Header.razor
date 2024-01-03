@@ -3,24 +3,17 @@
     <PageHeaderSubtitle>This is a task book</PageHeaderSubtitle>
     <PageHeaderExtra>
         <Paragraph>
-            @if (UserAuthenticationName == "Anonymous (Anonymous)")
+            @if (UserName == "Anonymous (Anonymous)")
             {
-                @($"Hello, {UserAuthenticationName}!")
+                @($"Hello, {UserName}!")
             }
             else
             {
                 <Button OnClick="ShowUserProfile" Type="@ButtonType.Link">
-                    @($"Hello, {UserAuthenticationName}!")
+                    @($"Hello, {UserName}!")
                 </Button>
             }
         </Paragraph>
-        @if (UserAuthenticationName == "Anonymous (Anonymous)")
-        {
-            <Button Type="@ButtonType.Primary" OnClick="LoginHandler">LOGIN</Button>
-        }
-        else
-        {
-            <a href="@($"LogoutPage")">Выход</a>
-        }
+        <a href="@($"LogoutPage")">LOGOUT</a>
     </PageHeaderExtra>
 </PageHeader>

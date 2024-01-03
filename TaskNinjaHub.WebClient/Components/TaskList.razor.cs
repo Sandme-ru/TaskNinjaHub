@@ -6,9 +6,7 @@ using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
-using TaskNinjaHub.Application.Entities.Users.Domain;
 using TaskNinjaHub.WebClient.Services;
-using TaskNinjaHub.WebClient.Services.Bases;
 using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 using TaskStatus = TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskStatus;
 
@@ -57,13 +55,6 @@ public partial class TaskList
     /// <value>The task status service.</value>
     [Inject]
     private TaskStatusService TaskStatusService { get; set; } = null!;
-
-    /// <summary>
-    /// Gets or sets the role service.
-    /// </summary>
-    /// <value>The role service.</value>
-    [Inject]
-    private RoleService RoleService { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the priority service.
@@ -135,8 +126,8 @@ public partial class TaskList
     /// <value>The current user.</value>
     private string? CurrentUser
     {
-        get => UserProviderService.UserName;
-        set => UserProviderService.UserName = value;
+        get => UserProviderService.User.Name;
+        set => UserProviderService.User.Name = value;
     }
 
     /// <summary>

@@ -2,17 +2,15 @@
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
-using TaskNinjaHub.Application.Entities.Roles.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
-using TaskNinjaHub.Application.Entities.Users.Domain;
 using TaskStatus = TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskStatus;
 
 namespace TaskNinjaHub.Application.Interfaces;
 
 /// <summary>
-/// Interface IApplicationDbContext
+/// Interface ITaskNinjaHubDbContext
 /// </summary>
-public interface IApplicationDbContext
+public interface ITaskNinjaHubDbContext
 {
     /// <summary>
     /// Gets or sets the authors.
@@ -33,12 +31,6 @@ public interface IApplicationDbContext
     DbSet<Priority> Priorities { get; set; }
 
     /// <summary>
-    /// Gets or sets the roles.
-    /// </summary>
-    /// <value>The roles.</value>
-    DbSet<Role> Roles { get; set; }
-
-    /// <summary>
     /// Gets or sets the tasks.
     /// </summary>
     /// <value>The tasks.</value>
@@ -49,10 +41,4 @@ public interface IApplicationDbContext
     /// </summary>
     /// <value>The task statuses.</value>
     DbSet<TaskStatus> TaskStatuses { get; set; }
-
-    /// <summary>
-    /// Gets or sets the users.
-    /// </summary>
-    /// <value>The users.</value>
-    DbSet<User> Users { get; set; }
 }

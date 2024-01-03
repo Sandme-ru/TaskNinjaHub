@@ -37,8 +37,6 @@ public class Program
         builder.Services.AddScoped<AuthorService>();
         builder.Services.AddScoped<InformationSystemService>();
         builder.Services.AddScoped<PriorityService>();
-        builder.Services.AddScoped<UserService>();
-        builder.Services.AddScoped<RoleService>();
         builder.Services.AddScoped<CatalogTaskService>();
         builder.Services.AddScoped<FileService>();
         builder.Services.AddScoped<TaskStatusService>();

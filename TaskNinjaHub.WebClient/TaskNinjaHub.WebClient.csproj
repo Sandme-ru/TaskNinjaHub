@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Components\Authentication\**" />
+    <Content Remove="Components\Authentication\**" />
+    <EmbeddedResource Remove="Components\Authentication\**" />
+    <None Remove="Components\Authentication\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AntDesign" Version="0.16.1" />
     <PackageReference Include="DiffMatchPatch" Version="2.0.0" />
     <PackageReference Include="Duende.AccessTokenManagement.OpenIdConnect" Version="2.0.3" />
@@ -24,10 +31,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TaskNinjaHub.Application\TaskNinjaHub.Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Components\Authentication\" />
   </ItemGroup>
 
 </Project>
