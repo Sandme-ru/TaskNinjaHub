@@ -1,6 +1,5 @@
-@using TaskNinjaHub.Application.Entities.Authors.Domain
-@using TaskNinjaHub.Application.Entities.Priorities.Domain
 <br/>
+
 <Form Model="@CreatedCatalogTask"
       LabelColSpan="8"
       WrapperColSpan="16"
@@ -14,7 +13,7 @@
         <TextArea @bind-Value="@context.Description"></TextArea>
     </FormItem>
     <FormItem Label="Task author">
-        <Input @bind-Value="@CurrentUser" Disabled/>
+        <Input @bind-Value="@CurrentUser.Name" Disabled/>
     </FormItem>
     <FormItem Label="Task executor">
         <Select Mode="default"
@@ -47,7 +46,7 @@
         @*TODO issues with localhost*@
         <Upload
             Name="file"
-            Action="https://localhost:7033/api/file/upload"
+            Action="https://localhost:7179/api/file/upload"
             ListType="picture-card"
             BeforeUpload="BeforeUpload"
             OnChange="HandleChange"
@@ -63,7 +62,7 @@
             Visible="IsPreviewVisible"
             Title="@FilePreviewTitle"
             OnCancel="() => IsPreviewVisible = false">
-            <img style="width: 100%" src="@FilePreviewUrl"/>
+            <img style="width: 100%" src="@FilePreviewUrl" alt=""/>
         </Modal>
     </FormItem>
     <FormItem WrapperColOffset="8" WrapperColSpan="16">

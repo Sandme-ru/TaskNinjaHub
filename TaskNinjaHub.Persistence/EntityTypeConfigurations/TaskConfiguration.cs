@@ -4,17 +4,8 @@ using TaskNinjaHub.Application.Entities.Tasks.Domain;
 
 namespace TaskNinjaHub.Persistence.EntityTypeConfigurations;
 
-/// <summary>
-/// Class TaskConfiguration.
-/// Implements the <see cref="Task" />
-/// </summary>
-/// <seealso cref="Task" />
 public class TaskConfiguration : IEntityTypeConfiguration<CatalogTask>
 {
-    /// <summary>
-    /// Configures the entity of type <typeparamref name="TEntity" />.
-    /// </summary>
-    /// <param name="builder">The builder to be used to configure the entity type.</param>
     public void Configure(EntityTypeBuilder<CatalogTask> builder)
     {
         builder.HasKey(note => note.Id);

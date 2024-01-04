@@ -4,16 +4,8 @@ using TaskStatus = TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskSta
 
 namespace TaskNinjaHub.Persistence.DataSeeders;
 
-/// <summary>
-/// Class DataSeederTaskStatus.
-/// </summary>
 public static class DataSeederTaskStatus
 {
-    /// <summary>
-    /// Seeds the data.
-    /// </summary>
-    /// <param name="modelBuilder">The model builder.</param>
-    /// <returns>ModelBuilder.</returns>
     public static ModelBuilder SeedData(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TaskStatus>().HasData(new Priority { Id = 1, Name = "Awaiting execution" });
