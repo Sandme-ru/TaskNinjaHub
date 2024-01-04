@@ -1,0 +1,35 @@
+version: "3.4"
+services:
+  db-api:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: TaskNinjaHub
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123qweASD!@#
+    ports:
+      - "5434:5432" 
+    networks:
+      - api-server-dev
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  web-api:
+    container_name: WebApi
+    build:
+      context: ../
+      dockerfile: ./TaskNinjaHub.WebApi/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - api-server-dev
+    ports:
+      - "8082:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - db-api
+volumes:
+  postgres-data:
+networks:
+  api-server-dev:
+    driver: bridge
