@@ -46,6 +46,7 @@
     </SpaceItem>
 </Space>
 <Divider/>
+
 @if (CatalogTasks!.Count != 0)
 {
     <Divider/>
@@ -186,15 +187,15 @@ else
                 <Select Mode="default"
                         DataSource="@TaskStatusList"
                         @bind-Value="@context.TaskStatusId"
-                        LabelName="@nameof(Application.Entities.TaskStatuses.Domain.TaskStatus.Name)"
-                        ValueName="@nameof(Application.Entities.TaskStatuses.Domain.TaskStatus.Id)">
+                        LabelName="@nameof(TaskStatus.Name)"
+                        ValueName="@nameof(TaskStatus.Id)">
                 </Select>
             </FormItem>
             <FormItem Label="Task files">
                 @*TODO issues with localhost*@
                 <Upload
                     Name="file"
-                    Action="https://localhost:7033/api/file/upload"
+                    Action="https://localhost:7179/api/file/upload"
                     @bind-FileList="DefaultFileList"
                     Class="avatar-uploader"
                     ListType="picture-card"
@@ -242,8 +243,8 @@ else
     Visible="IsPreviewVisible"
     Title="@FilePreviewTitle"
     OnCancel="() => IsPreviewVisible = false">
-    <img style="width: 100%" src="@FilePreviewUrl"/>
-</Modal>
+    <img style="width: 100%" src="@FilePreviewUrl" alt=""/>
+</Modal> 
 
 @code {
 

@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using TaskNinjaHub.Application.BaseUsers;
+﻿using TaskNinjaHub.Application.BaseUsers;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;

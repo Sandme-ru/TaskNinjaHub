@@ -16,5 +16,8 @@ public class LogoutModel : PageModel
         await HttpContext.SignOutAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme, AuthProps());
     }
 
-    private AuthenticationProperties AuthProps() => new AuthenticationProperties { RedirectUri = Url.Content("~/") };
+    private AuthenticationProperties AuthProps() => new()
+    {
+        RedirectUri = Url.Content("~/")
+    };
 }

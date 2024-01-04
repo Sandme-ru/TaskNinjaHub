@@ -15,17 +15,8 @@ using TaskNinjaHub.Application.Entities.TaskStatuses.Repositories;
 
 namespace TaskNinjaHub.Application.DependencyInjection;
 
-/// <summary>
-/// Class ApplicationServiceCollectionExtensions.
-/// </summary>
 public static class ApplicationServiceCollectionExtensions
 {
-    /// <summary>
-    /// Adds the persistence.
-    /// </summary>
-    /// <param name="services">The services.</param>
-    /// <param name="configuration">The configuration.</param>
-    /// <returns>IServiceCollection.</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
         #region REPOSITORY

@@ -6,33 +6,15 @@ using TaskNinjaHub.Application.Utilities.OperationResults;
 
 namespace TaskNinjaHub.Application.Entities.Bases.Repositories;
 
-/// <summary>
-/// Class BaseRepository.
-/// Implements the <see cref="IBaseRepository{T}" />
-/// </summary>
-/// <typeparam name="T"></typeparam>
-/// <seealso cref="IBaseRepository{T}" />
 public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IHaveId
 {
-    /// <summary>
-    /// The context
-    /// </summary>
     protected readonly DbContext? Context;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BaseRepository{T}"/> class.
-    /// </summary>
-    /// <param name="context">The context.</param>
     protected BaseRepository(DbContext? context)
     {
         Context = context;
     }
 
-    /// <summary>
-    /// Gets the by identifier.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    /// <returns>Task&lt;T&gt;.</returns>
     public async Task<T?> GetByIdAsync(int id)
     {
         if (Context != null)
@@ -40,20 +22,11 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
         return null;
     }
 
-    /// <summary>
-    /// Gets all.
-    /// </summary>
-    /// <returns>Task&lt;IQueryable&lt;T&gt;&gt;.</returns>
     public async Task<IEnumerable<T>?> GetAllAsync()
     {
         return await Context?.Set<T>().ToListAsync()!;
     }
 
-    /// <summary>
-    /// Gets all by filter.
-    /// </summary>
-    /// <param name="filter">The filter.</param>
-    /// <returns>Task&lt;IQueryable&lt;T&gt;&gt;.</returns>
     public async Task<IEnumerable<T>?> GetAllByFilterAsync(IDictionary<string, string?> filter)
     {
         Expression<Func<T, bool>> predicate = _ => true;
@@ -88,21 +61,11 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
         return Context?.Set<T>().ToList().Where(predicate.Compile());
     }
 
-    /// <summary>
-    /// Finds the specified expression.
-    /// </summary>
-    /// <param name="expression">The expression.</param>
-    /// <returns>Task&lt;IEnumerable&lt;T&gt;&gt;.</returns>
     public Task<IEnumerable<T>?> FindAsync(Expression<Func<T, bool>> expression)
     {
         return Task.FromResult<IEnumerable<T>?>(Context?.Set<T>().Where(expression));
     }
 
-    /// <summary>
-    /// Adds the specified entity.
-    /// </summary>
-    /// <param name="entity">The entity.</param>
-    /// <returns>System.Threading.Tasks.Task.</returns>
     public async Task<OperationResult> AddAsync(T entity)
     {
         try
@@ -117,11 +80,6 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
         }
     }
 
-    /// <summary>
-    /// Updates the specified entity.
-    /// </summary>
-    /// <param name="entity">The entity.</param>
-    /// <returns>System.Threading.Tasks.Task.</returns>
     public async Task<OperationResult> UpdateAsync(T entity)
     {
         try
@@ -136,11 +94,6 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
         }
     }
 
-    /// <summary>
-    /// Removes the specified entity.
-    /// </summary>
-    /// <param name="entity">The entity.</param>
-    /// <returns>System.Threading.Tasks.Task.</returns>
     public async Task<OperationResult> RemoveAsync(T entity)
     {
         try
