@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using OpenIddict.Server.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
 using TaskNinjaHub.WebClient.Data;
+using TaskNinjaHub.WebClient.DependencyInjection;
 using TaskNinjaHub.WebClient.Services;
 
 namespace TaskNinjaHub.WebClient;
@@ -34,12 +35,9 @@ public class Program
             BaseAddress = new Uri("https://localhost:7179")
         });
 
-        builder.Services.AddScoped<AuthorService>();
-        builder.Services.AddScoped<InformationSystemService>();
-        builder.Services.AddScoped<PriorityService>();
-        builder.Services.AddScoped<CatalogTaskService>();
-        builder.Services.AddScoped<FileService>();
-        builder.Services.AddScoped<TaskStatusService>();
+        builder.Services.AddWebClientServiceCollection(builder.Configuration);
+
+        #region AUTHENTICATION
 
         builder.Services.AddTransient<CookieEvents>();
         builder.Services.AddTransient<OidcEvents>();
@@ -90,6 +88,8 @@ public class Program
         builder.Services.AddAuthorization();
 
         builder.Services.AddOpenIdConnectAccessTokenManagement();
+
+        #endregion
 
         var app = builder.Build();
 
