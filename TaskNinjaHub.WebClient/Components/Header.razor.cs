@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Components;
-using TaskNinjaHub.WebClient.Services;
+﻿using Microsoft.AspNetCore.Components;
+using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Components;
 
@@ -12,7 +11,7 @@ public partial class Header
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
-    private string UserName => $"{UserProviderService.User.Name ?? "Anonymous"} ({UserProviderService.User.RoleName ?? "Anonymous"})";
+    private string UserName => $"{UserProviderService.User.ShortName ?? "Anonymous"} ({UserProviderService.User.RoleName ?? "Anonymous"})";
 
     private void ShowUserProfile()
     {

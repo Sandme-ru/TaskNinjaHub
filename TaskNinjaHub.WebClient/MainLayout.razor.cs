@@ -1,6 +1,7 @@
 ﻿using AntDesign;
 using Microsoft.AspNetCore.Components;
 using TaskNinjaHub.WebClient.Services;
+using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient;
 
