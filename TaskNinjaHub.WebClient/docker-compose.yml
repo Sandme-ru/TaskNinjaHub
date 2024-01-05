@@ -1,0 +1,13 @@
+version: '3.4'
+services:
+  web:
+    container_name: web-client
+    build: 
+      context: ../
+      dockerfile: ./TaskNinjaHub.WebClient/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "180:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
