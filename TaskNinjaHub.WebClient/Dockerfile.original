@@ -6,18 +6,15 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["TaskNinjaHub.WebClient/TaskNinjaHub.WebClient.csproj", "TaskNinjaHub.WebClient/"]
-COPY ["TaskNinjaHub.Application/TaskNinjaHub.Application.csproj", "TaskNinjaHub.Application/"]
-RUN dotnet restore "./TaskNinjaHub.WebClient/./TaskNinjaHub.WebClient.csproj"
+RUN dotnet restore "TaskNinjaHub.WebClient/TaskNinjaHub.WebClient.csproj"
 COPY . .
 WORKDIR "/src/TaskNinjaHub.WebClient"
-RUN dotnet build "./TaskNinjaHub.WebClient.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "TaskNinjaHub.WebClient.csproj" -c Release -o /app/build
 
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./TaskNinjaHub.WebClient.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "TaskNinjaHub.WebClient.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
