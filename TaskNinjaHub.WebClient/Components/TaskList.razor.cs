@@ -121,20 +121,36 @@ public partial class TaskList
 
     private int? SelectedTaskId { get; set; }
 
+    private int PageSize { get; set; } = 10;
+
+    private int CurrentPage { get; set; } = 1;
+
+    private int CatalogTasksCount { get; set; }
+
     #endregion
 
     protected override async Task OnInitializedAsync()
     {
         //FillingTestCards();
 
+        CatalogTasksCount = await CatalogTaskService.GetAllCountAsync();
+
         AuthorsList = (await AuthorService.GetAllAsync() ?? Array.Empty<Author>()).ToList();
         PriorityList = (await PriorityService.GetAllAsync() ?? Array.Empty<Priority>()).ToList();
-        InformationSystemList =
-            (await InformationSystemService.GetAllAsync() ?? Array.Empty<InformationSystem>()).ToList();
+        InformationSystemList = (await InformationSystemService.GetAllAsync() ?? Array.Empty<InformationSystem>()).ToList();
         TaskStatusList = (await TaskStatusService.GetAllAsync() ?? Array.Empty<TaskStatus>()).ToList();
-        CatalogTasks = (await CatalogTaskService.GetAllAsync() ?? Array.Empty<CatalogTask>()).ToList();
+        CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(CurrentPage, PageSize) ?? Array.Empty<CatalogTask>()).ToList();
 
         StateHasChanged();
+    }
+
+    private List<CatalogTask> DisplayedTasks
+    {
+        get
+        {
+            var startIndex = (CurrentPage - 1) * PageSize;
+            return CatalogTasks!.Skip(startIndex).Take(PageSize).ToList();
+        }
     }
 
     private async Task DeleteTaskHandler()
@@ -655,5 +671,15 @@ public partial class TaskList
         dmp.diff_cleanupSemantic(diff);
         var result = dmp.diff_prettyHtml(diff);
         return $"<p>Description: {result}</p>";
+    }
+
+    private async Task HandlePageChange(PaginationEventArgs arg)
+    {
+        CurrentPage = arg.Page;
+        PageSize = arg.PageSize;
+
+        CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(CurrentPage, PageSize) ?? Array.Empty<CatalogTask>()).ToList();
+
+        StateHasChanged();
     }
 }

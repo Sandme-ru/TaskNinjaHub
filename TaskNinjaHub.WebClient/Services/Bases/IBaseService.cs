@@ -2,15 +2,19 @@
 
 public interface IBaseService<TEntity> where TEntity : class
 {
-    public Task<IEnumerable<TEntity>?> GetAllAsync();
+    Task<IEnumerable<TEntity>?> GetAllAsync();
 
-    public Task<IEnumerable<TEntity>?> GetAllByFilterAsync(TEntity filterModel);
+    Task<int> GetAllCountAsync();
 
-    public Task<TEntity?> GetIdAsync(int id);
+    Task<IEnumerable<TEntity>?> GetAllByPageAsync(int pageNumber = 1, int pageSize = 10);
 
-    public Task<HttpResponseMessage> DeleteAsync(int id);
+    Task<IEnumerable<TEntity>?> GetAllByFilterAsync(TEntity filterModel);
 
-    public Task<HttpResponseMessage> CreateAsync(TEntity entity);
+    Task<TEntity?> GetIdAsync(int id);
 
-    public Task<HttpResponseMessage> UpdateAsync(TEntity entity);
+    Task<HttpResponseMessage> DeleteAsync(int id);
+
+    Task<HttpResponseMessage> CreateAsync(TEntity entity);
+
+    Task<HttpResponseMessage> UpdateAsync(TEntity entity);
 }

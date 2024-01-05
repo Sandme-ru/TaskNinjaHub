@@ -87,7 +87,7 @@ public partial class TaskCreateForm
     {
         CreatedCatalogTask.TaskAuthorId = CurrentUser?.Id;
         CreatedCatalogTask.TaskStatusId = DefaultStatus?.Id;
-        CreatedCatalogTask.UserCreated = CurrentUser.Name;
+        CreatedCatalogTask.UserCreated = CurrentUser?.Name;
         CreatedCatalogTask.DateCreated = DateTime.UtcNow;
 
         var responseMessage = await CatalogTaskService.CreateAsync(CreatedCatalogTask);

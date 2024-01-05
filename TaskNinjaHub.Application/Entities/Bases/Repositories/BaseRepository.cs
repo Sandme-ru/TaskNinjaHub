@@ -27,6 +27,24 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
         return await Context?.Set<T>().ToListAsync()!;
     }
 
+    public async Task<IEnumerable<T>?> GetAllByPageAsync(int pageNumber, int pageSize)
+    {
+        if (pageNumber < 1 || pageSize < 1)
+            return null;
+
+        var queryable = Context?.Set<T>().AsQueryable();
+
+        if (queryable == null)
+            return null;
+
+        var paginatedList = await queryable
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return paginatedList;
+    }
+    
     public async Task<IEnumerable<T>?> GetAllByFilterAsync(IDictionary<string, string?> filter)
     {
         Expression<Func<T, bool>> predicate = _ => true;

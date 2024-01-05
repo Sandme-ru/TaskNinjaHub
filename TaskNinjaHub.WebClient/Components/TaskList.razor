@@ -50,7 +50,7 @@
 @if (CatalogTasks!.Count != 0)
 {
     <Divider/>
-    <AntList Grid="_grid" DataSource="@CatalogTasks">
+    <AntList Grid="_grid" DataSource="@DisplayedTasks">
         <ListItem>
             @if (context.OriginalTaskId == null)
             {
@@ -132,6 +132,13 @@
             }
         </ListItem>
     </AntList>
+
+    <Pagination
+        Total="@CatalogTasksCount"
+        PageSize="@PageSize"
+        Current="@CurrentPage"
+        ShowSizeChanger="true"
+        OnChange="HandlePageChange" />
 }
 else
 {
@@ -249,5 +256,4 @@ else
 @code {
 
     private RenderFragment _icon = @<Icon Type="exclamation-circle" Theme="outline"></Icon>;
-
 }

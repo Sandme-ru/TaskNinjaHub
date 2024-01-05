@@ -9,7 +9,9 @@ public interface IBaseRepository<T> where T : class, IHaveId
     Task<T?> GetByIdAsync(int id);
 
     Task<IEnumerable<T>?> GetAllAsync();
-    
+
+    Task<IEnumerable<T>?> GetAllByPageAsync(int pageNumber, int pageSize);
+        
     Task<IEnumerable<T>?> GetAllByFilterAsync(IDictionary<string, string?> filter);
 
     Task<IEnumerable<T>?> FindAsync(Expression<Func<T, bool>> expression);
