@@ -33,7 +33,17 @@ public class UserProviderService : IUserProviderService
             ShortName = shortName
         };
 
-        var user = ((await _authorService.GetAllByFilterAsync(User))!).FirstOrDefault()!;
+        Author? user = null;
+
+        try
+        {
+            user = (await _authorService.GetAllByFilterAsync(User))!
+                .FirstOrDefault()!;
+        }
+        catch
+        {
+            // ignored
+        }
 
         if (user != null)
         {
