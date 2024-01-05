@@ -62,7 +62,7 @@ public abstract class BaseService<TEntity> : IBaseService<TEntity> where TEntity
 
     public virtual async Task<HttpResponseMessage> UpdateAsync(TEntity entity)
     {
-        var result = await _httpClient?.PutAsJsonAsync($"api/{BasePath}/Update", entity)!;
+        var result = await _httpClient?.PutAsJsonAsync($"api/{BasePath}/UpdateAsync", entity)!;
         return result;
     }
 }

@@ -15,6 +15,8 @@ public class Program
     /// <param name="args">The arguments.</param>
     public static void Main(string[] args)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddApplication(builder.Configuration);
