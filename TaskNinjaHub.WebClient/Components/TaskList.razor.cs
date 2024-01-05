@@ -144,15 +144,6 @@ public partial class TaskList
         StateHasChanged();
     }
 
-    private List<CatalogTask> DisplayedTasks
-    {
-        get
-        {
-            var startIndex = (CurrentPage - 1) * PageSize;
-            return CatalogTasks!.Skip(startIndex).Take(PageSize).ToList();
-        }
-    }
-
     private async Task DeleteTaskHandler()
     {
         if (DeletedTask != null)

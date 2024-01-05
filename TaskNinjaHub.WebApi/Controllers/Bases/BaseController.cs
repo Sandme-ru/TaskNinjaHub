@@ -28,8 +28,7 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     public async Task<int> GetAllCount()
     {
         var allCount = (await _repository.GetAllAsync() ?? Array.Empty<TEntity>())
-            .ToList()
-            .Count();
+            .ToList().Count;
         return allCount;
     }
 

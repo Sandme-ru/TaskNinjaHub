@@ -50,7 +50,7 @@
 @if (CatalogTasks!.Count != 0)
 {
     <Divider/>
-    <AntList Grid="_grid" DataSource="@DisplayedTasks">
+    <AntList Grid="_grid" DataSource="@CatalogTasks">
         <ListItem>
             @if (context.OriginalTaskId == null)
             {
