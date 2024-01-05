@@ -1,20 +1,15 @@
 version: '3.4'
 services:
   web:
-    container_name: auth-server
+    container_name: web-client
     build: 
       context: ../
-      dockerfile: ./Gts.AuthorizationServer/Dockerfile
+      dockerfile: ./TaskNinjaHub.WebClient/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     networks:
-      - auth-server-dev
+      - web-client-dev
     ports:
-      - "80:80"
+      - "180:80"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      - db
-networks:
-  auth-server-dev:
-    driver: bridge
