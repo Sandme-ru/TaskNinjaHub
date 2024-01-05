@@ -19,6 +19,21 @@ public abstract class BaseService<TEntity> : IBaseService<TEntity> where TEntity
         var result = await _httpClient?.GetFromJsonAsync<IEnumerable<TEntity>>($"api/{BasePath}")!;
         return result;
     }
+
+    public virtual async Task<int> GetAllCountAsync()
+    {
+        var result = await _httpClient?.GetFromJsonAsync<int>($"api/{BasePath}/GetAllCount")!;
+        return result;
+    }
+
+    public virtual async Task<IEnumerable<TEntity>?> GetAllByPageAsync(int pageNumber = 1, int pageSize = 10)
+    {
+        if (pageNumber < 1 || pageSize < 1)
+            return null;
+
+        var result = await _httpClient?.GetFromJsonAsync<IEnumerable<TEntity>>($"api/{BasePath}/GetAllByPage?pageNumber={pageNumber}&pageSize={pageSize}")!;
+        return result;
+    }
     
     public virtual async Task<IEnumerable<TEntity>?> GetAllByFilterAsync(TEntity filterModel)
     {

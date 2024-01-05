@@ -23,6 +23,22 @@ public class BaseController<TEntity, TRepository> : ControllerBase
         var entities = await _repository.GetAllAsync();
         return entities ?? null;
     }
+    
+    [HttpGet("GetAllCount")]
+    public async Task<int> GetAllCount()
+    {
+        var allCount = (await _repository.GetAllAsync() ?? Array.Empty<TEntity>())
+            .ToList()
+            .Count();
+        return allCount;
+    }
+
+    [HttpGet("GetAllByPage")]
+    public async Task<IEnumerable<TEntity>?> GetAllByPage([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    {
+        var entities = await _repository.GetAllByPageAsync(pageNumber, pageSize);
+        return entities ?? null;
+    }
 
     [HttpGet("filter")]
     public async Task<IEnumerable<TEntity>?> GetAllByFilter([FromQuery] IDictionary<string, string?> query)
