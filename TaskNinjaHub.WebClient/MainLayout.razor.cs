@@ -24,10 +24,7 @@ public partial class MainLayout
         {
             var response = await AuthorService.CreateAsync(UserProviderService.User);
 
-            if (response.IsSuccessStatusCode)
-                await MessageService.Success("Add new author");
-            else
-                Console.WriteLine(response.ReasonPhrase);
+            Console.WriteLine(response.IsSuccessStatusCode ? "Add new author" : response.ReasonPhrase);
         }
     }
 }

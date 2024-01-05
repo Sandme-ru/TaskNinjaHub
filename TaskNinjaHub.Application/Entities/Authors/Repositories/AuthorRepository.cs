@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.Authors.Interfaces;
 using TaskNinjaHub.Application.Entities.Bases.Repositories;
@@ -8,7 +7,7 @@ using TaskNinjaHub.Application.Utilities.OperationResults;
 
 namespace TaskNinjaHub.Application.Entities.Authors.Repositories;
 
-public class AuthorRepository: BaseRepository<Author>, IAuthorRepository
+public class AuthorRepository : BaseRepository<Author>, IAuthorRepository
 {
     private readonly ITaskNinjaHubDbContext _context;
 
@@ -21,8 +20,19 @@ public class AuthorRepository: BaseRepository<Author>, IAuthorRepository
     {
         try
         {
-            if(_context.Authors.Any(a => a.Name == author.Name))
-                return OperationResult.FailedResult($"Failed to add author");
+            var updatedAuthor = await _context.Authors.FirstOrDefaultAsync(a => a.Name == author.Name);
+
+            if (updatedAuthor != null)
+            {
+                updatedAuthor.Name = author.Name;
+                updatedAuthor.RoleName = author.RoleName;
+                updatedAuthor.ShortName = author.ShortName;
+
+                _context.Authors.Update(updatedAuthor);
+                await ((DbContext)_context).SaveChangesAsync();
+
+                return OperationResult.SuccessResult();
+            }
 
             _context.Authors.Update(author);
             await ((DbContext)_context).SaveChangesAsync();
