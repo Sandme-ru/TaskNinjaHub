@@ -11,6 +11,8 @@ public class Author: BaseUserCU, IHaveId, IHaveName
 
     public string? Name { get; set; }
 
+    public string? ShortName { get; set; }
+
     public string? RoleName { get; set; }
 
     [JsonIgnore]

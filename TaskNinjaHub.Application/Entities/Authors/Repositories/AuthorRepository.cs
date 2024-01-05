@@ -24,7 +24,7 @@ public class AuthorRepository: BaseRepository<Author>, IAuthorRepository
             if(_context.Authors.Any(a => a.Name == author.Name))
                 return OperationResult.FailedResult($"Failed to add author");
 
-            await _context.Authors.AddAsync(author);
+            _context.Authors.Update(author);
             await ((DbContext)_context).SaveChangesAsync();
 
             return OperationResult.SuccessResult();
