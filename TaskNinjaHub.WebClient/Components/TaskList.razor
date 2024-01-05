@@ -11,23 +11,23 @@
                Type="number"
                Placeholder="Enter task number"
                AllowClear
-                @bind-Value="@SelectedTaskId"
-                OnChange="new EventCallback<int?>(this, async () => await FilterSelectionChanged())" />
-         </SpaceItem>
-         <SpaceItem Style="width: 100%">
-         <Select DataSource="@AuthorsList"
-                 LabelName="@nameof(Author.Name)"
-                 Placeholder="Choose author"
+               @bind-Value="@SelectedTaskId"
+               OnChange="new EventCallback<int?>(this, async () => await FilterSelectionChanged())"/>
+    </SpaceItem>
+    <SpaceItem Style="width: 100%">
+        <Select DataSource="@AuthorsList"
+                LabelName="@nameof(Author.ShortName)"
+                Placeholder="Choose author"
                 AllowClear
                 EnableSearch
-                 @bind-Value="@SelectedAuthor"
-                 OnSelectedItemChanged="new EventCallback<Author>(this, async () => await FilterSelectionChanged())">
-         </Select>
-         </SpaceItem>
-         <SpaceItem Style="width: 100%">
-         <Select DataSource="@AuthorsList"
-                 LabelName="@nameof(Author.Name)"
-                 Placeholder="Choose executor"
+                @bind-Value="@SelectedAuthor"
+                OnSelectedItemChanged="new EventCallback<Author>(this, async () => await FilterSelectionChanged())">
+        </Select>
+    </SpaceItem>
+    <SpaceItem Style="width: 100%">
+        <Select DataSource="@AuthorsList"
+                LabelName="@nameof(Author.ShortName)"
+                Placeholder="Choose executor"
                 AllowClear
                 EnableSearch
                  @bind-Value="@SelectedExecutor"
