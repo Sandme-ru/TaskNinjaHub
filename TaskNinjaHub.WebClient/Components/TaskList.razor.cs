@@ -366,15 +366,17 @@ public partial class TaskList
                     {
                         body += $"<p>Name: {item.Name}</p>";
                     }
+
                     if (prev.Description != item.Description)
                     {
                         header += "<p>Description<p>";
-                        body += TextCompare(item.Description, prev.Description);
+                        body += TextCompare(item.Description!, prev.Description!);
                     }
                     else
                     {
-                        body += TextCompare(item.Description, prev.Description);
+                        body += TextCompare(item.Description!, prev.Description!);
                     }
+
                     if (prev.InformationSystemId != item.InformationSystemId)
                     {
                         header += "<p>Information system<p>";
@@ -384,6 +386,7 @@ public partial class TaskList
                     {
                         body += $"<p>Information system: {item.InformationSystem?.Name}</p>";
                     }
+
                     if (prev.TaskExecutorId != item.TaskExecutorId)
                     {
                         header += "<p>Task executor<p>";
@@ -393,6 +396,7 @@ public partial class TaskList
                     {
                         body += $"<p>Task executor: {item.TaskExecutor?.Name}</p>";
                     }
+
                     if (prev.PriorityId != item.PriorityId)
                     {
                         header += "<p>Priority</p>";
@@ -402,6 +406,7 @@ public partial class TaskList
                     {
                         body += $"<p>Priority: {item.Priority?.Name}</p>";
                     }
+
                     if (prev.TaskStatusId != item.TaskStatusId)
                     {
                         header += "<p>Task Status</p>";
@@ -411,6 +416,7 @@ public partial class TaskList
                     {
                         body += $"<p>Task status: {item.TaskStatus?.Name}</p>";
                     }
+
                     var result = header + "</b>" + body;
                     HtmlMarkupForTask.Add(result);
 
@@ -419,6 +425,7 @@ public partial class TaskList
 
             }
         }
+
         _visibleDrawer = true;
         StateHasChanged();
     }
@@ -595,7 +602,7 @@ public partial class TaskList
 
     private async Task FilterSelectionChanged()
     {
-        var filter = new CatalogTask()
+        var filter = new CatalogTask
         {
             Id = SelectedTaskId ?? 0,
             InformationSystemId = SelectedInformationSystem?.Id,
@@ -603,8 +610,12 @@ public partial class TaskList
             TaskExecutorId = SelectedExecutor?.Id
         };
 
-        var result = (await CatalogTaskService.GetAllByFilterAsync(filter))!.Where(t => t.OriginalTaskId == null).ToList();
+        var result = (await CatalogTaskService.GetAllByFilterByPageAsync(filter, CurrentPage, PageSize))!
+            .Where(t => t.OriginalTaskId == null).ToList();
+        
         CatalogTasks = new List<CatalogTask>(result);
+
+        StateHasChanged();
     }
 
     private bool BeforeUpload(UploadFileItem file)
@@ -635,6 +646,7 @@ public partial class TaskList
             NavigationManager.NavigateTo(file.ObjectURL,true);
             return;
         }
+
         IsPreviewVisible = true;
         FilePreviewTitle = file.FileName;
         FilePreviewUrl = file.ObjectURL;
@@ -661,6 +673,7 @@ public partial class TaskList
         List<Diff> diff = dmp.diff_main(oldValue, newValue);
         dmp.diff_cleanupSemantic(diff);
         var result = dmp.diff_prettyHtml(diff);
+
         return $"<p>Description: {result}</p>";
     }
 

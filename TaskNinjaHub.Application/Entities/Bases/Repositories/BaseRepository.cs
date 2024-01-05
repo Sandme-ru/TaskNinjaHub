@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Linq;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using TaskNinjaHub.Application.Entities.Bases.Interfaces;
 using TaskNinjaHub.Application.Interfaces.Haves;
@@ -76,7 +77,51 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
             }
         }
 
-        return Context?.Set<T>().ToList().Where(predicate.Compile());
+        var filteredList = Context?.Set<T>().ToList().Where(predicate.Compile());
+
+        return filteredList;
+    }
+
+    public async Task<IEnumerable<T>?> GetAllByFilterByPageAsync(IDictionary<string, string?> filter, int pageNumber, int pageSize)
+    {
+        Expression<Func<T, bool>> predicate = _ => true;
+
+        foreach (var property in filter)
+        {
+            switch (property.Value)
+            {
+                case null:
+                    continue;
+                case "0":
+                    continue;
+                case var propertyValueString when string.IsNullOrEmpty(propertyValueString):
+                    continue;
+                default:
+                {
+                    Expression<Func<T, bool>> filterExpression =
+                        entity => string.Equals(entity
+                            .GetType()
+                            .GetProperties()
+                            .First(p => Equals(p.Name.Trim(), property.Key.Trim()))
+                            .GetValue(entity)!
+                            .ToString(), property.Value, StringComparison.Ordinal);
+                    predicate = Expression.Lambda<Func<T, bool>>(
+                        Expression.AndAlso(predicate.Body,
+                            Expression.Invoke(filterExpression, predicate.Parameters)), predicate.Parameters[0]);
+                    break;
+                }
+            }
+        }
+
+        var queryable = Context?.Set<T>()
+            .ToList()
+            .Where(predicate.Compile()); 
+
+        var paginatedList = queryable!
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize);
+
+        return paginatedList;
     }
 
     public Task<IEnumerable<T>?> FindAsync(Expression<Func<T, bool>> expression)
