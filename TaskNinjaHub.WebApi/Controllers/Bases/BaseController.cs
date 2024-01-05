@@ -46,6 +46,15 @@ public class BaseController<TEntity, TRepository> : ControllerBase
         return entities ?? null;
     }
 
+
+    [HttpPost("FilterByPage")]
+    public async Task<IEnumerable<TEntity>?> GetAllByFilterByPage([FromBody] IDictionary<string, string?> query,
+        [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    {
+        var entities = await _repository.GetAllByFilterByPageAsync(query, pageNumber, pageSize);
+        return entities ?? null;
+    }
+
     [HttpGet("{id:int}")]
     public async Task<TEntity?> Get(int id)
     {
