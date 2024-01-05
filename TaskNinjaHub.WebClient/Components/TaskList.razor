@@ -11,138 +11,146 @@
                Type="number"
                Placeholder="Enter task number"
                AllowClear
-               @bind-Value="@SelectedTaskId"
-               OnChange="new EventCallback<int?>(this, async () => await FilterSelectionChanged())"/>
-    </SpaceItem>
-    <SpaceItem Style="width: 100%">
-        <Select DataSource="@AuthorsList"
-                LabelName="@nameof(Author.Name)"
-                Placeholder="Choose author"
+                @bind-Value="@SelectedTaskId"
+                OnChange="new EventCallback<int?>(this, async () => await FilterSelectionChanged())" />
+         </SpaceItem>
+         <SpaceItem Style="width: 100%">
+         <Select DataSource="@AuthorsList"
+                 LabelName="@nameof(Author.Name)"
+                 Placeholder="Choose author"
                 AllowClear
                 EnableSearch
-                @bind-Value="@SelectedAuthor"
-                OnSelectedItemChanged="new EventCallback<Author>(this, async () => await FilterSelectionChanged())">
-        </Select>
-    </SpaceItem>
-    <SpaceItem Style="width: 100%">
-        <Select DataSource="@AuthorsList"
-                LabelName="@nameof(Author.Name)"
-                Placeholder="Choose executor"
+                 @bind-Value="@SelectedAuthor"
+                 OnSelectedItemChanged="new EventCallback<Author>(this, async () => await FilterSelectionChanged())">
+         </Select>
+         </SpaceItem>
+         <SpaceItem Style="width: 100%">
+         <Select DataSource="@AuthorsList"
+                 LabelName="@nameof(Author.Name)"
+                 Placeholder="Choose executor"
                 AllowClear
                 EnableSearch
-                @bind-Value="@SelectedExecutor"
-                OnSelectedItemChanged="new EventCallback<Author>(this, async () => await FilterSelectionChanged())">
-        </Select>
-    </SpaceItem>
-    <SpaceItem Style="width: 100%">
-        <Select DataSource="@InformationSystemList"
-                LabelName="@nameof(InformationSystem.Name)"
-                Placeholder="Choose system"
+                 @bind-Value="@SelectedExecutor"
+                 OnSelectedItemChanged="new EventCallback<Author>(this, async () => await FilterSelectionChanged())">
+         </Select>
+         </SpaceItem>
+         <SpaceItem Style="width: 100%">
+         <Select DataSource="@InformationSystemList"
+                 LabelName="@nameof(InformationSystem.Name)"
+                 Placeholder="Choose system"
                 AllowClear
                 EnableSearch
-                @bind-Value="@SelectedInformationSystem"
-                OnSelectedItemChanged="new EventCallback<InformationSystem>(this, async () => await FilterSelectionChanged())">
-        </Select>
-    </SpaceItem>
-</Space>
-<Divider/>
+                 @bind-Value="@SelectedInformationSystem"
+                 OnSelectedItemChanged="new EventCallback<InformationSystem>(this, async () => await FilterSelectionChanged())">
+         </Select>
+         </SpaceItem>
+         </Space>
+         <Divider />
 
-@if (CatalogTasks!.Count != 0)
+         @if (CatalogTasks!.Count != 0)
 {
-    <Divider/>
+    <Divider />
     <AntList Grid="_grid" DataSource="@CatalogTasks">
         <ListItem>
             @if (context.OriginalTaskId == null)
             {
                 <Card Bordered Title="@($"{context.Id.ToString()}. {context.TaskAuthor?.Name}")" Id="MainCard">
-                    <Extra>
-                        <Popover Title="Read task">
-                            <Icon Type="up-circle" Theme="fill" @onclick="async (_) => await Open(context)"/>
-                        </Popover>
-                        <Popover Title="Edit task">
-                            <Icon Type="edit" Theme="fill" OnClick="async () => await EditTaskEnabled(context)"/>
-                        </Popover>
-                        <Popover Title="Delete task">
-                            <Icon Type="delete" Theme="fill" OnClick="async () => DeleteTask(context)"/>
-                        </Popover>
-                    </Extra>
-                    <Body>
-                    <div>
-                        <Descriptions Bordered>
-                            <Paragraph Copyable>
-                                @if (@context.Name.Length > 20)
+                 <Extra>
+                     <Popover Title="Read task">
+                         <Icon Type="up-circle" Theme="fill" @onclick="async (_) => await Open(context)" />
+                     </Popover>
+                     <Popover Title="Edit task">
+                         <Icon Type="edit" Theme="fill" OnClick="async () => await EditTaskEnabled(context)" />
+                     </Popover>
+                     <Popover Title="Delete task">
+                         <Icon Type="delete" Theme="fill" OnClick="async () => DeleteTask(context)" />
+                     </Popover>
+                 </Extra>
+                 <Body>
+                     <div>
+                         <Descriptions Bordered>
+                         <Paragraph Copyable>
+                             @if (@context.Name.Length > 20)
+                                    {
+                                        @context.Name.Substring(0, 20)
+                                        <a style="cursor: default; color: black">...</a>
+                                    }
+                                    else
+                                    {
+                                        @context.Name
+                                    }
+                                </Paragraph>
+                            </Descriptions>
+                            <Paragraph style="padding-top: 0.2em">
+                                <Popover Title="@context.TaskAuthor?.Name">
+                                    <Avatar Size="small">U</Avatar>
+                                </Popover>
+                                <Popover Title="@context.Priority?.Name">
+                                    @switch (context.Priority.Name)
+                                    {
+                                        case "The highest":
+                                            <Icon Type="fire" Theme="Fill" Id="thehighest" />
+                                            break;
+                                        case "High":
+                                            <Icon Type="fire" Theme="Fill" Id="high" />
+                                            break;
+                                        case "Medium":
+                                            <Icon Type="fire" Theme="Fill" Id="medium" />
+                                            break;
+                                        case "Low":
+                                            <Icon Type="fire" Theme="Fill" Id="low" />
+                                            break;
+                                        case "In fire":
+                                            <Icon Type="fire" Theme="Fill" Id="thehighest" Spin />
+                                            break;
+                                        case "Will be viewed":
+                                            <Icon Type="eye" Theme="Fill" Id="casual" />
+                                            break;
+                                        case "Release":
+                                            <Icon Type="check" Theme="Fill" Id="casual" />
+                                            break;
+                                    }
+                                </Popover>
+                                <Popover Title="@context.TaskStatus?.Name">
+                                    @switch (context.TaskStatus.Name)
+                                    {
+                                        case "Awaiting execution":
+                                            <Icon Type="clock-circle" Theme="outline" Id="nonclickable" />
+                                            break;
+                                        case "At work":
+                                            <Icon Type="warning" Theme="outline" Id="nonclickable" />
+                                            break;
+                                        case "Awaiting verification":
+                                            <Icon Type="question-circle" Theme="outline" Id="nonclickable" />
+                                            break;
+                                        case "Done":
+                                            <Icon Type="check" Theme="outline" Id="nonclickable" />
+                                            break;
+                                    }
+                                </Popover>
+                                @if (context.Files is not null and { Count: > 0 })
                                 {
-                                    @context.Name.Substring(0, 20)
-                                    <a style="cursor: default; color: black">...</a>
-                                }
-                                else
-                                {
-                                    @context.Name
+                                    <Popover Title="Files">
+                                        <Icon Type="file" Theme="outline" @onclick="async (_) => await Open(context)" />
+                                    </Popover>
                                 }
                             </Paragraph>
-                        </Descriptions>
-                        <Paragraph style="padding-top: 0.2em">
-                            <Popover Title="@context.TaskAuthor?.Name">
-                                <Avatar Size="small">U</Avatar>
-                            </Popover>
-                            <Popover Title="@context.Priority?.Name">
-                                @switch (context.Priority.Name)
-                                {
-                                    case "The highest":
-                                        <Icon Type="fire" Theme="Fill" Id="thehighest"/>
-                                        break;
-                                    case "High":
-                                        <Icon Type="fire" Theme="Fill" Id="high"/>
-                                        break;
-                                    case "Medium":
-                                        <Icon Type="fire" Theme="Fill" Id="medium"/>
-                                        break;
-                                    case "Low":
-                                        <Icon Type="fire" Theme="Fill" Id="low"/>
-                                        break;
-                                }
-                            </Popover>
-                            <Popover Title="@context.TaskStatus?.Name">
-                                @switch (context.TaskStatus.Name)
-                                {
-                                    case "Awaiting execution":
-                                        <Icon Type="clock-circle" Theme="outline" Id="nonclickable"/>
-                                        break;
-                                    case "At work":
-                                        <Icon Type="warning" Theme="outline" Id="nonclickable"/>
-                                        break;
-                                    case "Awaiting verification":
-                                        <Icon Type="question-circle" Theme="outline" Id="nonclickable"/>
-                                        break;
-                                    case "Done":
-                                        <Icon Type="check" Theme="outline" Id="nonclickable"/>
-                                        break;
-                                }
-                            </Popover>
-                            @if (context.Files is not null and {Count: > 0})
-                            {
-                                <Popover Title="Files">
-                                    <Icon Type="file" Theme="outline" @onclick="async (_) => await Open(context)"/>
-                                </Popover>
-                            }
-                        </Paragraph>
-                    </div>
+                        </div>
                     </Body>
                 </Card>
             }
         </ListItem>
     </AntList>
 
-    <Pagination
-        Total="@CatalogTasksCount"
-        PageSize="@PageSize"
-        Current="@CurrentPage"
-        ShowSizeChanger="true"
-        OnChange="HandlePageChange" />
+    <Pagination Total="@CatalogTasksCount"
+                PageSize="@PageSize"
+                Current="@CurrentPage"
+                ShowSizeChanger="true"
+                OnChange="HandlePageChange" />
 }
 else
 {
-    <Spin/>
+    <Spin />
 }
 
 @if (EditedTask != null)
@@ -155,69 +163,68 @@ else
               LabelColSpan="8"
               WrapperColSpan="16">
             <FormItem>
-                <Input Type="hidden" @bind-Value="@context.Id"/>
+                <Input Type="hidden" @bind-Value="@context.Id" />
             </FormItem>
             <FormItem Label="Name">
-                <Input Type="text" @bind-Value="@context.Name"/>
+                <Input Type="text" @bind-Value="@context.Name" />
             </FormItem>
             <FormItem Label="Description">
                 <TextArea @bind-Value="@context.Description"></TextArea>
             </FormItem>
             <FormItem Label="Task author">
-                <Input @bind-Value="@CurrentUser" Disabled/>
-            </FormItem>
-            <FormItem Label="Task executor">
-                <Select Mode="default"
-                        DataSource="@AuthorsList"
-                        @bind-Value="@context.TaskExecutorId"
-                        LabelName="@nameof(Author.Name)"
-                        ValueName="@nameof(Author.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Priority">
-                <Select Mode="default"
-                        DataSource="@PriorityList"
-                        @bind-Value="@context.PriorityId"
-                        LabelName="@nameof(Priority.Name)"
-                        ValueName="@nameof(Priority.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Information system">
-                <Select Mode="default"
-                        DataSource="@InformationSystemList"
-                        @bind-Value="@context.InformationSystemId"
-                        LabelName="@nameof(Priority.Name)"
-                        ValueName="@nameof(Priority.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Task status">
-                <Select Mode="default"
-                        DataSource="@TaskStatusList"
-                        @bind-Value="@context.TaskStatusId"
-                        LabelName="@nameof(TaskStatus.Name)"
-                        ValueName="@nameof(TaskStatus.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Task files">
-                @*TODO issues with localhost*@
-                <Upload
-                    Name="file"
-                    Action="https://localhost:7179/api/file/upload"
-                    @bind-FileList="DefaultFileList"
-                    Class="avatar-uploader"
-                    ListType="picture-card"
-                    BeforeUpload="BeforeUpload"
-                    OnChange="HandleChange"
-                    OnPreview="OnPreview"
-                    OnRemove="OnRemove">
-                    <div>
-                        <Icon Type="plus"></Icon>
-                        <div className="ant-upload-text">Upload</div>
-                    </div>
-                </Upload>
-            </FormItem>
-        </Form>
-    </Modal>
+                <Input @bind-Value="@CurrentUser" Disabled />
+             </FormItem>
+             <FormItem Label="Task executor">
+                 <Select Mode="default"
+                         DataSource="@AuthorsList"
+                         @bind-Value="@context.TaskExecutorId"
+                         LabelName="@nameof(Author.Name)"
+                         ValueName="@nameof(Author.Id)">
+                 </Select>
+             </FormItem>
+             <FormItem Label="Priority">
+                 <Select Mode="default"
+                         DataSource="@PriorityList"
+                         @bind-Value="@context.PriorityId"
+                         LabelName="@nameof(Priority.Name)"
+                         ValueName="@nameof(Priority.Id)">
+                 </Select>
+             </FormItem>
+             <FormItem Label="Information system">
+                 <Select Mode="default"
+                         DataSource="@InformationSystemList"
+                         @bind-Value="@context.InformationSystemId"
+                         LabelName="@nameof(Priority.Name)"
+                         ValueName="@nameof(Priority.Id)">
+                 </Select>
+             </FormItem>
+             <FormItem Label="Task status">
+                 <Select Mode="default"
+                         DataSource="@TaskStatusList"
+                         @bind-Value="@context.TaskStatusId"
+                         LabelName="@nameof(TaskStatus.Name)"
+                         ValueName="@nameof(TaskStatus.Id)">
+                 </Select>
+             </FormItem>
+             <FormItem Label="Task files">
+                 @*TODO issues with localhost*@
+                 <Upload Name="file"
+                         Action="https://localhost:7179/api/file/upload"
+                         @bind-FileList="DefaultFileList"
+                         Class="avatar-uploader"
+                         ListType="picture-card"
+                         BeforeUpload="BeforeUpload"
+                         OnChange="HandleChange"
+                         OnPreview="OnPreview"
+                         OnRemove="OnRemove">
+                     <div>
+                         <Icon Type="plus"></Icon>
+                         <div className="ant-upload-text">Upload</div>
+                     </div>
+                 </Upload>
+             </FormItem>
+         </Form>
+     </Modal>
 }
 
 @if (SelectedCatalogTask != null)
@@ -230,28 +237,26 @@ else
         @if (HtmlMarkupForTask.Count != 0)
         {
             <AntList DataSource="@HtmlMarkupForTask" Bordered>
-                <ListItem class="history_of_changes">
-                    @((MarkupString) context)
-                </ListItem>
-            </AntList>
+             <ListItem class="history_of_changes">
+                 @((MarkupString)context)
+             </ListItem>
+         </AntList>
         }
-        <Upload
-            OnRemove="(_) => Task.FromResult(false)"
-            OnPreview="OnPreview"
-            ShowButton="false"
-            ListType="picture-card"
-            @bind-FileList="DefaultFileList">
+        <Upload OnRemove="(_) => Task.FromResult(false)"
+                OnPreview="OnPreview"
+                ShowButton="false"
+                ListType="picture-card"
+                @bind-FileList="DefaultFileList">
         </Upload>
     </Drawer>
 }
 
-<Modal
-    Footer="null"
-    Visible="IsPreviewVisible"
-    Title="@FilePreviewTitle"
-    OnCancel="() => IsPreviewVisible = false">
-    <img style="width: 100%" src="@FilePreviewUrl" alt=""/>
-</Modal> 
+<Modal Footer="null"
+       Visible="IsPreviewVisible"
+       Title="@FilePreviewTitle"
+       OnCancel="() => IsPreviewVisible = false">
+    <img style="width: 100%" src="@FilePreviewUrl" alt="" />
+</Modal>
 
 @code {
 

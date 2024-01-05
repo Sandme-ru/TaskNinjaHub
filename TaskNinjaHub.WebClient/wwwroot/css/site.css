@@ -294,6 +294,9 @@ html {
 #low {
     color: #008000 !important;
 }
+#casual {
+    color: #1890ff !important;
+}
 
 .history_of_changes {
     display: block !important;
