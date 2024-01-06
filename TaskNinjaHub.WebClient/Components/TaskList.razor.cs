@@ -477,6 +477,9 @@ public partial class TaskList
 
     private async Task FilterSelectionChanged()
     {
+        IsLoadingTaskList = true;
+        StateHasChanged();
+
         var filter = new CatalogTask
         {
             Id = SelectedTaskId ?? 0,
@@ -490,6 +493,9 @@ public partial class TaskList
         
         CatalogTasks = new List<CatalogTask>(result);
 
+        CatalogTasksCount = CatalogTasks.Count;
+
+        IsLoadingTaskList = false;
         StateHasChanged();
     }
 
