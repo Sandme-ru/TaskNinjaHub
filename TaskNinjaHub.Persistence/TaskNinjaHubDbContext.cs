@@ -52,4 +52,9 @@ public class TaskNinjaHubDbContext : DbContext, ITaskNinjaHubDbContext
     public DbSet<File> Files { get; set; } = null!;
 
     #endregion
+
+    public void MigrateDatabase()
+    {
+        Database.Migrate();
+    }
 }
