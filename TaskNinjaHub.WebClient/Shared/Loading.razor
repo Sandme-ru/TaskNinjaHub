@@ -1,0 +1,16 @@
+﻿<AntDesign.Spin Indicator="AntIcon" Spinning="Spinning">
+    @ChildContent
+</AntDesign.Spin>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public bool Spinning { get; set; }
+
+    [Parameter]
+    public string Size { get; set; } = AntSizeLDSType.Default;
+
+    RenderFragment AntIcon => @<Icon Type="loading" Theme="outline" Style="@($"font-size: {(Size == AntSizeLDSType.Default ? 24 : Size == AntSizeLDSType.Small ? 12 : Size == AntSizeLDSType.Large ? 36 : 24)}px;")" Spin />;
+}

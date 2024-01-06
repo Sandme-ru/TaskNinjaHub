@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Models;
 using TaskNinjaHub.Application.DependencyInjection;
+using TaskNinjaHub.Persistence;
 using TaskNinjaHub.Persistence.DependencyInjection;
 
 namespace TaskNinjaHub.WebApi;
@@ -39,6 +40,12 @@ public class Program
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "TaskNinjaHub");
             });
+        }
+
+        using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+        {
+            var dbContext = serviceScope.ServiceProvider.GetRequiredService<TaskNinjaHubDbContext>();
+            dbContext.MigrateDatabase();
         }
 
         app.UseRouting();

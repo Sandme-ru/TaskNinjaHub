@@ -127,11 +127,14 @@ public partial class TaskList
 
     private int CatalogTasksCount { get; set; }
 
+    private bool IsLoadingTaskList { get; set; }
+
     #endregion
 
     protected override async Task OnInitializedAsync()
     {
-        //FillingTestCards();
+        IsLoadingTaskList = true;
+        StateHasChanged();
 
         CatalogTasksCount = await CatalogTaskService.GetAllCountAsync();
 
@@ -141,6 +144,7 @@ public partial class TaskList
         TaskStatusList = (await TaskStatusService.GetAllAsync() ?? Array.Empty<TaskStatus>()).ToList();
         CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(CurrentPage, PageSize) ?? Array.Empty<CatalogTask>()).ToList();
 
+        IsLoadingTaskList = false;
         StateHasChanged();
     }
 
@@ -180,135 +184,6 @@ public partial class TaskList
             await DeleteTaskHandler();
             Console.WriteLine("OK");
         };
-    }
-
-    private void FillingTestCards()
-    {
-        CatalogTasks?.Add(new CatalogTask()
-        {
-            Id = 0,
-            Name = "Lorem ipsum dolor sit amet.",
-            Description =
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            DateCreated = DateTime.Now,
-            DateUpdated = DateTime.Now,
-            InformationSystem = new InformationSystem()
-            {
-                Name = "Sed ut perspiciatis"
-            },
-            Priority = new Priority
-            {
-                Name = "Sed ut perspiciatis"
-            },
-            TaskAuthor = new Author
-            {
-                Name = "Lorem ipsum dolor sit amet"
-            },
-            TaskExecutor = new Author
-            {
-                Name = "Lorem ipsum dolor sit amet"
-            }
-        });
-        CatalogTasks?.Add(new CatalogTask
-        {
-            Id = 1,
-            Name = "Lorem ipsum dolor sit amet.",
-            Description =
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            DateCreated = DateTime.Now,
-            DateUpdated = DateTime.Now,
-            InformationSystem = new InformationSystem
-            {
-                Name = "Sed ut perspiciatis"
-            },
-            Priority = new Priority
-            {
-                Name = "Sed ut perspiciatis"
-            },
-            TaskAuthor = new Author
-            {
-                Name = "Lorem ipsum dolor sit amet"
-            },
-            TaskExecutor = new Author
-            {
-                Name = "Lorem ipsum dolor sit amet"
-            }
-        });
-        CatalogTasks?.Add(new CatalogTask
-        {
-            Id = 2,
-            Name = "Lorem ipsum dolor sit amet.",
-            Description =
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            DateCreated = DateTime.Now,
-            DateUpdated = DateTime.Now,
-            InformationSystem = new InformationSystem()
-            {
-                Name = "Sed ut perspiciatis"
-            },
-            Priority = new Priority
-            {
-                Name = "Sed ut perspiciatis"
-            },
-            TaskAuthor = new Author
-            {
-                Name = "Lorem ipsum dolor sit amet"
-            },
-            TaskExecutor = new Author
-            {
-                Name = "Lorem ipsum dolor sit amet"
-            }
-        });
-        CatalogTasks?.Add(new CatalogTask
-        {
-            Id = 3,
-            Name = "Lorem ipsum dolor sit amet.",
-            Description =
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            DateCreated = DateTime.Now,
-            DateUpdated = DateTime.Now,
-            InformationSystem = new InformationSystem
-            {
-                Name = "Sed ut perspiciatis"
-            },
-            Priority = new Priority
-            {
-                Name = "Sed ut perspiciatis"
-            },
-            TaskAuthor = new Author
-            {
-                Name = "Lorem ipsum dolor sit amet"
-            },
-            TaskExecutor = new Author
-            {
-                Name = "Lorem ipsum dolor sit amet"
-            }
-        });
-        CatalogTasks?.Add(new CatalogTask()
-        {
-            Id = 4,
-            Name = "Lorem ipsum dolor sit amet.",
-            Description =
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            DateCreated = DateTime.Now,
-            DateUpdated = DateTime.Now,
-            InformationSystem = new InformationSystem
-            {
-                Name = "Sed ut perspiciatis"
-            },
-            Priority = new Priority
-            {
-                Name = "Sed ut perspiciatis"
-            },
-            TaskAuthor = new Author
-            {
-                Name = "Lorem ipsum dolor sit amet"
-            },
-            TaskExecutor = new Author
-            {
-                Name = "Lorem ipsum dolor sit amet"
-            }
-        });
     }
 
     private void Close()
@@ -602,6 +477,9 @@ public partial class TaskList
 
     private async Task FilterSelectionChanged()
     {
+        IsLoadingTaskList = true;
+        StateHasChanged();
+
         var filter = new CatalogTask
         {
             Id = SelectedTaskId ?? 0,
@@ -615,6 +493,9 @@ public partial class TaskList
         
         CatalogTasks = new List<CatalogTask>(result);
 
+        CatalogTasksCount = CatalogTasks.Count;
+
+        IsLoadingTaskList = false;
         StateHasChanged();
     }
 
@@ -679,11 +560,15 @@ public partial class TaskList
 
     private async Task HandlePageChange(PaginationEventArgs arg)
     {
+        IsLoadingTaskList = true;
+        StateHasChanged();
+
         CurrentPage = arg.Page;
         PageSize = arg.PageSize;
 
         CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(CurrentPage, PageSize) ?? Array.Empty<CatalogTask>()).ToList();
 
+        IsLoadingTaskList = false;
         StateHasChanged();
     }
 }

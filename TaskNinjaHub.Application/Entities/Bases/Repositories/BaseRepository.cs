@@ -25,7 +25,9 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
 
     public async Task<IEnumerable<T>?> GetAllAsync()
     {
-        return await Context?.Set<T>().ToListAsync()!;
+        return await Context?.Set<T>()
+            .OrderByDescending(entity => entity.Id)
+            .ToListAsync()!;
     }
 
     public async Task<IEnumerable<T>?> GetAllByPageAsync(int pageNumber, int pageSize)
@@ -33,7 +35,9 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
         if (pageNumber < 1 || pageSize < 1)
             return null;
 
-        var queryable = Context?.Set<T>().AsQueryable();
+        var queryable = Context?.Set<T>()
+            .OrderByDescending(entity => entity.Id)
+            .AsQueryable();
 
         if (queryable == null)
             return null;
@@ -77,7 +81,10 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
             }
         }
 
-        var filteredList = Context?.Set<T>().ToList().Where(predicate.Compile());
+        var filteredList = Context?.Set<T>()
+            .OrderByDescending(entity => entity.Id)
+            .ToList()
+            .Where(predicate.Compile());
 
         return filteredList;
     }
@@ -114,6 +121,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
         }
 
         var queryable = Context?.Set<T>()
+            .OrderByDescending(entity => entity.Id)
             .ToList()
             .Where(predicate.Compile()); 
 
