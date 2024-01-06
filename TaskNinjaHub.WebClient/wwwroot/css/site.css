@@ -1,6 +1,8 @@
 html {
-    --antd-wave-shadow-color: #00b473 !important;
     --scroll-bar: 0;
+}
+a {
+    color:#000!important;
 }
 
 #blazor-error-ui {
@@ -34,14 +36,11 @@ html {
 
 .ant-btn-primary {
     color: #fff;
-    border-color: #00b473 !important;
-    background: #00b473 !important;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
     box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
 }
 
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-    color: #00b473 !important;
     text-shadow: 0 0 0.25px currentcolor;
 }
 
@@ -50,6 +49,9 @@ element.style {
 
 .ant-list * {
     outline: none;
+}
+.navbar-brand {
+    width:7%;
 }
 
 .anticon {
@@ -68,9 +70,19 @@ element.style {
 *, *::before, *::after {
     box-sizing: border-box;
 }
+.task-list{
+    margin-left:8px!important;
+    margin-right:8px!important;
+}
+
+.ant-card-body {
+    padding: 24px;
+    padding-bottom: 5px !important;
+}
 
 .ant-card-extra {
     margin-left: auto;
+    margin-top:7px;
     padding: 16px 0;
     color: rgba(0, 0, 0, 0.85);
     font-weight: normal;
@@ -88,7 +100,18 @@ element.style {
     border-bottom: 1px solid #f0f0f0;
     border-radius: 2px 2px 0 0;
 }
+.ant-btn-link {
+    color: #000!important;
+}
 
+.navbar {
+    border-bottom: 2px solid #1790ff;
+    padding-bottom: 5px;
+}
+.createForm{
+    margin-right: 20%;
+    margin-left:20%;
+}
 .ant-card {
     box-sizing: border-box;
     margin: 0;
@@ -164,7 +187,6 @@ html {
 }
 
 html {
-    --antd-wave-shadow-color: #00b473 !important;
     --scroll-bar: 0;
 }
 
@@ -182,29 +204,14 @@ html {
 
 ::selection {
     color: #fff;
-    background: #00b473 !important;
 }
 
 .site-page-header {
-    box-shadow: 0 1px 1px 1px #00b473;
-}
-
-.anticon {
-    color: #00b473 !important;
-    padding-left: 1em;
+    box-shadow: 0 1px 1px 1px #1890ff;
 }
 
 .ant-avatar-sm.ant-avatar-icon {
     font-size: 14px;
-}
-
-.ant-input:hover {
-    border-block-color: #00b473 !important;
-}
-
-.ant-input:focus {
-    border-block-color: #00b473 !important;
-    border-radius: 3px !important;
 }
 
 .input_file {
@@ -273,12 +280,37 @@ html {
 #MainCard {
     transition: transform 0.2s ease;
 }
-
-#MainCard:hover {
-    box-shadow: 0 0 10px green;
-    transform: translateY(-10px);
+.maincardIcon {
+    color: #1790ff !important;
 }
 
+#MainCard .anticon {
+    font-size: large!important;
+    padding-left: 1em;
+}
+
+.ant-avatar-string {
+    transform: scale(01) translateX(-50%) translateY(-10%)!important;
+}
+.ant-avatar {
+    font-size:11px!important;
+}
+    .ant-avatar-sm {
+    width: 19px!important;
+    height: 19px!important;
+    line-height: 24px;
+    border-radius: 50%;
+}
+
+    #MainCard:hover {
+        box-shadow: 0 0 10px #1790ff;
+        transform: translateY(-10px);
+    }
+
+.createTaskButton{
+    margin-left:20%;
+    margin-right:10%;
+}
 #thehighest {
     color: #FF0000 !important;
 }

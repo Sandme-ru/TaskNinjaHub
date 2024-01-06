@@ -1,19 +1,25 @@
-<PageHeader BackIcon="true" OnBack="RedirectBack" Class="site-page-header">
-    <PageHeaderTitle>TASK BOOK</PageHeaderTitle>
-    <PageHeaderSubtitle>This is a task book</PageHeaderSubtitle>
-    <PageHeaderExtra>
-        <Paragraph>
-            @if (UserName == "Anonymous (Anonymous)")
-            {
-                @($"Hello, {UserName}!")
-            }
-            else
-            {
-                <Button OnClick="ShowUserProfile" Type="@ButtonType.Link">
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <div class="container-fluid">
+        <img src="css/HubLogoPNG.png" class="navbar-brand"/>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            </ul>
+            <form class="d-flex">
+                @if (UserName == "Anonymous (Anonymous)")
+                {
                     @($"Hello, {UserName}!")
-                </Button>
-            }
-        </Paragraph>
-        <a href="@($"Logout")">LOGOUT</a>
-    </PageHeaderExtra>
-</PageHeader>
+                }
+                else
+                {
+                    <Button OnClick="ShowUserProfile" Type="@ButtonType.Link">
+                        @($"Hello, {UserName}!")
+                    </Button>
+                    <a style="margin-top:5px;" href="@($"Logout")">LOGOUT</a>
+                }
+            </form>
+        </div>
+    </div>
+</nav>
