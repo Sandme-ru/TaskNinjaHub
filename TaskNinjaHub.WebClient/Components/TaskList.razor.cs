@@ -127,11 +127,16 @@ public partial class TaskList
 
     private int CatalogTasksCount { get; set; }
 
+    private bool IsLoadingTaskList { get; set; }
+
     #endregion
 
     protected override async Task OnInitializedAsync()
     {
         //FillingTestCards();
+
+        IsLoadingTaskList = true;
+        StateHasChanged();
 
         CatalogTasksCount = await CatalogTaskService.GetAllCountAsync();
 
@@ -141,6 +146,7 @@ public partial class TaskList
         TaskStatusList = (await TaskStatusService.GetAllAsync() ?? Array.Empty<TaskStatus>()).ToList();
         CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(CurrentPage, PageSize) ?? Array.Empty<CatalogTask>()).ToList();
 
+        IsLoadingTaskList = false;
         StateHasChanged();
     }
 
@@ -679,11 +685,15 @@ public partial class TaskList
 
     private async Task HandlePageChange(PaginationEventArgs arg)
     {
+        IsLoadingTaskList = true;
+        StateHasChanged();
+
         CurrentPage = arg.Page;
         PageSize = arg.PageSize;
 
         CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(CurrentPage, PageSize) ?? Array.Empty<CatalogTask>()).ToList();
 
+        IsLoadingTaskList = false;
         StateHasChanged();
     }
 }

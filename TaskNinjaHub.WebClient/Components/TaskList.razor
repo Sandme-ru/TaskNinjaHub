@@ -1,6 +1,3 @@
-@using TaskNinjaHub.Application.Entities.Authors.Domain;
-@using TaskNinjaHub.Application.Entities.InformationSystems.Domain
-@using TaskNinjaHub.Application.Entities.Priorities.Domain
 @using TaskStatus = TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskStatus
 
 <Space Style="width: 100%; justify-content: stretch;"
@@ -11,23 +8,23 @@
                Type="number"
                Placeholder="Enter task number"
                AllowClear
-               @bind-Value="@SelectedTaskId"
-               OnChange="new EventCallback<int?>(this, async () => await FilterSelectionChanged())"/>
-    </SpaceItem>
-    <SpaceItem Style="width: 100%">
-        <Select DataSource="@AuthorsList"
-                LabelName="@nameof(Author.ShortName)"
-                Placeholder="Choose author"
+                @bind-Value="@SelectedTaskId"
+                OnChange="new EventCallback<int?>(this, async () => await FilterSelectionChanged())" />
+         </SpaceItem>
+         <SpaceItem Style="width: 100%">
+         <Select DataSource="@AuthorsList"
+                 LabelName="@nameof(Author.ShortName)"
+                 Placeholder="Choose author"
                 AllowClear
                 EnableSearch
-                @bind-Value="@SelectedAuthor"
-                OnSelectedItemChanged="new EventCallback<Author>(this, async () => await FilterSelectionChanged())">
-        </Select>
-    </SpaceItem>
-    <SpaceItem Style="width: 100%">
-        <Select DataSource="@AuthorsList"
-                LabelName="@nameof(Author.ShortName)"
-                Placeholder="Choose executor"
+                 @bind-Value="@SelectedAuthor"
+                 OnSelectedItemChanged="new EventCallback<Author>(this, async () => await FilterSelectionChanged())">
+         </Select>
+         </SpaceItem>
+         <SpaceItem Style="width: 100%">
+         <Select DataSource="@AuthorsList"
+                 LabelName="@nameof(Author.ShortName)"
+                 Placeholder="Choose executor"
                 AllowClear
                 EnableSearch
                  @bind-Value="@SelectedExecutor"
@@ -35,42 +32,43 @@
          </Select>
          </SpaceItem>
          <SpaceItem Style="width: 100%">
-         <Select DataSource="@InformationSystemList"
-                 LabelName="@nameof(InformationSystem.Name)"
-                 Placeholder="Choose system"
-                AllowClear
-                EnableSearch
-                 @bind-Value="@SelectedInformationSystem"
-                 OnSelectedItemChanged="new EventCallback<InformationSystem>(this, async () => await FilterSelectionChanged())">
-         </Select>
+             <Select DataSource="@InformationSystemList"
+                     LabelName="@nameof(InformationSystem.Name)"
+                     Placeholder="Choose system"
+                     AllowClear
+                     EnableSearch
+                     @bind-Value="@SelectedInformationSystem"
+                     OnSelectedItemChanged="new EventCallback<InformationSystem>(this, async () => await FilterSelectionChanged())">
+             </Select>
          </SpaceItem>
-         </Space>
-         <Divider />
+</Space>
 
-         @if (CatalogTasks!.Count != 0)
-{
-    <Divider />
+<Divider />
+
+<Divider />
+
+<Loading Spinning="IsLoadingTaskList">
     <AntList Grid="_grid" DataSource="@CatalogTasks">
-        <ListItem>
+         <ListItem>
             @if (context.OriginalTaskId == null)
             {
                 <Card Bordered Title="@($"{context.Id.ToString()}. {context.TaskAuthor?.Name}")" Id="MainCard">
-                 <Extra>
-                     <Popover Title="Read task">
-                         <Icon Type="up-circle" Theme="fill" @onclick="async (_) => await Open(context)" />
-                     </Popover>
-                     <Popover Title="Edit task">
-                         <Icon Type="edit" Theme="fill" OnClick="async () => await EditTaskEnabled(context)" />
-                     </Popover>
-                     <Popover Title="Delete task">
-                         <Icon Type="delete" Theme="fill" OnClick="async () => DeleteTask(context)" />
-                     </Popover>
-                 </Extra>
-                 <Body>
-                     <div>
-                         <Descriptions Bordered>
-                         <Paragraph Copyable>
-                             @if (@context.Name.Length > 20)
+                     <Extra>
+                         <Popover Title="Read task">
+                             <Icon Type="up-circle" Theme="fill" @onclick="async (_) => await Open(context)" />
+                         </Popover>
+                         <Popover Title="Edit task">
+                             <Icon Type="edit" Theme="fill" OnClick="async () => await EditTaskEnabled(context)" />
+                         </Popover>
+                         <Popover Title="Delete task">
+                             <Icon Type="delete" Theme="fill" OnClick="async () => DeleteTask(context)" />
+                         </Popover>
+                     </Extra>
+                     <Body>
+                         <div>
+                             <Descriptions Bordered>
+                             <Paragraph Copyable>
+                                 @if (@context.Name!.Length > 20)
                                     {
                                         @context.Name.Substring(0, 20)
                                         <a style="cursor: default; color: black">...</a>
@@ -86,7 +84,7 @@
                                     <Avatar Size="small">U</Avatar>
                                 </Popover>
                                 <Popover Title="@context.Priority?.Name">
-                                    @switch (context.Priority.Name)
+                                    @switch (context.Priority!.Name)
                                     {
                                         case "The highest":
                                             <Icon Type="fire" Theme="Fill" Id="thehighest" />
@@ -112,7 +110,7 @@
                                     }
                                 </Popover>
                                 <Popover Title="@context.TaskStatus?.Name">
-                                    @switch (context.TaskStatus.Name)
+                                    @switch (context.TaskStatus!.Name)
                                     {
                                         case "Awaiting execution":
                                             <Icon Type="clock-circle" Theme="outline" Id="nonclickable" />
@@ -141,17 +139,14 @@
             }
         </ListItem>
     </AntList>
+</Loading>
 
-    <Pagination Total="@CatalogTasksCount"
-                PageSize="@PageSize"
-                Current="@CurrentPage"
-                ShowSizeChanger="true"
-                OnChange="HandlePageChange" />
-}
-else
-{
-    <Spin />
-}
+<Pagination Total="@CatalogTasksCount"
+            PageSize="@PageSize"
+            Current="@CurrentPage"
+            ShowSizeChanger="true"
+            OnChange="HandlePageChange" />
+
 
 @if (EditedTask != null)
 {
