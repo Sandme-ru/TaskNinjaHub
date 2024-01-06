@@ -1,6 +1,8 @@
 ﻿@page "/"
 @attribute [Authorize]
 
+<PageTitle>Hello page</PageTitle>
+
 <div class="card-container">
     <Tabs DefaultActiveKey="1" @bind-ActiveKey="@ActiveKey" Centered>
         <TabPane Tab="MAIN" Key="Tab1">
