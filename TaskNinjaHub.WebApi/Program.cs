@@ -29,7 +29,6 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new OpenApiInfo { Title = "TaskNinjaHub", Version = "v1" });
             options.DocumentFilter<SubdomainRouteAttribute>();
         });
 
@@ -39,10 +38,7 @@ public class Program
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "TaskNinjaHub");
-            });
+            app.UseSwaggerUI();
         }
 
         using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
