@@ -30,10 +30,12 @@ public class Program
         #if (DEBUG)
 
         var authUrl = builder.Configuration.GetSection("HttpClientSettings:DebugAuthUrl").Value;
+        var apiUrl = builder.Configuration.GetSection("HttpClientSettings:DebugApiUrl").Value;
 
         #elif (RELEASE)
         
         var authUrl = builder.Configuration.GetSection("HttpClientSettings:ReleaseAuthUrl").Value;
+        var apiUrl = builder.Configuration.GetSection("HttpClientSettings:ReleaseApiUrl").Value;
 
         #endif
 
@@ -43,7 +45,7 @@ public class Program
 
         builder.Services.AddTransient(sp => new HttpClient
         {
-            BaseAddress = new Uri(authUrl!)
+            BaseAddress = new Uri(apiUrl!)
         });
 
         builder.Services.AddWebClientServiceCollection(builder.Configuration);
@@ -78,7 +80,7 @@ public class Program
                 options.ClaimActions.MapUniqueJsonKey("office", "office");
                 options.UsePkce = true;
 
-                options.Authority = "https://localhost:7219";
+                options.Authority = authUrl;
                 options.ClientId = "TaskNinjaHub";
                 options.ClientSecret = "901564A5-E7FE-42CB-B10D-61EF6A8F3655";
                 options.ResponseType = OpenIdConnectResponseType.Code;
