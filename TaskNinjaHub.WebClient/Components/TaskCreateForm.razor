@@ -22,6 +22,7 @@
         <FormItem Label="Task executor">
             <Select Mode="default"
                     DataSource="@AuthorsList"
+                    EnableSearch
                     @bind-Value="@context.TaskExecutorId"
                     LabelName="@nameof(Author.Name)"
                     ValueName="@nameof(Author.Id)">
@@ -30,6 +31,7 @@
         <FormItem Label="Priority">
             <Select Mode="default"
                     DataSource="@PriorityList"
+                    EnableSearch
                     @bind-Value="@context.PriorityId"
                     LabelName="@nameof(Priority.Name)"
                     ValueName="@nameof(Priority.Id)">
@@ -38,6 +40,7 @@
         <FormItem Label="Information system">
             <Select Mode="default"
                     DataSource="@InformationSystemList"
+                    EnableSearch
                     @bind-Value="@context.InformationSystemId"
                     LabelName="@nameof(Priority.Name)"
                     ValueName="@nameof(Priority.Id)">

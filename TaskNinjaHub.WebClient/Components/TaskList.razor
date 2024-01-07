@@ -9,7 +9,6 @@
        Direction="DirectionVHType.Horizontal">
     <SpaceItem Style="width: 100%">
         <Input min="0"
-               Max="@CatalogTasksList.Count"
                Type="number"
                Placeholder="Enter task number"
                AllowClear
@@ -175,6 +174,7 @@
              </FormItem>
              <FormItem Label="Task executor">
                  <Select Mode="default"
+                         EnableSearch
                          DataSource="@AuthorsList"
                          @bind-Value="@context.TaskExecutorId"
                          LabelName="@nameof(Author.Name)"
@@ -183,6 +183,7 @@
              </FormItem>
              <FormItem Label="Priority">
                  <Select Mode="default"
+                         EnableSearch
                          DataSource="@PriorityList"
                          @bind-Value="@context.PriorityId"
                          LabelName="@nameof(Priority.Name)"
@@ -191,6 +192,7 @@
              </FormItem>
              <FormItem Label="Information system">
                  <Select Mode="default"
+                         EnableSearch
                          DataSource="@InformationSystemList"
                          @bind-Value="@context.InformationSystemId"
                          LabelName="@nameof(Priority.Name)"
@@ -199,6 +201,7 @@
              </FormItem>
              <FormItem Label="Task status">
                  <Select Mode="default"
+                         EnableSearch
                          DataSource="@TaskStatusList"
                          @bind-Value="@context.TaskStatusId"
                          LabelName="@nameof(TaskStatus.Name)"
