@@ -27,13 +27,23 @@ public class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
+        #if (DEBUG)
+
+        var authUrl = builder.Configuration.GetSection("HttpClientSettings:DebugAuthUrl").Value;
+
+        #elif (RELEASE)
+        
+        var authUrl = builder.Configuration.GetSection("HttpClientSettings:ReleaseAuthUrl").Value;
+
+        #endif
+
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddAntDesign();
 
         builder.Services.AddTransient(sp => new HttpClient
         {
-            BaseAddress = new Uri("https://localhost:7179")
+            BaseAddress = new Uri(authUrl!)
         });
 
         builder.Services.AddWebClientServiceCollection(builder.Configuration);
