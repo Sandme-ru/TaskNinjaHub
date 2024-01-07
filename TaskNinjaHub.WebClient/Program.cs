@@ -80,7 +80,7 @@ public class Program
                 options.ClaimActions.MapUniqueJsonKey("office", "office");
                 options.UsePkce = true;
 
-                options.Authority = authUrl;
+                options.Authority = "https://sandme.ru/";
                 options.ClientId = "TaskNinjaHub";
                 options.ClientSecret = "901564A5-E7FE-42CB-B10D-61EF6A8F3655";
                 options.ResponseType = OpenIdConnectResponseType.Code;
