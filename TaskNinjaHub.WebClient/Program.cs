@@ -113,6 +113,12 @@ public class Program
             app.UseHsts();
         }
 
+        app.Use((context, next) =>
+        {
+            context.Request.Scheme = "https";
+            return next();
+        });
+
         app.UseHttpsRedirection();
 
         app.UseStaticFiles();
