@@ -10,7 +10,7 @@ public class SubdomainRouteAttribute : IDocumentFilter
         foreach (var path in swaggerDoc.Paths.ToList())
         {
             swaggerDoc.Paths.Remove(path.Key);
-            var newPathKey = "/task-ninja-hub" + path.Key;
+            var newPathKey = "/task-api" + path.Key;
             swaggerDoc.Paths.Add(newPathKey, path.Value);
         }
     }
