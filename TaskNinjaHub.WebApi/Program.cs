@@ -1,7 +1,9 @@
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using TaskNinjaHub.Application.DependencyInjection;
 using TaskNinjaHub.Persistence;
 using TaskNinjaHub.Persistence.DependencyInjection;
+using TaskNinjaHub.WebApi.Subdomain;
 
 namespace TaskNinjaHub.WebApi;
 
@@ -25,9 +27,10 @@ public class Program
 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(c =>
+        builder.Services.AddSwaggerGen(options =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "TaskNinjaHub", Version = "v1" });
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = "TaskNinjaHub", Version = "v1" });
+            options.DocumentFilter<SubdomainRouteAttribute>();
         });
 
 
