@@ -84,6 +84,7 @@ public class Program
                 options.ClientId = "TaskNinjaHub";
                 options.ClientSecret = "901564A5-E7FE-42CB-B10D-61EF6A8F3655";
                 options.ResponseType = OpenIdConnectResponseType.Code;
+                options.RequireHttpsMetadata = true;
 
                 options.Scope.Clear();
                 options.Scope.Add("openid");
