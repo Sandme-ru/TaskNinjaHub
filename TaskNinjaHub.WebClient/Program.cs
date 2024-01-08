@@ -70,7 +70,17 @@ public class Program
             {
                 options.Cookie.Name = "Edison";
                 options.EventsType = typeof(CookieEvents);
-                options.Cookie.Path = "/";
+
+#if (DEBUG)
+
+options.Cookie.Path = "/";
+
+#elif (RELEASE)
+
+                options.Cookie.Path = "/task-ninja-hub/signin-oidc";
+
+#endif
+
             })
             .AddOpenIdConnect(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme, options =>
             {
