@@ -1,7 +1,7 @@
 version: "3.4"
 services:
   db-api:
-    container_name: postgres
+    container_name: postgres-api
     image: postgres:latest
     environment:
       POSTGRES_DB: TaskNinjaHub
