@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using OpenIddict.Server.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
+using AntDesign;
 using TaskNinjaHub.WebClient.Data;
 using TaskNinjaHub.WebClient.DependencyInjection;
 using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
+using Microsoft.Owin.Security.OpenIdConnect;
 
 namespace TaskNinjaHub.WebClient;
 
@@ -81,6 +83,7 @@ public class Program
                 options.UsePkce = true;
 
                 options.Authority = authUrl;
+
                 options.ClientId = "TaskNinjaHub";
                 options.ClientSecret = "901564A5-E7FE-42CB-B10D-61EF6A8F3655";
                 options.ResponseType = OpenIdConnectResponseType.Code;
@@ -109,10 +112,14 @@ public class Program
 
         var app = builder.Build();
 
+        
+
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Error");
             app.UseHsts();
+
+            app.UseMiddleware<OpenIdConnectAuthenticationPatchedMiddleware>(); // Register your custom middleware here
         }
 
         app.Use((context, next) =>
@@ -134,5 +141,29 @@ public class Program
         app.MapFallbackToPage("/_Host");
 
         app.Run();
+    }
+}
+
+public class OpenIdConnectAuthenticationPatchedMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public OpenIdConnectAuthenticationPatchedMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task Invoke(HttpContext context)
+    {
+        var oldNonces = context.Request.Cookies.Where(kvp => kvp.Key.StartsWith(OpenIdConnectAuthenticationDefaults.CookiePrefix + "nonce"));
+        if (oldNonces.Any())
+        {
+            foreach (var oldNonce in oldNonces)
+            {
+                context.Response.Cookies.Delete(oldNonce.Key);
+            }
+        }
+
+        await _next(context);
     }
 }
