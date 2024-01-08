@@ -2,6 +2,7 @@ using Duende.AccessTokenManagement.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using OpenIddict.Server.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
@@ -124,6 +125,14 @@ public class Program
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.UseCookiePolicy(new CookiePolicyOptions
+        {
+            HttpOnly = HttpOnlyPolicy.Always,
+            MinimumSameSitePolicy = SameSiteMode.None,
+            Secure = CookieSecurePolicy.Always
+        });
+
 
         app.UseAuthentication();
         app.UseAuthorization();
