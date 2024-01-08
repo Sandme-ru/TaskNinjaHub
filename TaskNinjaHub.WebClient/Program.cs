@@ -91,6 +91,8 @@ public class Program
                 options.Scope.Add("profile");
                 options.Scope.Add("offline_access");
 
+                options.CallbackPath = "/task-ninja-hub/signin-oidc";
+
                 options.TokenValidationParameters.NameClaimType = "name";
 
                 options.SaveTokens = true;
