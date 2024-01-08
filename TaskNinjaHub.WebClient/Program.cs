@@ -74,6 +74,10 @@ public class Program
                 options.Cookie.Name = "Edison";
                 options.EventsType = typeof(CookieEvents);
                 options.Cookie.Path = "/";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.SlidingExpiration = true;
+                options.Cookie.MaxAge = options.ExpireTimeSpan;
+                options.Cookie.SameSite = SameSiteMode.Strict;
             })
             .AddOpenIdConnect(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme, options =>
             {
@@ -148,6 +152,8 @@ public class Program
 
         app.MapBlazorHub();
         app.MapFallbackToPage("/_Host");
+
+
 
         app.Run();
     }
