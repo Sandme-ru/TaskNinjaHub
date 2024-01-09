@@ -48,11 +48,11 @@ public class FileController : ControllerBase
         return File(fileData, "application/octet-stream");
     }
 
-    [HttpPost("/api/file/upload")]
+    [HttpPost("/api/file/upload/{taskId}")]
     [RequestSizeLimit(8 * 1024 * 1024)]
     public async Task<File?> Upload(
+        string? taskId,
         [FromForm] IFormFile? file,
-        [FromQuery] int? taskId,
         [FromQuery] string? fileName)
     {
         if (file is null or { Length: <= 0 })
@@ -81,7 +81,7 @@ public class FileController : ControllerBase
             Name = fileName,
             Path = $"files/{fileName}",
             DateCreated = DateTime.UtcNow,
-            TaskId = taskId
+            TaskId = Convert.ToInt32(taskId)
         };
 
         try

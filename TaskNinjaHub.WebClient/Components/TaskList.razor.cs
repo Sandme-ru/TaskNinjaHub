@@ -99,7 +99,6 @@ public partial class TaskList
 
     private bool _visibleModal = false;
 
-    private List<CatalogTask> CatalogTasksList { get; set; } = new();
 
     private List<Author> AuthorsList { get; set; } = new();
 
@@ -110,6 +109,7 @@ public partial class TaskList
     private List<TaskStatus> TaskStatusList { get; set; } = new();
 
     private static CatalogTask? DeletedTask { get; set; }
+
 
     private Func<ModalClosingEventArgs, Task> _onOk;
 
@@ -340,8 +340,11 @@ public partial class TaskList
             InformationSystemId = catalogTask.InformationSystemId,
             PriorityId = catalogTask.PriorityId,
             TaskStatusId = catalogTask.TaskStatusId,
+            Files = catalogTask.Files
         };
+
         _visibleModal = true;
+
         StateHasChanged();
     }
 
@@ -514,7 +517,10 @@ public partial class TaskList
         if (fileInfo.File.State != UploadState.Success) 
             return;
 
-        var uploadedFile = fileInfo.File.GetResponse<File>(new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+        var uploadedFile = fileInfo.File.GetResponse<File>(new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
 
         if (uploadedFile is not null)
             EditedTask?.Files?.Add(uploadedFile);
@@ -535,7 +541,11 @@ public partial class TaskList
 
     private async Task<bool> OnRemove(UploadFileItem file)
     {
-        var uploadedFile = file.GetResponse<File>(new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+        var uploadedFile = file.GetResponse<File>(new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+
         var fileToRemove = EditedTask?.Files?.FirstOrDefault(f => f.Id == uploadedFile!.Id);
 
         if (fileToRemove is null)
