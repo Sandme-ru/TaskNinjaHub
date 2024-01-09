@@ -31,8 +31,6 @@ public abstract class BaseService<TEntity> : IBaseService<TEntity> where TEntity
 
     public virtual async Task<int> GetAllCountAsync()
     {
-        Console.WriteLine(BasePath);
-        Console.WriteLine(_httpClient.BaseAddress);
         var result = await _httpClient?.GetFromJsonAsync<int>($"{BasePath}/GetAllCount")!;
         return result;
     }

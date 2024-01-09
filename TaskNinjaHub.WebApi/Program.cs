@@ -31,6 +31,15 @@ public class Program
             options.DocumentFilter<SubdomainRouteAttribute>();
         });
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowSpecificOrigin",
+                policyBuilder => policyBuilder.WithOrigins("https://localhost:7063")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+        });
+
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
@@ -44,6 +53,8 @@ public class Program
             var dbContext = serviceScope.ServiceProvider.GetRequiredService<TaskNinjaHubDbContext>();
             dbContext.MigrateDatabase();
         }
+
+        app.UseCors("AllowSpecificOrigin");
 
         app.UseRouting();
         app.UseStaticFiles();

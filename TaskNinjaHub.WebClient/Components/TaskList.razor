@@ -208,23 +208,22 @@
                          ValueName="@nameof(TaskStatus.Id)">
                  </Select>
              </FormItem>
-             <FormItem Label="Task files">
-                 @*TODO issues with localhost*@
-                 <Upload Name="file"
-                         Action="https://localhost:7179/api/file/upload"
-                         @bind-FileList="DefaultFileList"
-                         Class="avatar-uploader"
-                         ListType="picture-card"
-                         BeforeUpload="BeforeUpload"
-                         OnChange="HandleChange"
-                         OnPreview="OnPreview"
-                         OnRemove="OnRemove">
-                     <div>
-                         <Icon Type="plus"></Icon>
-                         <div className="ant-upload-text">Upload</div>
-                     </div>
-                 </Upload>
-             </FormItem>
+            <FormItem Label="Task files">
+                <Upload Name="file"
+                        Action=@($"https://localhost:7179/api/file/upload/{context.Id}")
+                        @bind-FileList="DefaultFileList"
+                        Class="avatar-uploader"
+                        ListType="picture-card"
+                        BeforeUpload="BeforeUpload"
+                        OnChange="HandleChange"
+                        OnPreview="OnPreview"
+                        OnRemove="OnRemove">
+                    <div>
+                        <Icon Type="plus"></Icon>
+                        <div className="ant-upload-text">Upload</div>
+                    </div>
+                </Upload>
+            </FormItem>
          </Form>
      </Modal>
 }
