@@ -137,13 +137,6 @@ public class Program
         app.UseStaticFiles();
         app.UseRouting();
 
-        app.UseCookiePolicy(new CookiePolicyOptions
-        {
-            HttpOnly = HttpOnlyPolicy.Always,
-            MinimumSameSitePolicy = SameSiteMode.None,
-            Secure = CookieSecurePolicy.Always
-        });
-
         app.UseAuthentication();
         app.UseAuthorization();
 
