@@ -82,8 +82,10 @@ public class Program
             .AddOpenIdConnect(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme, options =>
             {
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+
                 options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                 options.ResponseMode = OpenIdConnectResponseMode.FormPost;
+
                 options.ClaimActions.MapUniqueJsonKey("office", "office");
                 options.UsePkce = true;
 
@@ -102,14 +104,13 @@ public class Program
                 options.CallbackPath = "/task-ninja-hub/signin-oidc";
 
                 options.TokenValidationParameters.NameClaimType = "name";
+                options.TokenValidationParameters.RoleClaimType = "role";
 
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
 
                 options.EventsType = typeof(OidcEvents);
             });
-
-        builder.Services.AddAuthorization();
 
         builder.Services.AddOpenIdConnectAccessTokenManagement();
 
