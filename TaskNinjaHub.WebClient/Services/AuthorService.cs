@@ -5,7 +5,15 @@ namespace TaskNinjaHub.WebClient.Services;
 
 public class AuthorService : BaseService<Author>
 {
-    protected override string BasePath => nameof(Author).ToLower();
+    #if (DEBUG)
+
+    protected override string BasePath => $"api/{nameof(Author).ToLower()}";
+
+    #elif (RELEASE)
+
+    protected override string BasePath => $"task-api/api/{nameof(Author).ToLower()}";
+
+    #endif
 
     public AuthorService(HttpClient? httpClient) : base(httpClient)
     {
