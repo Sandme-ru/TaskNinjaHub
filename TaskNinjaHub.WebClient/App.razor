@@ -1,4 +1,6 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿@attribute [Authorize]
+
+<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <CascadingValue Value="@routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
