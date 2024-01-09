@@ -6,12 +6,10 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using OpenIddict.Server.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
-using AntDesign;
 using TaskNinjaHub.WebClient.Data;
 using TaskNinjaHub.WebClient.DependencyInjection;
 using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
-using Microsoft.Owin.Security.OpenIdConnect;
 using Microsoft.AspNetCore.HttpOverrides;
 
 namespace TaskNinjaHub.WebClient;
@@ -75,10 +73,6 @@ public class Program
                 options.Cookie.Name = "Edison";
                 options.EventsType = typeof(CookieEvents);
                 options.Cookie.Path = "/";
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-                options.SlidingExpiration = true;
-                options.Cookie.MaxAge = options.ExpireTimeSpan;
-                options.Cookie.SameSite = SameSiteMode.Strict;
             })
             .AddOpenIdConnect(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme, options =>
             {
@@ -101,8 +95,6 @@ public class Program
                 options.Scope.Add("openid");
                 options.Scope.Add("profile");
                 options.Scope.Add("offline_access");
-
-                options.CallbackPath = "/task-ninja-hub/signin-oidc";
 
                 options.TokenValidationParameters.NameClaimType = "name";
                 options.TokenValidationParameters.RoleClaimType = "role";
@@ -129,8 +121,6 @@ public class Program
         {
             app.UseExceptionHandler("/Error");
             app.UseHsts();
-
-            app.UseMiddleware<OpenIdConnectAuthenticationPatchedMiddleware>(); // Register your custom middleware here
         }
 
         if (!app.Environment.IsProduction())
@@ -143,11 +133,8 @@ public class Program
         }
 
         app.UseForwardedHeaders();
-
         app.UseHttpsRedirection();
-
         app.UseStaticFiles();
-
         app.UseRouting();
 
         app.UseCookiePolicy(new CookiePolicyOptions
@@ -157,39 +144,12 @@ public class Program
             Secure = CookieSecurePolicy.Always
         });
 
-
         app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapBlazorHub();
         app.MapFallbackToPage("/_Host");
-
-
-
+        
         app.Run();
-    }
-}
-
-public class OpenIdConnectAuthenticationPatchedMiddleware
-{
-    private readonly RequestDelegate _next;
-
-    public OpenIdConnectAuthenticationPatchedMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
-
-    public async Task Invoke(HttpContext context)
-    {
-        var oldNonces = context.Request.Cookies.Where(kvp => kvp.Key.StartsWith(OpenIdConnectAuthenticationDefaults.CookiePrefix + "nonce"));
-        if (oldNonces.Any())
-        {
-            foreach (var oldNonce in oldNonces)
-            {
-                context.Response.Cookies.Delete(oldNonce.Key);
-            }
-        }
-
-        await _next(context);
     }
 }

@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
 using TaskNinjaHub.Application.DependencyInjection;
 using TaskNinjaHub.Persistence;
 using TaskNinjaHub.Persistence.DependencyInjection;
@@ -27,11 +25,11 @@ public class Program
 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
+
         builder.Services.AddSwaggerGen(options =>
         {
             options.DocumentFilter<SubdomainRouteAttribute>();
         });
-
 
         var app = builder.Build();
 

@@ -3,23 +3,18 @@ using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-/// <summary>
-/// Class CatalogTaskService.
-/// Implements the <see cref="CatalogTask" />
-/// </summary>
-/// <seealso cref="CatalogTask" />
 public class CatalogTaskService : BaseService<CatalogTask>
 {
-    /// <summary>
-    /// Gets the base path.
-    /// </summary>
-    /// <value>The base path.</value>
-    protected override string BasePath => nameof(CatalogTask).ToLower();
+    #if (DEBUG)
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CatalogTaskService" /> class.
-    /// </summary>
-    /// <param name="httpClient">The HTTP client.</param>
+    protected override string BasePath => $"api/{nameof(CatalogTask).ToLower()}";
+
+    #elif (RELEASE)
+
+    protected override string BasePath => $"task-api/api/{nameof(CatalogTask).ToLower()}";
+
+    #endif
+
     public CatalogTaskService(HttpClient? httpClient) : base(httpClient)
     {
     }

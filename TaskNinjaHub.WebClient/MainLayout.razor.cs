@@ -13,9 +13,6 @@ public partial class MainLayout
     [Inject]
     private AuthorService AuthorService { get; set; } = null!;
 
-    [Inject]
-    private IMessageService MessageService { get; set; } = null!;
-
     protected override async Task OnInitializedAsync()
     {
         await UserProviderService.GetUser();

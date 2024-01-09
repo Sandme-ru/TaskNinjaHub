@@ -3,23 +3,18 @@ using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-/// <summary>
-/// Class InformationSystemService.
-/// Implements the <see cref="InformationSystem" />
-/// </summary>
-/// <seealso cref="InformationSystem" />
 public class InformationSystemService : BaseService<InformationSystem>
 {
-    /// <summary>
-    /// Gets the base path.
-    /// </summary>
-    /// <value>The base path.</value>
-    protected override string BasePath => nameof(InformationSystem).ToLower();
+    #if (DEBUG)
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="InformationSystemService" /> class.
-    /// </summary>
-    /// <param name="httpClient">The HTTP client.</param>
+    protected override string BasePath => $"api/{nameof(InformationSystem).ToLower()}";
+
+    #elif (RELEASE)
+
+    protected override string BasePath => $"task-api/api/{nameof(InformationSystem).ToLower()}";
+
+    #endif
+
     public InformationSystemService(HttpClient? httpClient) : base(httpClient)
     {
     }
