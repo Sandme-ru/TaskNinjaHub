@@ -12,6 +12,7 @@ using TaskNinjaHub.WebClient.DependencyInjection;
 using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
 using Microsoft.Owin.Security.OpenIdConnect;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace TaskNinjaHub.WebClient;
 
@@ -114,11 +115,15 @@ public class Program
 
         builder.Services.AddOpenIdConnectAccessTokenManagement();
 
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders =
+                ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+        });
+
         #endregion
 
         var app = builder.Build();
-
-        
 
         if (!app.Environment.IsDevelopment())
         {
@@ -128,11 +133,16 @@ public class Program
             app.UseMiddleware<OpenIdConnectAuthenticationPatchedMiddleware>(); // Register your custom middleware here
         }
 
-        app.Use((context, next) =>
+        if (!app.Environment.IsProduction())
         {
-            context.Request.Scheme = "https";
-            return next();
-        });
+            app.Use((context, next) =>
+            {
+                context.Request.Scheme = "https";
+                return next(context);
+            });
+        }
+
+        app.UseForwardedHeaders();
 
         app.UseHttpsRedirection();
 
