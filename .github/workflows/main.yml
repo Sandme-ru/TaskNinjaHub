@@ -11,8 +11,7 @@ on:
 env:
   SERVER_HOST: 54.39.207.182
   SERVER_USER: root
-  SERVER_PATH_WEB: /root/src/TaskNinjaHub/TaskNinjaHub.WebClient
-  SERVER_PATH_API: /root/src/TaskNinjaHub/TaskNinjaHub.WebApi
+  SERVER_PATH: /root/src/TaskNinjaHub/TaskNinjaHub.WebApi
 
 jobs:
   deploy:
@@ -37,10 +36,7 @@ jobs:
         run: ssh-keyscan -H ${{ env.SERVER_HOST }} >> ~/.ssh/known_hosts
 
       # Deploy
-      - run: rsync --archive --compress --progress . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH_WEB }}
-      - run: rsync --archive --compress --progress . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH_API }}
+      - run: rsync --archive --compress --progress . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH }}
       #Docker
       - name: Run Docker Compose API
-        run: ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "cd ${{ env.SERVER_PATH_API }} && docker-compose up -d --build"
-      - name: Run Docker Compose WEB
-        run: ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "cd ${{ env.SERVER_PATH_WEB }} && docker-compose up -d --build"
+        run: ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "cd ${{ env.SERVER_PATH }} && docker-compose up -d --build"
