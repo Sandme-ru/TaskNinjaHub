@@ -1,0 +1,46 @@
+name: Deploy
+
+#on:
+#  push:
+#    branches:
+#      - master
+
+on:
+  workflow_dispatch
+
+env:
+  SERVER_HOST: 54.39.207.182
+  SERVER_USER: root
+  SERVER_PATH_WEB: /root/src/TaskNinjaHub/TaskNinjaHub.WebClient
+  SERVER_PATH_API: /root/src/TaskNinjaHub/TaskNinjaHub.WebApi
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0
+          
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2.3.1
+        with:
+          key: "${{ secrets.TASK_KEY }}"
+          known_hosts: "just-a-placeholder-so-we-dont-get-errors"
+
+      - name: Generate auth hosts
+        run: ssh-keyscan -H ${{ env.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      # Deploy
+      - run: rsync --archive --compress --progress . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH_WEB }}
+      - run: rsync --archive --compress --progress . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH_API }}
+      #Docker
+      - name: Run Docker Compose API
+        run: ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "cd ${{ env.SERVER_PATH_API }} && docker-compose up -d --build"
+      - name: Run Docker Compose WEB
+        run: ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "cd ${{ env.SERVER_PATH_WEB }} && docker-compose up -d --build"
