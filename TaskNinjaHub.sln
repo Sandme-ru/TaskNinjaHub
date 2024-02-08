@@ -9,8 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{194A6235-EEFC-4683-8090-1FE24A0D8C8A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{490319CC-B214-4E9A-9F20-BEAA277A9D59}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskNinjaHub.Application", "TaskNinjaHub.Application\TaskNinjaHub.Application.csproj", "{324BFA40-0EF4-4630-A8E2-2E505888009E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskNinjaHub.Persistence", "TaskNinjaHub.Persistence\TaskNinjaHub.Persistence.csproj", "{AAB9F238-1F73-42BC-9C44-7623B53D3EE7}"

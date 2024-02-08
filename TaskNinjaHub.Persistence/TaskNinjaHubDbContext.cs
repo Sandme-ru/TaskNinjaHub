@@ -4,11 +4,11 @@ using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
+using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.Application.Interfaces;
 using TaskNinjaHub.Persistence.DataSeeders;
 using TaskNinjaHub.Persistence.EntityTypeConfigurations;
 using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
-using TaskStatus = TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskStatus;
 
 namespace TaskNinjaHub.Persistence;
 
@@ -47,7 +47,7 @@ public class TaskNinjaHubDbContext : DbContext, ITaskNinjaHubDbContext
 
     public DbSet<Priority> Priorities { get; set; } = null!;
 
-    public DbSet<TaskStatus> TaskStatuses { get; set; } = null!;
+    public DbSet<CatalogTaskStatus> TaskStatuses { get; set; } = null!;
 
     public DbSet<File> Files { get; set; } = null!;
 

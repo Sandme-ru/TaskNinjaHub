@@ -4,10 +4,4 @@ using TaskNinjaHub.WebApi.Controllers.Bases;
 
 namespace TaskNinjaHub.WebApi.Controllers;
 
-public class PriorityController : BaseController<Priority, IPriorityRepository>
-{
-    public PriorityController(IPriorityRepository repository) : base(repository)
-    {
-
-    }
-}
+public class PriorityController(IPriorityRepository repository) : BaseController<Priority, IPriorityRepository>(repository);

@@ -6,10 +6,10 @@ using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
+using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
 using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
-using TaskStatus = TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskStatus;
 
 namespace TaskNinjaHub.WebClient.Components;
 
@@ -106,7 +106,7 @@ public partial class TaskList
 
     private List<InformationSystem> InformationSystemList { get; set; } = new();
 
-    private List<TaskStatus> TaskStatusList { get; set; } = new();
+    private List<CatalogTaskStatus> TaskStatusList { get; set; } = new();
 
     private static CatalogTask? DeletedTask { get; set; }
 
@@ -141,7 +141,7 @@ public partial class TaskList
         AuthorsList = (await AuthorService.GetAllAsync() ?? Array.Empty<Author>()).ToList();
         PriorityList = (await PriorityService.GetAllAsync() ?? Array.Empty<Priority>()).ToList();
         InformationSystemList = (await InformationSystemService.GetAllAsync() ?? Array.Empty<InformationSystem>()).ToList();
-        TaskStatusList = (await TaskStatusService.GetAllAsync() ?? Array.Empty<TaskStatus>()).ToList();
+        TaskStatusList = (await TaskStatusService.GetAllAsync() ?? Array.Empty<CatalogTaskStatus>()).ToList();
         CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(CurrentPage, PageSize) ?? Array.Empty<CatalogTask>()).ToList();
 
         IsLoadingTaskList = false;

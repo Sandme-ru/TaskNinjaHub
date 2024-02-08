@@ -4,10 +4,4 @@ using TaskNinjaHub.WebApi.Controllers.Bases;
 
 namespace TaskNinjaHub.WebApi.Controllers;
 
-public class InformationSystemController : BaseController<InformationSystem, IInformationSystemRepository>
-{
-    public InformationSystemController(IInformationSystemRepository repository) : base(repository)
-    {
-
-    }
-}
+public class InformationSystemController(IInformationSystemRepository repository) : BaseController<InformationSystem, IInformationSystemRepository>(repository);

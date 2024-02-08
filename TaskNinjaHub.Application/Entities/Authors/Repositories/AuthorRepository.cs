@@ -7,14 +7,9 @@ using TaskNinjaHub.Application.Utilities.OperationResults;
 
 namespace TaskNinjaHub.Application.Entities.Authors.Repositories;
 
-public class AuthorRepository : BaseRepository<Author>, IAuthorRepository
+public class AuthorRepository(ITaskNinjaHubDbContext? context) : BaseRepository<Author>((DbContext)context!), IAuthorRepository
 {
-    private readonly ITaskNinjaHubDbContext _context;
-
-    public AuthorRepository(ITaskNinjaHubDbContext? context) : base((DbContext)context!)
-    {
-        _context = context!;
-    }
+    private readonly ITaskNinjaHubDbContext _context = context!;
 
     public new async Task<OperationResult> AddAsync(Author author)
     {
