@@ -3,7 +3,4 @@ using TaskNinjaHub.Application.Entities.Bases.Interfaces;
 
 namespace TaskNinjaHub.Application.Entities.Authors.Interfaces;
 
-public interface IAuthorRepository : IBaseRepository<Author>
-{
-
-}
+public interface IAuthorRepository : IBaseRepository<Author>;

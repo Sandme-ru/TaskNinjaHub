@@ -2,7 +2,4 @@
 
 namespace TaskNinjaHub.Application.Entities.Files.Interfaces;
 
-public interface IFileRepository : IBaseRepository<Domain.File>
-{
-    
-}
+public interface IFileRepository : IBaseRepository<Domain.File>;

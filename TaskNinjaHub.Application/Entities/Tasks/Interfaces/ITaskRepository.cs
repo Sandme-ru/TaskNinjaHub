@@ -3,7 +3,4 @@ using TaskNinjaHub.Application.Entities.Tasks.Domain;
 
 namespace TaskNinjaHub.Application.Entities.Tasks.Interfaces;
 
-public interface ITaskRepository : IBaseRepository<CatalogTask>
-{
-    
-}
+public interface ITaskRepository : IBaseRepository<CatalogTask>;

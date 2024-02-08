@@ -6,18 +6,9 @@ using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 
 namespace TaskNinjaHub.WebApi.Controllers;
 
-public class FileController : ControllerBase
+public class FileController(IFileRepository repository, IWebHostEnvironment environment)
+    : ControllerBase
 {
-    private readonly IFileRepository _repository;
-
-    private readonly IWebHostEnvironment _environment;
-
-    public FileController(IFileRepository repository, IWebHostEnvironment environment)
-    {
-        _repository = repository;
-        _environment = environment;
-    }
-
     [HttpGet("/api/file")]
     public async Task<IEnumerable<File?>> GetAllByTaskId(
         [FromQuery] int taskId)
@@ -25,7 +16,7 @@ public class FileController : ControllerBase
         if (taskId <= 0)
             return null!;
 
-        var files = await _repository.FindAsync(f => f.TaskId == taskId);
+        var files = await repository.FindAsync(f => f.TaskId == taskId);
 
         return files ?? Array.Empty<File>();
     }
@@ -37,12 +28,12 @@ public class FileController : ControllerBase
         if (path is null or { Length: 0 })
             return null;
 
-        var files = await _repository.GetAllAsync();
+        var files = await repository.GetAllAsync();
         var file = files!.FirstOrDefault(f => f.Path == path);
         if (file is null)
             return null;
 
-        var filePath = Path.Combine(_environment.WebRootPath, file.Path!);
+        var filePath = Path.Combine(environment.WebRootPath, file.Path!);
         var fileData = await System.IO.File.ReadAllBytesAsync(filePath);
 
         return File(fileData, "application/octet-stream");
@@ -66,14 +57,14 @@ public class FileController : ControllerBase
 
         fileName = fileName.GetUniqueFileName();
 
-        if (string.IsNullOrEmpty(_environment.WebRootPath))
+        if (string.IsNullOrEmpty(environment.WebRootPath))
         {
-            _environment.WebRootPath = Path.Combine(_environment.ContentRootPath, "wwwroot");
-            Directory.CreateDirectory(Path.GetDirectoryName(_environment.WebRootPath) ??
+            environment.WebRootPath = Path.Combine(environment.ContentRootPath, "wwwroot");
+            Directory.CreateDirectory(Path.GetDirectoryName(environment.WebRootPath) ??
                                       throw new("Directory name is null"));
         }
 
-        var directoryName = Path.Combine(_environment.WebRootPath, "files");
+        var directoryName = Path.Combine(environment.WebRootPath, "files");
         var filePath = Path.Combine(directoryName, fileName);
 
         var fileEntity = new File
@@ -88,7 +79,7 @@ public class FileController : ControllerBase
         {
             Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? throw new("Directory name is null"));
 
-            await _repository.AddAsync(fileEntity);
+            await repository.AddAsync(fileEntity);
 
             if (System.IO.File.Exists(filePath))
                 System.IO.File.Delete(filePath);
@@ -113,14 +104,14 @@ public class FileController : ControllerBase
         if (fileOwnershipDto.FileId == 0 || fileOwnershipDto.TaskId == 0)
             return null;
 
-        var files = await _repository.GetAllAsync();
+        var files = await repository.GetAllAsync();
         var file = files!.FirstOrDefault(f => f.Id == fileOwnershipDto.FileId);
         if (file is null)
             return null;
 
         file.TaskId = fileOwnershipDto.TaskId;
 
-        await _repository.UpdateAsync(file);
+        await repository.UpdateAsync(file);
 
         return file;
     }
@@ -131,19 +122,19 @@ public class FileController : ControllerBase
         if (id <= 0)
             return null;
 
-        var files = await _repository.GetAllAsync();
+        var files = await repository.GetAllAsync();
         var file = files!.FirstOrDefault(f => f.Id == id);
 
         if (file is null)
             return null;
 
-        var filePath = Path.Combine(_environment.WebRootPath, file.Path!);
+        var filePath = Path.Combine(environment.WebRootPath, file.Path!);
 
         if (!System.IO.File.Exists(filePath))
             return null;
 
         System.IO.File.Delete(filePath);
-        await _repository.RemoveAsync(file);
+        await repository.RemoveAsync(file);
 
         return file;
     }

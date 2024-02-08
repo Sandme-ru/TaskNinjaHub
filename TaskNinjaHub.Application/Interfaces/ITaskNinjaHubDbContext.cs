@@ -3,7 +3,7 @@ using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
-using TaskStatus = TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskStatus;
+using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 
 namespace TaskNinjaHub.Application.Interfaces;
 
@@ -17,5 +17,5 @@ public interface ITaskNinjaHubDbContext
 
     DbSet<CatalogTask> CatalogTasks { get; set; }
 
-    DbSet<TaskStatus> TaskStatuses { get; set; }
+    DbSet<CatalogTaskStatus> TaskStatuses { get; set; }
 }

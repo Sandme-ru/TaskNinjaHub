@@ -28,7 +28,7 @@ public class Program
 
         builder.Services.AddSwaggerGen(options =>
         {
-            options.DocumentFilter<SubdomainRouteAttribute>();
+            //options.DocumentFilter<SubdomainRouteAttribute>();
         });
 
         builder.Services.AddCors(options =>

@@ -6,10 +6,4 @@ using TaskNinjaHub.Application.Interfaces;
 
 namespace TaskNinjaHub.Application.Entities.Tasks.Repositories;
 
-public class TaskRepository : BaseRepository<CatalogTask>, ITaskRepository
-{
-    public TaskRepository(ITaskNinjaHubDbContext? context) : base((DbContext)context!)
-    {
-        
-    }
-}
+public class TaskRepository(ITaskNinjaHubDbContext? context) : BaseRepository<CatalogTask>((DbContext)context!), ITaskRepository;

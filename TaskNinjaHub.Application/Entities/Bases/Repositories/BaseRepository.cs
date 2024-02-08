@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using TaskNinjaHub.Application.Entities.Bases.Interfaces;
 using TaskNinjaHub.Application.Interfaces.Haves;
@@ -7,14 +6,9 @@ using TaskNinjaHub.Application.Utilities.OperationResults;
 
 namespace TaskNinjaHub.Application.Entities.Bases.Repositories;
 
-public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IHaveId
+public abstract class BaseRepository<T>(DbContext? context) : IBaseRepository<T> where T : class, IHaveId
 {
-    protected readonly DbContext? Context;
-
-    protected BaseRepository(DbContext? context)
-    {
-        Context = context;
-    }
+    protected readonly DbContext? Context = context;
 
     public async Task<T?> GetByIdAsync(int id)
     {
@@ -73,6 +67,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
                             .First(p => Equals(p.Name.Trim(), property.Key.Trim()))
                             .GetValue(entity)!
                             .ToString(), property.Value, StringComparison.Ordinal);
+
                     predicate = Expression.Lambda<Func<T, bool>>(
                         Expression.AndAlso(predicate.Body,
                             Expression.Invoke(filterExpression, predicate.Parameters)), predicate.Parameters[0]);
@@ -112,6 +107,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IH
                             .First(p => Equals(p.Name.Trim(), property.Key.Trim()))
                             .GetValue(entity)!
                             .ToString(), property.Value, StringComparison.Ordinal);
+
                     predicate = Expression.Lambda<Func<T, bool>>(
                         Expression.AndAlso(predicate.Body,
                             Expression.Invoke(filterExpression, predicate.Parameters)), predicate.Parameters[0]);

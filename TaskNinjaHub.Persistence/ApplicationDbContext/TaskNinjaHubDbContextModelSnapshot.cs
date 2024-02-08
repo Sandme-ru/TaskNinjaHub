@@ -17,7 +17,7 @@ namespace TaskNinjaHub.Persistence.ApplicationDbContext
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
+                .HasAnnotation("ProductVersion", "8.0.1")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -35,11 +35,11 @@ namespace TaskNinjaHub.Persistence.ApplicationDbContext
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("date_updated");
 
                     b.Property<string>("Name")
@@ -80,7 +80,7 @@ namespace TaskNinjaHub.Persistence.ApplicationDbContext
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("date_created");
 
                     b.Property<string>("Name")
@@ -114,11 +114,11 @@ namespace TaskNinjaHub.Persistence.ApplicationDbContext
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("date_updated");
 
                     b.Property<string>("Name")
@@ -189,7 +189,7 @@ namespace TaskNinjaHub.Persistence.ApplicationDbContext
                         });
                 });
 
-            modelBuilder.Entity("TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskStatus", b =>
+            modelBuilder.Entity("TaskNinjaHub.Application.Entities.TaskStatuses.Domain.CatalogTaskStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -199,11 +199,11 @@ namespace TaskNinjaHub.Persistence.ApplicationDbContext
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("date_updated");
 
                     b.Property<string>("Name")
@@ -258,11 +258,11 @@ namespace TaskNinjaHub.Persistence.ApplicationDbContext
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("date_updated");
 
                     b.Property<string>("Description")
@@ -376,7 +376,7 @@ namespace TaskNinjaHub.Persistence.ApplicationDbContext
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_catalog_tasks_authors_task_executor_id");
 
-                    b.HasOne("TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskStatus", "TaskStatus")
+                    b.HasOne("TaskNinjaHub.Application.Entities.TaskStatuses.Domain.CatalogTaskStatus", "TaskStatus")
                         .WithMany()
                         .HasForeignKey("TaskStatusId")
                         .HasConstraintName("fk_catalog_tasks_task_statuses_task_status_id");

@@ -6,10 +6,4 @@ using TaskNinjaHub.Application.Interfaces;
 
 namespace TaskNinjaHub.Application.Entities.Priorities.Repositories;
 
-public class PriorityRepository : BaseRepository<Priority>, IPriorityRepository
-{
-    public PriorityRepository(ITaskNinjaHubDbContext? context) : base((DbContext)context!)
-    {
-
-    }
-}
+public class PriorityRepository(ITaskNinjaHubDbContext? context) : BaseRepository<Priority>((DbContext)context!), IPriorityRepository;

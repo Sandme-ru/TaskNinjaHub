@@ -2,9 +2,9 @@
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
+using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.Application.Interfaces.Haves;
 using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
-using TaskStatus = TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskStatus;
 
 namespace TaskNinjaHub.Application.Entities.Tasks.Domain;
 
@@ -34,7 +34,7 @@ public class CatalogTask : BaseUserCU, IHaveId, IHaveName
 
     public int? TaskStatusId { get; set; }
 
-    public virtual TaskStatus? TaskStatus { get; set; }
+    public virtual CatalogTaskStatus? TaskStatus { get; set; }
 
     public virtual List<File>? Files { get; set; }
 

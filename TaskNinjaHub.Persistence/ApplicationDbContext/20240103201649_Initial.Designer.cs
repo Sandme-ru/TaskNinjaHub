@@ -188,7 +188,7 @@ namespace TaskNinjaHub.Persistence.ApplicationDbContext
                         });
                 });
 
-            modelBuilder.Entity("TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskStatus", b =>
+            modelBuilder.Entity("TaskNinjaHub.Application.Entities.TaskStatuses.Domain.CatalogTaskStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -375,7 +375,7 @@ namespace TaskNinjaHub.Persistence.ApplicationDbContext
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_catalog_tasks_authors_task_executor_id");
 
-                    b.HasOne("TaskNinjaHub.Application.Entities.TaskStatuses.Domain.TaskStatus", "TaskStatus")
+                    b.HasOne("TaskNinjaHub.Application.Entities.TaskStatuses.Domain.CatalogTaskStatus", "CatalogTaskStatus")
                         .WithMany()
                         .HasForeignKey("TaskStatusId")
                         .HasConstraintName("fk_catalog_tasks_task_statuses_task_status_id");
@@ -390,7 +390,7 @@ namespace TaskNinjaHub.Persistence.ApplicationDbContext
 
                     b.Navigation("TaskExecutor");
 
-                    b.Navigation("TaskStatus");
+                    b.Navigation("CatalogTaskStatus");
                 });
 
             modelBuilder.Entity("TaskNinjaHub.Application.Entities.Authors.Domain.Author", b =>

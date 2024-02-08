@@ -6,28 +6,21 @@ namespace TaskNinjaHub.WebApi.Controllers.Bases;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BaseController<TEntity, TRepository> : ControllerBase
+public class BaseController<TEntity, TRepository>(TRepository repository) : ControllerBase
     where TEntity : class, IHaveId
     where TRepository : class, IBaseRepository<TEntity>
 {
-    private readonly TRepository _repository;
-
-    public BaseController(TRepository repository)
-    {
-        _repository = repository;
-    }
-
     [HttpGet]
     public async Task<IEnumerable<TEntity>?> GetAll()
     {
-        var entities = await _repository.GetAllAsync();
+        var entities = await repository.GetAllAsync();
         return entities ?? null;
     }
     
     [HttpGet("GetAllCount")]
     public async Task<int> GetAllCount()
     {
-        var allCount = (await _repository.GetAllAsync() ?? Array.Empty<TEntity>())
+        var allCount = (await repository.GetAllAsync() ?? Array.Empty<TEntity>())
             .ToList().Count;
         return allCount;
     }
@@ -35,14 +28,14 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     [HttpGet("GetAllByPage")]
     public async Task<IEnumerable<TEntity>?> GetAllByPage([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var entities = await _repository.GetAllByPageAsync(pageNumber, pageSize);
+        var entities = await repository.GetAllByPageAsync(pageNumber, pageSize);
         return entities ?? null;
     }
 
     [HttpGet("filter")]
     public async Task<IEnumerable<TEntity>?> GetAllByFilter([FromQuery] IDictionary<string, string?> query)
     {
-        var entities = await _repository.GetAllByFilterAsync(query);
+        var entities = await repository.GetAllByFilterAsync(query);
         return entities ?? null;
     }
 
@@ -51,14 +44,14 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     public async Task<IEnumerable<TEntity>?> GetAllByFilterByPage([FromBody] IDictionary<string, string?> query,
         [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var entities = await _repository.GetAllByFilterByPageAsync(query, pageNumber, pageSize);
+        var entities = await repository.GetAllByFilterByPageAsync(query, pageNumber, pageSize);
         return entities ?? null;
     }
 
     [HttpGet("{id:int}")]
     public async Task<TEntity?> Get(int id)
     {
-        var entity = await _repository.GetByIdAsync(id);
+        var entity = await repository.GetByIdAsync(id);
         return entity ?? null;
     }
 
@@ -68,7 +61,7 @@ public class BaseController<TEntity, TRepository> : ControllerBase
         if (entity == null)
             return BadRequest("An empty object was passed to add");
 
-        var result = await _repository.AddAsync(entity);
+        var result = await repository.AddAsync(entity);
 
         if (result.Success)
             return Ok(entity);
@@ -82,7 +75,7 @@ public class BaseController<TEntity, TRepository> : ControllerBase
         if (entity == null)
             return BadRequest("An empty object was passed to update");
 
-        var result = await _repository.UpdateAsync(entity);
+        var result = await repository.UpdateAsync(entity);
 
         if (result.Success)
             return Ok(entity);
@@ -93,11 +86,11 @@ public class BaseController<TEntity, TRepository> : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult<TEntity>?> Delete(int id)
     {
-        var entity = (_repository.FindAsync(x => x.Id == id).Result ?? Array.Empty<TEntity>()).FirstOrDefault();
+        var entity = (repository.FindAsync(x => x.Id == id).Result ?? Array.Empty<TEntity>()).FirstOrDefault();
 
         if (entity != null)
         {
-            var result = await _repository.RemoveAsync(entity);
+            var result = await repository.RemoveAsync(entity);
 
             if (result.Success)
                 return Ok(entity);
