@@ -1,0 +1,22 @@
+﻿<Popover Title="@TaskStatusName">
+    @switch (TaskStatusName)
+    {
+        case "Awaiting execution":
+            <Icon Type="clock-circle" Theme="outline" Id="nonclickable" />
+            break;
+        case "At work":
+            <Icon Type="warning" Theme="outline" Id="nonclickable" />
+            break;
+        case "Awaiting verification":
+            <Icon Type="question-circle" Theme="outline" Id="nonclickable" />
+            break;
+        case "Done":
+            <Icon Type="check"  Theme="outline" Id="nonclickable" />
+            break;
+    }
+</Popover>
+
+@code {
+    [Parameter]
+    public string TaskStatusName { get; set; } = null!;
+}

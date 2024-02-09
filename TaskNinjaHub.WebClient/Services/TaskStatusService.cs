@@ -1,10 +1,9 @@
-﻿using TaskNinjaHub.Application.Entities.Priorities.Domain;
-using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
+﻿using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-public class TaskStatusService : BaseService<CatalogTaskStatus>
+public class TaskStatusService(HttpClient? httpClient) : BaseService<CatalogTaskStatus>(httpClient)
 {
     #if (DEBUG)
 
@@ -15,8 +14,4 @@ public class TaskStatusService : BaseService<CatalogTaskStatus>
     protected override string BasePath => $"task-api/api/{nameof(CatalogTaskStatus).ToLower()}";
 
     #endif
-
-    public TaskStatusService(HttpClient? httpClient) : base(httpClient)
-    {
-    }
 }

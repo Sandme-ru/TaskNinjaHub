@@ -1,0 +1,32 @@
+﻿<Popover Title="@PriorityName">
+    @switch (PriorityName)
+    {
+        case "The highest":
+            <Icon Type="fire" Theme="Fill" Id="thehighest" />
+            break;
+        case "High":
+            <Icon Type="fire" Theme="Fill" Id="high" />
+            break;
+        case "Medium":
+            <Icon Type="fire" Theme="Fill" Id="medium" />
+            break;
+        case "Low":
+            <Icon Type="fire" Theme="Fill" Id="low" />
+            break;
+        case "In fire":
+            <Icon Type="fire" Theme="Fill" Id="thehighest" Spin />
+            break;
+        case "Will be viewed":
+            <Icon Type="eye" Theme="Fill" Id="casual" />
+            break;
+        case "Release":
+            <Icon Type="check" Theme="Fill" Id="casual" />
+            break;
+    }
+</Popover>
+
+@code {
+    [Parameter]
+    public string PriorityName { get; set; } = null!;
+
+}

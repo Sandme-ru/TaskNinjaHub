@@ -3,7 +3,7 @@ using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-public class PriorityService : BaseService<Priority>
+public class PriorityService(HttpClient? httpClient) : BaseService<Priority>(httpClient)
 {
     #if (DEBUG)
 
@@ -14,8 +14,4 @@ public class PriorityService : BaseService<Priority>
     protected override string BasePath => $"task-api/api/{nameof(Priority).ToLower()}";
 
     #endif
-
-    public PriorityService(HttpClient? httpClient) : base(httpClient)
-    {
-    }
 }

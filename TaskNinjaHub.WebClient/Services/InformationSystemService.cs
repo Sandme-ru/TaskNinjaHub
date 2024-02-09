@@ -3,7 +3,7 @@ using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-public class InformationSystemService : BaseService<InformationSystem>
+public class InformationSystemService(HttpClient? httpClient) : BaseService<InformationSystem>(httpClient)
 {
     #if (DEBUG)
 
@@ -14,8 +14,4 @@ public class InformationSystemService : BaseService<InformationSystem>
     protected override string BasePath => $"task-api/api/{nameof(InformationSystem).ToLower()}";
 
     #endif
-
-    public InformationSystemService(HttpClient? httpClient) : base(httpClient)
-    {
-    }
 }

@@ -1,6 +1,3 @@
-@using TaskNinjaHub.Application.Entities.Authors.Domain;
-@using TaskNinjaHub.Application.Entities.InformationSystems.Domain
-@using TaskNinjaHub.Application.Entities.Priorities.Domain
 @using TaskStatus = TaskNinjaHub.Application.Entities.TaskStatuses.Domain.CatalogTaskStatus
 
 <PageTitle>Main page</PageTitle>
@@ -71,7 +68,7 @@
                          <div>
                              <Descriptions Bordered>
                              <Paragraph Copyable>
-                                 @if (@context.Name.Length > 20)
+                                 @if (context.Name!.Length > 20)
                                         {
                                             @context.Name.Substring(0, 20)
                                             <a style="cursor: default; color: black">...</a>
@@ -86,49 +83,8 @@
                                     <Popover Title="@context.TaskAuthor?.Name">
                                         <Avatar Size="small">U</Avatar>
                                     </Popover>
-                                    <Popover Title="@context.Priority?.Name">
-                                        @switch (context.Priority.Name)
-                                        {
-                                            case "The highest":
-                                                <Icon Type="fire" Theme="Fill" Id="thehighest" />
-                                                break;
-                                            case "High":
-                                                <Icon Type="fire" Theme="Fill" Id="high" />
-                                                break;
-                                            case "Medium":
-                                                <Icon Type="fire" Theme="Fill" Id="medium" />
-                                                break;
-                                            case "Low":
-                                                <Icon Type="fire" Theme="Fill" Id="low" />
-                                                break;
-                                            case "In fire":
-                                                <Icon Type="fire" Theme="Fill" Id="thehighest" Spin />
-                                                break;
-                                            case "Will be viewed":
-                                                <Icon Type="eye" Theme="Fill" Id="casual" />
-                                                break;
-                                            case "Release":
-                                                <Icon Type="check" Theme="Fill" Id="casual" />
-                                                break;
-                                        }
-                                    </Popover>
-                                    <Popover Title="@context.TaskStatus?.Name">
-                                        @switch (context.TaskStatus.Name)
-                                        {
-                                            case "Awaiting execution":
-                                                <Icon Type="clock-circle" Theme="outline" Id="nonclickable" />
-                                                break;
-                                            case "At work":
-                                                <Icon Type="warning" Theme="outline" Id="nonclickable" />
-                                                break;
-                                            case "Awaiting verification":
-                                                <Icon Type="question-circle" Theme="outline" Id="nonclickable" />
-                                                break;
-                                            case "Done":
-                                                <Icon Type="check"  Theme="outline" Id="nonclickable" />
-                                                break;
-                                        }
-                                    </Popover>
+                                    <PriorityIcon PriorityName="@context.Priority?.Name"></PriorityIcon>
+                                    <TaskStatusIcon TaskStatusName="@context.TaskStatus?.Name"></TaskStatusIcon>
                                     @if (context.Files is not null and { Count: > 0 })
                                     {
                                         <Popover Title="Files">

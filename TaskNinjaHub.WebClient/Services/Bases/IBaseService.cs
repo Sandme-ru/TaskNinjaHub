@@ -1,4 +1,6 @@
-﻿namespace TaskNinjaHub.WebClient.Services.Bases;
+﻿using TaskNinjaHub.Application.Filters;
+
+namespace TaskNinjaHub.WebClient.Services.Bases;
 
 public interface IBaseService<TEntity> where TEntity : class
 {
@@ -6,7 +8,7 @@ public interface IBaseService<TEntity> where TEntity : class
 
     Task<int> GetAllCountAsync();
 
-    Task<IEnumerable<TEntity>?> GetAllByPageAsync(int pageNumber = 1, int pageSize = 10);
+    Task<IEnumerable<TEntity>?> GetAllByPageAsync(FilterModel filterModel);
 
     Task<IEnumerable<TEntity>?> GetAllByFilterAsync(TEntity filterModel);
 

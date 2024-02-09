@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaskNinjaHub.Application.Entities.Bases.Interfaces;
+using TaskNinjaHub.Application.Filters;
 using TaskNinjaHub.Application.Interfaces.Haves;
 
 namespace TaskNinjaHub.WebApi.Controllers.Bases;
@@ -26,9 +27,9 @@ public class BaseController<TEntity, TRepository>(TRepository repository) : Cont
     }
 
     [HttpGet("GetAllByPage")]
-    public async Task<IEnumerable<TEntity>?> GetAllByPage([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<IEnumerable<TEntity>?> GetAllByPage([FromQuery] FilterModel filterModel)
     {
-        var entities = await repository.GetAllByPageAsync(pageNumber, pageSize);
+        var entities = await repository.GetAllByPageAsync(filterModel.PageNumber, filterModel.PageSize);
         return entities ?? null;
     }
 
@@ -38,8 +39,7 @@ public class BaseController<TEntity, TRepository>(TRepository repository) : Cont
         var entities = await repository.GetAllByFilterAsync(query);
         return entities ?? null;
     }
-
-
+    
     [HttpPost("FilterByPage")]
     public async Task<IEnumerable<TEntity>?> GetAllByFilterByPage([FromBody] IDictionary<string, string?> query,
         [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
