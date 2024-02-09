@@ -7,6 +7,7 @@ using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
+using TaskNinjaHub.Application.Filters;
 using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
 using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
@@ -78,7 +79,7 @@ public partial class TaskList
 
     private List<string> HtmlMarkupForTask { get; set; } = null!;
 
-    private List<CatalogTask>? CatalogTasks { get; set; } = new();
+    private List<CatalogTask>? CatalogTasks { get; set; }
 
     private List<UploadFileItem>? DefaultFileList { get; set; } = new();
 
@@ -98,15 +99,14 @@ public partial class TaskList
     private bool _visibleDrawer = false;
 
     private bool _visibleModal = false;
+    
+    private IEnumerable<Author>? AuthorsList { get; set; }
 
+    private IEnumerable<Priority>? PriorityList { get; set; }
 
-    private List<Author> AuthorsList { get; set; } = new();
+    private IEnumerable<InformationSystem>? InformationSystemList { get; set; }
 
-    private List<Priority> PriorityList { get; set; } = new();
-
-    private List<InformationSystem> InformationSystemList { get; set; } = new();
-
-    private List<CatalogTaskStatus> TaskStatusList { get; set; } = new();
+    private IEnumerable<CatalogTaskStatus>? TaskStatusList { get; set; }
 
     private static CatalogTask? DeletedTask { get; set; }
 
@@ -130,22 +130,26 @@ public partial class TaskList
     private bool IsLoadingTaskList { get; set; }
 
     #endregion
-
-    protected override async Task OnInitializedAsync()
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        IsLoadingTaskList = true;
-        StateHasChanged();
+        if(firstRender)
+        {
+            IsLoadingTaskList = true;
+            StateHasChanged();
 
-        CatalogTasksCount = await CatalogTaskService.GetAllCountAsync();
+            CatalogTasksCount = await CatalogTaskService.GetAllCountAsync();
 
-        AuthorsList = (await AuthorService.GetAllAsync() ?? Array.Empty<Author>()).ToList();
-        PriorityList = (await PriorityService.GetAllAsync() ?? Array.Empty<Priority>()).ToList();
-        InformationSystemList = (await InformationSystemService.GetAllAsync() ?? Array.Empty<InformationSystem>()).ToList();
-        TaskStatusList = (await TaskStatusService.GetAllAsync() ?? Array.Empty<CatalogTaskStatus>()).ToList();
-        CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(CurrentPage, PageSize) ?? Array.Empty<CatalogTask>()).ToList();
+            AuthorsList = await AuthorService.GetAllAsync();
+            PriorityList = await PriorityService.GetAllAsync();
+            InformationSystemList = await InformationSystemService.GetAllAsync();
+            TaskStatusList = await TaskStatusService.GetAllAsync();
+            CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel
+                { PageNumber = CurrentPage, PageSize = PageSize }))!.ToList();
 
-        IsLoadingTaskList = false;
-        StateHasChanged();
+            IsLoadingTaskList = false;
+            StateHasChanged();
+        }
     }
 
     private async Task DeleteTaskHandler()
@@ -196,7 +200,7 @@ public partial class TaskList
         HtmlMarkupForTask = new List<string>();
         SelectedCatalogTask = catalogTask;
         var taskFiles = await FileService.GetAllByTaskIdAsync(catalogTask!.Id);
-        if (taskFiles?.ToList() is not null and {Count: > 0} files)
+        if (taskFiles?.ToList() is not null and { Count: > 0 } files)
         {
             catalogTask.Files = files;
             DefaultFileList = catalogTask.Files
@@ -208,12 +212,12 @@ public partial class TaskList
                     ObjectURL = $"https://localhost:7179/{f.Path}",
                     Response = JsonSerializer.Serialize(
                         f,
-                        new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase}),
+                        new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
                     State = UploadState.Success
                 }).ToList()!;
         }
         else
-            DefaultFileList = new(); 
+            DefaultFileList = new();
         CatalogTasksForChangelog = CatalogTasks!.Where(t => t.OriginalTaskId == catalogTask.Id).OrderByDescending(t => t.DateCreated).ToList();
         if (CatalogTasksForChangelog.Any())
         {
@@ -309,7 +313,7 @@ public partial class TaskList
     {
         EditedTask = catalogTask;
         var taskFiles = await FileService.GetAllByTaskIdAsync(catalogTask!.Id);
-        if (taskFiles?.ToList() is not null and {Count: > 0} files)
+        if (taskFiles?.ToList() is not null and { Count: > 0 } files)
         {
             catalogTask.Files = files;
             DefaultFileList = catalogTask.Files
@@ -321,7 +325,7 @@ public partial class TaskList
                     ObjectURL = $"https://localhost:7179/{f.Path}",
                     Response = JsonSerializer.Serialize(
                         f,
-                        new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase}),
+                        new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
                     State = UploadState.Success
                 }).ToList()!;
         }
@@ -330,7 +334,7 @@ public partial class TaskList
             EditedTask!.Files = new List<File>();
             DefaultFileList = new List<UploadFileItem>();
         }
-        
+
         CloneTask = new CatalogTask
         {
             Name = catalogTask.Name,
@@ -395,7 +399,7 @@ public partial class TaskList
                 {
                     Console.WriteLine($"{EditedTask?.Id} {EditedTask?.Name} is updated.");
 
-                    if (EditedTask?.Files is {Count: > 0})
+                    if (EditedTask?.Files is { Count: > 0 })
                     {
                         var createdTaskStream = await changeRet.Content.ReadAsStreamAsync();
                         var createdTask = await JsonSerializer.DeserializeAsync<CatalogTask>(
@@ -431,12 +435,12 @@ public partial class TaskList
                 if (createRet.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"{EditedTask?.Id} {EditedTask?.Name} is updated.");
-                    if (CatalogTaskForChangelog.Files is {Count: > 0})
+                    if (CatalogTaskForChangelog.Files is { Count: > 0 })
                     {
                         var createdTaskStream = await changeRet.Content.ReadAsStreamAsync();
                         var createdTask = await JsonSerializer.DeserializeAsync<CatalogTask>(
                             createdTaskStream,
-                            new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+                            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
                         foreach (var fileEntity in CatalogTaskForChangelog.Files!)
                             await FileService.ChangeOwnershipAsync(fileEntity.Id, createdTask!.Id);
                     }
@@ -457,11 +461,18 @@ public partial class TaskList
         if (EditedTask == null)
             return;
 
-        EditedTask.TaskAuthor = AuthorsList.Find(a => a.Id == EditedTask.TaskAuthorId);
-        EditedTask.TaskExecutor = AuthorsList.Find(a => a.Id == EditedTask.TaskExecutorId);
-        EditedTask.InformationSystem = InformationSystemList.Find(a => a.Id == EditedTask.InformationSystemId);
-        EditedTask.Priority = PriorityList.Find(a => a.Id == EditedTask.PriorityId);
-        EditedTask.TaskStatus = TaskStatusList.Find(a => a.Id == EditedTask.TaskStatusId);
+        if (AuthorsList != null)
+        {
+            EditedTask.TaskAuthor = AuthorsList.FirstOrDefault(a => a.Id == EditedTask.TaskAuthorId);
+            EditedTask.TaskExecutor = AuthorsList.FirstOrDefault(a => a.Id == EditedTask.TaskExecutorId);
+        }
+
+        if (InformationSystemList != null)
+            EditedTask.InformationSystem = InformationSystemList.FirstOrDefault(a => a.Id == EditedTask.InformationSystemId);
+        if (PriorityList != null) 
+            EditedTask.Priority = PriorityList.FirstOrDefault(a => a.Id == EditedTask.PriorityId);
+        if (TaskStatusList != null)
+            EditedTask.TaskStatus = TaskStatusList.FirstOrDefault(a => a.Id == EditedTask.TaskStatusId);
     }
 
     private void DeleteTask(CatalogTask task)
@@ -493,7 +504,7 @@ public partial class TaskList
 
         var result = (await CatalogTaskService.GetAllByFilterByPageAsync(filter, CurrentPage, PageSize))!
             .Where(t => t.OriginalTaskId == null).ToList();
-        
+
         CatalogTasks = new List<CatalogTask>(result);
 
         CatalogTasksCount = CatalogTasks.Count;
@@ -514,7 +525,7 @@ public partial class TaskList
 
     private void HandleChange(UploadInfo fileInfo)
     {
-        if (fileInfo.File.State != UploadState.Success) 
+        if (fileInfo.File.State != UploadState.Success)
             return;
 
         var uploadedFile = fileInfo.File.GetResponse<File>(new JsonSerializerOptions
@@ -530,7 +541,7 @@ public partial class TaskList
     {
         if (!file.IsPicture())
         {
-            NavigationManager.NavigateTo(file.ObjectURL,true);
+            NavigationManager.NavigateTo(file.ObjectURL, true);
             return;
         }
 
@@ -557,7 +568,7 @@ public partial class TaskList
         var res = await FileService.DeleteAsync(fileToRemove.Id);
         return res.IsSuccessStatusCode;
     }
-    
+
     private string TextCompare(string oldValue, string newValue)
     {
         var dmp = new diff_match_patch();
@@ -576,7 +587,7 @@ public partial class TaskList
         CurrentPage = arg.Page;
         PageSize = arg.PageSize;
 
-        CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(CurrentPage, PageSize) ?? Array.Empty<CatalogTask>()).ToList();
+        CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel { PageSize = PageSize, PageNumber = CurrentPage }) ?? Array.Empty<CatalogTask>()).ToList();
 
         IsLoadingTaskList = false;
         StateHasChanged();

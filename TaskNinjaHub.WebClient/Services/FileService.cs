@@ -3,7 +3,7 @@ using FileOwnershipDto = TaskNinjaHub.Application.Entities.Files.Dto.FileOwnersh
 
 namespace TaskNinjaHub.WebClient.Services;
 
-public class FileService
+public class FileService(HttpClient httpClient)
 {
     #if (DEBUG)
 
@@ -15,16 +15,9 @@ public class FileService
 
     #endif
 
-    private readonly HttpClient _httpClient;
-
-    public FileService(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
-
     public async Task<IEnumerable<File>?> GetAllByTaskIdAsync(int taskId)
     {
-        var result = await _httpClient.GetFromJsonAsync<IEnumerable<File>>($"{BasePath}?taskId={taskId}")!;
+        var result = await httpClient.GetFromJsonAsync<IEnumerable<File>>($"{BasePath}?taskId={taskId}")!;
         return result;
     }
 
@@ -36,13 +29,13 @@ public class FileService
             TaskId = taskId
         };
 
-        var result = await _httpClient.PutAsJsonAsync($"{BasePath}/owner-change", content)!;
+        var result = await httpClient.PutAsJsonAsync($"{BasePath}/owner-change", content)!;
         return result;
     }
 
     public async Task<HttpResponseMessage> DeleteAsync(int id)
     {
-        var result = await _httpClient.DeleteAsync($"{BasePath}/{id}")!;
+        var result = await httpClient.DeleteAsync($"{BasePath}/{id}")!;
         return result;
     }
 }

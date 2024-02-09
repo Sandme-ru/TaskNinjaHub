@@ -3,7 +3,7 @@ using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-public class CatalogTaskService : BaseService<CatalogTask>
+public class CatalogTaskService(HttpClient? httpClient) : BaseService<CatalogTask>(httpClient)
 {
     #if (DEBUG)
 
@@ -14,8 +14,4 @@ public class CatalogTaskService : BaseService<CatalogTask>
     protected override string BasePath => $"task-api/api/{nameof(CatalogTask).ToLower()}";
 
     #endif
-
-    public CatalogTaskService(HttpClient? httpClient) : base(httpClient)
-    {
-    }
 }

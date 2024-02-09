@@ -3,7 +3,7 @@ using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-public class AuthorService : BaseService<Author>
+public class AuthorService(HttpClient? httpClient) : BaseService<Author>(httpClient)
 {
     #if (DEBUG)
 
@@ -14,8 +14,4 @@ public class AuthorService : BaseService<Author>
     protected override string BasePath => $"task-api/api/{nameof(Author).ToLower()}";
 
     #endif
-
-    public AuthorService(HttpClient? httpClient) : base(httpClient)
-    {
-    }
 }
