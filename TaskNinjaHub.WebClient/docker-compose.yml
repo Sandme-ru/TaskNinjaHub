@@ -8,6 +8,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "180:80"
+      - "180:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
