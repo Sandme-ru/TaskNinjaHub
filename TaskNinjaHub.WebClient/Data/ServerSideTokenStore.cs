@@ -9,9 +9,11 @@ public class ServerSideTokenStore : IUserTokenStore
 {
     private readonly ConcurrentDictionary<string, UserToken> _tokens = new();
 
+    private const string ClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+
     public Task<UserToken> GetTokenAsync(ClaimsPrincipal user, UserTokenRequestParameters? parameters = null)
     {
-        var sub = user.FindFirst(JwtClaimTypes.Subject)?.Value ?? throw new InvalidOperationException($"no {JwtClaimTypes.Subject} claim");
+        var sub = user.FindFirst(ClaimType)?.Value ?? throw new InvalidOperationException($"no {JwtClaimTypes.Subject} claim");
 
         if (_tokens.TryGetValue(sub, out var value))
         {
@@ -26,7 +28,7 @@ public class ServerSideTokenStore : IUserTokenStore
 
     public Task StoreTokenAsync(ClaimsPrincipal user, UserToken token, UserTokenRequestParameters? parameters = null)
     {
-        var sub = user.FindFirst(JwtClaimTypes.Subject)?.Value ?? throw new InvalidOperationException($"no {JwtClaimTypes.Subject} claim");
+        var sub = user.FindFirst(ClaimType)?.Value ?? throw new InvalidOperationException($"no {JwtClaimTypes.Subject} claim");
         _tokens[sub] = token;
 
         return Task.CompletedTask;
@@ -34,7 +36,7 @@ public class ServerSideTokenStore : IUserTokenStore
 
     public Task ClearTokenAsync(ClaimsPrincipal user, UserTokenRequestParameters? parameters = null)
     {
-        var sub = user.FindFirst(JwtClaimTypes.Subject)?.Value ?? throw new InvalidOperationException($"no {JwtClaimTypes.Subject} claim");
+        var sub = user.FindFirst(ClaimType)?.Value ?? throw new InvalidOperationException($"no {JwtClaimTypes.Subject} claim");
 
         _tokens.TryRemove(sub, out _);
         return Task.CompletedTask;
