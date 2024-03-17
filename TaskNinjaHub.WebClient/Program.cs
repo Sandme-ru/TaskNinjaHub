@@ -2,6 +2,7 @@ using Duende.AccessTokenManagement.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using OpenIddict.Server.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,19 +10,11 @@ using TaskNinjaHub.WebClient.Data;
 using TaskNinjaHub.WebClient.DependencyInjection;
 using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
-using Microsoft.AspNetCore.HttpOverrides;
 
 namespace TaskNinjaHub.WebClient;
 
-/// <summary>
-/// Class Program.
-/// </summary>
 public class Program
 {
-    /// <summary>
-    /// Defines the entry point of the application.
-    /// </summary>
-    /// <param name="args">The arguments.</param>
     public static void Main(string[] args)
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

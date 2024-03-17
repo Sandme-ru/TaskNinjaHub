@@ -12,13 +12,8 @@ using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 
 namespace TaskNinjaHub.Persistence;
 
-public class TaskNinjaHubDbContext : DbContext, ITaskNinjaHubDbContext
+public class TaskNinjaHubDbContext(DbContextOptions<TaskNinjaHubDbContext> options) : DbContext(options), ITaskNinjaHubDbContext
 {
-    public TaskNinjaHubDbContext(DbContextOptions<TaskNinjaHubDbContext> options) : base(options)
-    {
-
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new TaskConfiguration());
