@@ -3,7 +3,7 @@ using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-public class TaskStatusService(HttpClient? httpClient) : BaseService<CatalogTaskStatus>(httpClient)
+public class TaskStatusService(HttpClient httpClient) : BaseService<CatalogTaskStatus>(httpClient)
 {
     #if (DEBUG)
 

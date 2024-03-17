@@ -3,7 +3,7 @@ using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-public class CatalogTaskService(HttpClient? httpClient) : BaseService<CatalogTask>(httpClient)
+public class CatalogTaskService(HttpClient httpClient) : BaseService<CatalogTask>(httpClient)
 {
     #if (DEBUG)
 

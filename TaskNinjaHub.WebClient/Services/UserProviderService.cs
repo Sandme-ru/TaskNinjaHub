@@ -4,8 +4,7 @@ using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-public class UserProviderService(AuthenticationStateProvider stateProvider, AuthorService authorService)
-    : IUserProviderService
+public class UserProviderService(AuthenticationStateProvider stateProvider, AuthorService authorService) : IUserProviderService
 {
     public Author User { get; set; } = new();
 
