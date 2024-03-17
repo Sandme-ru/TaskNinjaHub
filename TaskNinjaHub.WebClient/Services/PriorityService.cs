@@ -3,7 +3,7 @@ using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-public class PriorityService(HttpClient? httpClient) : BaseService<Priority>(httpClient)
+public class PriorityService(HttpClient httpClient) : BaseService<Priority>(httpClient)
 {
     #if (DEBUG)
 
