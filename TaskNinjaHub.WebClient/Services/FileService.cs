@@ -5,7 +5,7 @@ namespace TaskNinjaHub.WebClient.Services;
 
 public class FileService(IHttpClientFactory httpClientFactory)
 {
-    private readonly HttpClient _httpClient = httpClientFactory.CreateClient("ClientApi");
+    private readonly HttpClient _httpClient = httpClientFactory.CreateClient("ApiClient");
 
     #if (DEBUG)
 
