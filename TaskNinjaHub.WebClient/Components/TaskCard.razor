@@ -1,0 +1,44 @@
+﻿@page "/task-read/{Id:int}"
+
+<PageTitle>Task card</PageTitle>
+
+@if (SelectedCatalogTask != null)
+{
+    <button class="back-button" @onclick="GoBack">Go back</button>
+
+    <div class="card">
+        <table class="task-table">
+            <tr>
+                <td><strong>Name:</strong></td>
+                <td>@SelectedCatalogTask.Name</td>
+            </tr>
+            <tr>
+                <td><strong>Description:</strong></td>
+                <td>@SelectedCatalogTask.Description</td>
+            </tr>
+            <tr>
+                <td><strong>Information System:</strong></td>
+                <td>@SelectedCatalogTask.InformationSystem?.Name</td>
+            </tr>
+            <tr>
+                <td><strong>Task Executor:</strong></td>
+                <td>@SelectedCatalogTask.TaskExecutor?.Name</td>
+            </tr>
+        </table>
+
+        @if (HtmlMarkupForTask != null)
+        {
+            <AntList DataSource="@HtmlMarkupForTask" Bordered>
+                <ListItem class="history_of_changes">
+                    @((MarkupString)context)
+                </ListItem>
+            </AntList>
+        }
+        <Upload OnRemove="(_) => Task.FromResult(false)"
+                OnPreview="OnPreview"
+                ShowButton="false"
+                ListType="picture-card"
+                @bind-FileList="DefaultFileList">
+        </Upload>
+    </div>
+}
