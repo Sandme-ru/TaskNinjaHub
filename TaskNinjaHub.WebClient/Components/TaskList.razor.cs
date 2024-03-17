@@ -1,5 +1,4 @@
 ﻿using AntDesign;
-using DiffMatchPatch;
 using Microsoft.AspNetCore.Components;
 using System.Text.Json;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
@@ -67,17 +66,11 @@ public partial class TaskList
         set => UserProviderService.User.Name = value;
     }
 
-    private CatalogTask? SelectedCatalogTask { get; set; }
-
-    private List<CatalogTask>? CatalogTasksForChangelog { get; set; }
-
     private CatalogTask? EditedTask { get; set; }
 
     private CatalogTask? CloneTask { get; set; }
 
     private CatalogTask? CatalogTaskForChangelog { get; set; }
-
-    private List<string> HtmlMarkupForTask { get; set; } = null!;
 
     private List<CatalogTask>? CatalogTasks { get; set; }
 
@@ -94,9 +87,6 @@ public partial class TaskList
         Xxl = 3,
     };
 
-    private string _placement = "right";
-
-    private bool _visibleDrawer = false;
 
     private bool _visibleModal = false;
     
@@ -109,7 +99,6 @@ public partial class TaskList
     private IEnumerable<CatalogTaskStatus>? TaskStatusList { get; set; }
 
     private static CatalogTask? DeletedTask { get; set; }
-
 
     private Func<ModalClosingEventArgs, Task> _onOk;
 
@@ -190,125 +179,6 @@ public partial class TaskList
         };
     }
 
-    private void Close()
-    {
-        this._visibleDrawer = false;
-    }
-
-    private async Task Open(CatalogTask catalogTask)
-    {
-        HtmlMarkupForTask = new List<string>();
-        SelectedCatalogTask = catalogTask;
-        var taskFiles = await FileService.GetAllByTaskIdAsync(catalogTask!.Id);
-        if (taskFiles?.ToList() is not null and { Count: > 0 } files)
-        {
-            catalogTask.Files = files;
-            DefaultFileList = catalogTask.Files
-                .Select(f => new UploadFileItem
-                {
-                    Id = $"{f.Id}",
-                    FileName = f.Name,
-                    Url = $"https://localhost:7179/{f.Path}", //TODO remove connection to localhost
-                    ObjectURL = $"https://localhost:7179/{f.Path}",
-                    Response = JsonSerializer.Serialize(
-                        f,
-                        new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
-                    State = UploadState.Success
-                }).ToList()!;
-        }
-        else
-            DefaultFileList = new();
-        CatalogTasksForChangelog = CatalogTasks!.Where(t => t.OriginalTaskId == catalogTask.Id).OrderByDescending(t => t.DateCreated).ToList();
-        if (CatalogTasksForChangelog.Any())
-        {
-            var prev = new CatalogTask();
-            CatalogTasksForChangelog.Insert(0, catalogTask);
-
-            foreach (var item in CatalogTasksForChangelog)
-            {
-                var header = "<h3>Changed:</h3><b>";
-                var body = "";
-
-                if (item == CatalogTasksForChangelog.First())
-                    prev = item;
-                else
-                {
-
-                    body += $"<p>Edit date: {item.DateCreated} Editor: {item.UserCreated}</p>";
-
-                    if (prev.Name != item.Name)
-                    {
-                        header += "<p>Name<p>";
-                        body += $"<p>Name: {item.Name}&rarr;{prev.Name}</p>";
-                    }
-                    else
-                    {
-                        body += $"<p>Name: {item.Name}</p>";
-                    }
-
-                    if (prev.Description != item.Description)
-                    {
-                        header += "<p>Description<p>";
-                        body += TextCompare(item.Description!, prev.Description!);
-                    }
-                    else
-                    {
-                        body += TextCompare(item.Description!, prev.Description!);
-                    }
-
-                    if (prev.InformationSystemId != item.InformationSystemId)
-                    {
-                        header += "<p>Information system<p>";
-                        body += $"<p>Information system: {item.InformationSystem?.Name}&rarr;{prev.InformationSystem?.Name}</p>";
-                    }
-                    else
-                    {
-                        body += $"<p>Information system: {item.InformationSystem?.Name}</p>";
-                    }
-
-                    if (prev.TaskExecutorId != item.TaskExecutorId)
-                    {
-                        header += "<p>Task executor<p>";
-                        body += $"<p>Task executor: {item.TaskExecutor?.Name}&rarr;{prev.TaskExecutor?.Name}</p>";
-                    }
-                    else
-                    {
-                        body += $"<p>Task executor: {item.TaskExecutor?.Name}</p>";
-                    }
-
-                    if (prev.PriorityId != item.PriorityId)
-                    {
-                        header += "<p>Priority</p>";
-                        body += $"<p>Priority: {item.Priority?.Name}&rarr;{prev.Priority?.Name}</p>";
-                    }
-                    else
-                    {
-                        body += $"<p>Priority: {item.Priority?.Name}</p>";
-                    }
-
-                    if (prev.TaskStatusId != item.TaskStatusId)
-                    {
-                        header += "<p>Task Status</p>";
-                        body += $"<p>Task status: {item.TaskStatus?.Name}&rarr;{prev.TaskStatus?.Name}</p>";
-                    }
-                    else
-                    {
-                        body += $"<p>Task status: {item.TaskStatus?.Name}</p>";
-                    }
-
-                    var result = header + "</b>" + body;
-                    HtmlMarkupForTask.Add(result);
-
-                    prev = item;
-                }
-
-            }
-        }
-
-        _visibleDrawer = true;
-        StateHasChanged();
-    }
-
     private async Task EditTaskEnabled(CatalogTask? catalogTask)
     {
         EditedTask = catalogTask;
@@ -331,8 +201,8 @@ public partial class TaskList
         }
         else
         {
-            EditedTask!.Files = new List<File>();
-            DefaultFileList = new List<UploadFileItem>();
+            EditedTask!.Files = [];
+            DefaultFileList = [];
         }
 
         CloneTask = new CatalogTask
@@ -478,7 +348,7 @@ public partial class TaskList
     private void DeleteTask(CatalogTask task)
     {
         DeletedTask = task;
-        ModalService?.Confirm(new ConfirmOptions
+        ModalService.Confirm(new ConfirmOptions
         {
             Title = $"Are you sure delete this task {task.Id} {task.Name}?",
             Icon = _icon,
@@ -569,15 +439,6 @@ public partial class TaskList
         return res.IsSuccessStatusCode;
     }
 
-    private string TextCompare(string oldValue, string newValue)
-    {
-        var dmp = new diff_match_patch();
-        List<Diff> diff = dmp.diff_main(oldValue, newValue);
-        dmp.diff_cleanupSemantic(diff);
-        var result = dmp.diff_prettyHtml(diff);
-
-        return $"<p>Description: {result}</p>";
-    }
 
     private async Task HandlePageChange(PaginationEventArgs arg)
     {
@@ -590,6 +451,12 @@ public partial class TaskList
         CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel { PageSize = PageSize, PageNumber = CurrentPage }) ?? Array.Empty<CatalogTask>()).ToList();
 
         IsLoadingTaskList = false;
+        StateHasChanged();
+    }
+
+    private async Task Open(CatalogTask context)
+    {
+        NavigationManager.NavigateTo($"task-read/{context.Id}");
         StateHasChanged();
     }
 }

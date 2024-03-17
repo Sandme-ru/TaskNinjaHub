@@ -184,30 +184,6 @@
      </Modal>
 }
 
-@if (SelectedCatalogTask != null)
-{
-    <Drawer Visible="@_visibleDrawer" Placement="@_placement" Title="@SelectedCatalogTask!.Id.ToString()" OnClose="_ => Close()">
-        <p>@SelectedCatalogTask.Name</p>
-        <p>@SelectedCatalogTask.Description</p>
-        <p>@SelectedCatalogTask.InformationSystem?.Name</p>
-        <p>@SelectedCatalogTask.TaskExecutor?.Name</p>
-        @if (HtmlMarkupForTask.Count != 0)
-        {
-            <AntList DataSource="@HtmlMarkupForTask" Bordered>
-             <ListItem class="history_of_changes">
-                 @((MarkupString)context)
-             </ListItem>
-         </AntList>
-        }
-        <Upload OnRemove="(_) => Task.FromResult(false)"
-                OnPreview="OnPreview"
-                ShowButton="false"
-                ListType="picture-card"
-                @bind-FileList="DefaultFileList">
-        </Upload>
-    </Drawer>
-}
-
 <Modal Footer="null"
        Visible="IsPreviewVisible"
        Title="@FilePreviewTitle"
