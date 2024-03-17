@@ -15,12 +15,14 @@ public class UserProviderService(AuthenticationStateProvider stateProvider, Auth
         var shortName = authenticationState.User.FindFirst("short_name")?.Value;
         var roleName = authenticationState.User?.FindFirst("role_name")?.Value;
         var emailValue = authenticationState.User?.FindFirst("email_value")?.Value;
+        var id = authenticationState.User?.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
 
         User = new Author
         {
             Name = emailValue ?? string.Empty,
             RoleName = roleName,
-            ShortName = shortName
+            ShortName = shortName,
+            AuthGuid = id
         };
 
         Author? user = null;

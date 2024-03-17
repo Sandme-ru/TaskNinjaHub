@@ -5,8 +5,10 @@ using TaskNinjaHub.WebClient.Utilities;
 
 namespace TaskNinjaHub.WebClient.Services.Bases;
 
-public abstract class BaseService<TEntity>(HttpClient httpClient) : IBaseService<TEntity> where TEntity : class
+public abstract class BaseService<TEntity>(IHttpClientFactory httpClientFactory) : IBaseService<TEntity> where TEntity : class
 {
+    private readonly HttpClient _httpClient = httpClientFactory.CreateClient("ApiClient");
+
     #if (DEBUG)
 
     protected virtual string BasePath => $"api/{nameof(TEntity).ToLower()}";
@@ -19,13 +21,13 @@ public abstract class BaseService<TEntity>(HttpClient httpClient) : IBaseService
 
     public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        var result = await httpClient.GetFromJsonAsync<IEnumerable<TEntity>>($"{BasePath}")!;
+        var result = await _httpClient.GetFromJsonAsync<IEnumerable<TEntity>>($"{BasePath}")!;
         return result;
     }
 
     public virtual async Task<int> GetAllCountAsync()
     {
-        var result = await httpClient.GetFromJsonAsync<int>($"{BasePath}/GetAllCount")!;
+        var result = await _httpClient.GetFromJsonAsync<int>($"{BasePath}/GetAllCount")!;
         return result;
     }
 
@@ -34,21 +36,21 @@ public abstract class BaseService<TEntity>(HttpClient httpClient) : IBaseService
         if (filterModel.PageNumber < 1 || filterModel.PageSize < 1)
             return null;
 
-        var result = await httpClient.GetFromJsonAsync<IEnumerable<TEntity>>($"{BasePath}/GetAllByPage?pageNumber={filterModel.PageNumber}&pageSize={filterModel.PageSize}")!;
+        var result = await _httpClient.GetFromJsonAsync<IEnumerable<TEntity>>($"{BasePath}/GetAllByPage?pageNumber={filterModel.PageNumber}&pageSize={filterModel.PageSize}")!;
         return result;
     }
 
     public virtual async Task<IEnumerable<TEntity>> GetAllByFilterAsync(TEntity filterModel)
     {
         var requestUri = QueryHelpers.AddQueryString($"{BasePath}/filter", filterModel.ToPropertyDictionary());
-        var result = await httpClient.GetFromJsonAsync<IEnumerable<TEntity>>(requestUri)!;
+        var result = await _httpClient.GetFromJsonAsync<IEnumerable<TEntity>>(requestUri)!;
         return result;
     }
 
     public virtual async Task<IEnumerable<TEntity>> GetAllByFilterByPageAsync(TEntity filterModel, int pageNumber = 1, int pageSize = 10)
     {
         var requestUri = $"{BasePath}/FilterByPage?pageNumber={pageNumber}&pageSize={pageSize}";
-        var response = await httpClient.PostAsJsonAsync(requestUri, filterModel.ToPropertyDictionary())!;
+        var response = await _httpClient.PostAsJsonAsync(requestUri, filterModel.ToPropertyDictionary())!;
         var result = JsonConvert.DeserializeObject<IEnumerable<TEntity>>(await response.Content.ReadAsStringAsync());
 
         return result;
@@ -56,25 +58,25 @@ public abstract class BaseService<TEntity>(HttpClient httpClient) : IBaseService
 
     public virtual async Task<TEntity> GetIdAsync(int id)
     {
-        var result = await httpClient.GetFromJsonAsync<TEntity>($"{BasePath}/{id}");
+        var result = await _httpClient.GetFromJsonAsync<TEntity>($"{BasePath}/{id}");
         return result;
     }
 
     public virtual async Task<HttpResponseMessage> DeleteAsync(int id)
     {
-        var result = await httpClient.DeleteAsync($"{BasePath}/{id}")!;
+        var result = await _httpClient.DeleteAsync($"{BasePath}/{id}")!;
         return result;
     }
 
     public virtual async Task<HttpResponseMessage> CreateAsync(TEntity entity)
     {
-        var result = await httpClient?.PostAsJsonAsync($"{BasePath}/Create", entity)!;
+        var result = await _httpClient.PostAsJsonAsync($"{BasePath}/Create", entity)!;
         return result;
     }
 
     public virtual async Task<HttpResponseMessage> UpdateAsync(TEntity entity)
     {
-        var result = await httpClient?.PutAsJsonAsync($"{BasePath}/UpdateAsync", entity)!;
+        var result = await _httpClient.PutAsJsonAsync($"{BasePath}/UpdateAsync", entity)!;
         return result;
     }
 }

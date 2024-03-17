@@ -3,7 +3,7 @@ using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-public class AuthorService(HttpClient httpClient) : BaseService<Author>(httpClient)
+public class AuthorService(IHttpClientFactory httpClientFactory) : BaseService<Author>(httpClientFactory)
 {
     #if (DEBUG)
 

@@ -1,9 +1,10 @@
-﻿using TaskNinjaHub.Application.Entities.Tasks.Domain;
+﻿using System.Net.Http;
+using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-public class CatalogTaskService(HttpClient httpClient) : BaseService<CatalogTask>(httpClient)
+public class CatalogTaskService(IHttpClientFactory httpClientFactory) : BaseService<CatalogTask>(httpClientFactory)
 {
     #if (DEBUG)
 
