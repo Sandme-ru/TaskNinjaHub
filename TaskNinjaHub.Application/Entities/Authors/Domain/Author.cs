@@ -15,6 +15,8 @@ public class Author: BaseUserCU, IHaveId, IHaveName
 
     public string? RoleName { get; set; }
 
+    public string? AuthGuid { get; set; }
+
     [JsonIgnore]
     public virtual List<CatalogTask>? ExecutableTasks { get; set; }
 

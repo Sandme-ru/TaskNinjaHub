@@ -3,7 +3,7 @@ using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient.Services;
 
-public class InformationSystemService(HttpClient httpClient) : BaseService<InformationSystem>(httpClient)
+public class InformationSystemService(IHttpClientFactory httpClientFactory) : BaseService<InformationSystem>(httpClientFactory)
 {
     #if (DEBUG)
 

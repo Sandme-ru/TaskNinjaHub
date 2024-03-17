@@ -37,12 +37,17 @@ public class Program
         builder.Services.AddServerSideBlazor();
         builder.Services.AddAntDesign();
 
-        builder.Services.AddTransient(sp => new HttpClient
+        builder.Services.AddHttpClient("ApiClient", client =>
         {
-            BaseAddress = new Uri(apiUrl!)
+            client.BaseAddress = new Uri(apiUrl!);
         });
 
-        builder.Services.AddWebClientServiceCollection(builder.Configuration);
+        builder.Services.AddHttpClient("AuthClient", client =>
+        {
+            client.BaseAddress = new Uri(authUrl!);
+        });
+
+        builder.Services.AddWebClientServiceCollection();
 
         #region AUTHENTICATION
 

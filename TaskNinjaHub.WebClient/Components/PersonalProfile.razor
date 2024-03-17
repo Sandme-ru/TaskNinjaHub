@@ -1,0 +1,52 @@
+﻿@page "/profile"
+
+<PageTitle>Personal Profile</PageTitle>
+
+<div class="profile-container">
+
+    <h2>Edit Profile</h2>
+
+    <form class="profile-form" @onsubmit="EditProfile">
+        <label for="name" class="profile-label">Name:</label>
+        <input type="text" id="name" class="profile-input" @bind="@Author.Name" />
+
+        <label for="password" class="profile-label">Password:</label>
+        <input type="password" id="password" class="profile-input" @bind="@Author.Password" />
+
+        <button type="submit" class="profile-button">Save</button>
+    </form>
+</div>
+
+@code {
+    [Inject]
+    private IUserProviderService UserProviderService { get; set; } = null!;
+
+    [Inject] 
+    private AuthService AuthService { get; set; } = null!;
+
+    [Inject]
+    private IMessageService MessageService { get; set; } = null!;
+
+    private AuthorDto Author { get; set; } = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Author.Name = UserProviderService.User.Name!;
+            Author.Id = UserProviderService.User.AuthGuid!;
+            Author.Password = string.Empty;
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task EditProfile()
+    {
+        var result = await AuthService.EditUserAsync(Author);
+        if (result.IsSuccessStatusCode)
+            await MessageService.Success("Profile updated");
+        else
+            await MessageService.Error(result.ReasonPhrase); //todo: validate message
+    }
+}

@@ -4,7 +4,7 @@ namespace TaskNinjaHub.WebClient.DependencyInjection;
 
 public static class WebClientServiceCollectionExtensions
 {
-    public static IServiceCollection AddWebClientServiceCollection(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddWebClientServiceCollection(this IServiceCollection services)
     {
         services.AddScoped<AuthorService>();
         services.AddScoped<InformationSystemService>();
@@ -12,6 +12,7 @@ public static class WebClientServiceCollectionExtensions
         services.AddScoped<CatalogTaskService>();
         services.AddScoped<FileService>();
         services.AddScoped<TaskStatusService>();
+        services.AddScoped<AuthService>();
 
         return services;
     }
