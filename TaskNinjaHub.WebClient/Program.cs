@@ -1,3 +1,4 @@
+using System.Globalization;
 using Duende.AccessTokenManagement.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -6,10 +7,12 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using OpenIddict.Server.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Localization;
 using TaskNinjaHub.WebClient.Data;
 using TaskNinjaHub.WebClient.DependencyInjection;
 using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
+using Microsoft.Extensions.Localization;
 
 namespace TaskNinjaHub.WebClient;
 
@@ -112,7 +115,21 @@ public class Program
 
         #endregion
 
+        builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
         var app = builder.Build();
+
+        var supportedCultures = new[]
+        {
+            new CultureInfo("en"),
+            new CultureInfo("ru")
+        };
+        app.UseRequestLocalization(new RequestLocalizationOptions
+        {
+            DefaultRequestCulture = new RequestCulture("en"),
+            SupportedCultures = supportedCultures,
+            SupportedUICultures = supportedCultures
+        });
 
         if (!app.Environment.IsDevelopment())
         {

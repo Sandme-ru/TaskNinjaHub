@@ -1,4 +1,6 @@
+@using Microsoft.Extensions.Localization
 @inherits LayoutComponentBase
+@inject IStringLocalizer<Header> Localizer
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white">
     <div class="container-fluid">
@@ -6,7 +8,7 @@
         
         <div class="dropdown">
             <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Menu
+                @Localizer["Menu"]
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item" href="/">Informers</a>
