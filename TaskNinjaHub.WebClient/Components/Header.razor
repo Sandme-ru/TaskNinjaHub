@@ -1,4 +1,5 @@
 @inherits LayoutComponentBase
+@inject IStringLocalizer<Header> Localizer
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white">
     <div class="container-fluid">
@@ -6,26 +7,27 @@
         
         <div class="dropdown">
             <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Menu
+                @Localizer["Menu"]
             </button>
+
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="/">Informers</a>
-                <a class="dropdown-item" href="/catalog-tasks">Tasks</a>
-                <a class="dropdown-item" href="/create-task">Add task</a>
+                <a class="dropdown-item" href="/">@Localizer["Informers"]</a>
+                <a class="dropdown-item" href="/catalog-tasks">@Localizer["Tasks"]</a>
+                <a class="dropdown-item" href="/create-task">@Localizer["AddTask"]</a>
             </div>
         </div>
 
         <div class="d-flex align-items-center ml-auto">
-            @if (UserName == "Anonymous (Anonymous)")
+            @if (UserName == Localizer["Anonymous"])
             {
-                @($"Hello, {UserName}!")
+                @($"{Localizer["Hello"]}, {UserName}!")
             }
             else
             {
                 <Button OnClick="ShowUserProfile" Type="@ButtonType.Link">
-                    @($"Hello, {UserName}!")
+                    @($"{Localizer["Hello"]}, {UserName}!")
                 </Button>
-                <a style="margin-top:5px;" href="@($"Logout")">LOGOUT</a>
+                <a style="margin-top:5px;" href="@($"Logout")">@Localizer["Logout"]</a>
             }
         </div>
     </div>

@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using OpenIddict.Server.AspNetCore;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using TaskNinjaHub.WebClient.Data;
 using TaskNinjaHub.WebClient.DependencyInjection;
@@ -112,7 +114,22 @@ public class Program
 
         #endregion
 
+        builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
         var app = builder.Build();
+
+        var supportedCultures = new[]
+        {
+            new CultureInfo("en"),
+            new CultureInfo("ru")
+        };
+
+        app.UseRequestLocalization(new RequestLocalizationOptions
+        {
+            DefaultRequestCulture = new RequestCulture("en"),
+            SupportedCultures = supportedCultures,
+            SupportedUICultures = supportedCultures
+        });
 
         if (!app.Environment.IsDevelopment())
         {
