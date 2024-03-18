@@ -1,22 +1,3 @@
 ﻿@page "/"
 
 <PageTitle>Hello page</PageTitle>
-
-<div class="card-container">
-    <Tabs DefaultActiveKey="1" @bind-ActiveKey="@ActiveKey" Centered>
-        <TabPane Tab="MAIN" Key="Tab1">
-            <Paragraph>MAIN WINDOW</Paragraph>
-        </TabPane>
-        <TabPane Tab="TASKS" Key="Tab2">
-            <TaskList />
-        </TabPane>
-        <TabPane Tab="NEW TASK" Key="Tab3">
-            <TaskCreateForm />
-        </TabPane>
-    </Tabs>
-</div>
-
-@code
-{
-    protected string? ActiveKey { get; set; }
-}

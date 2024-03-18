@@ -1,25 +1,42 @@
+@inherits LayoutComponentBase
+
 <nav class="navbar navbar-expand-lg navbar-light bg-white">
     <div class="container-fluid">
-        <img src="css/HubLogoPNG.png" class="navbar-brand"/>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            </ul>
-            <form class="d-flex">
-                @if (UserName == "Anonymous (Anonymous)")
-                {
+        <img src="css/HubLogoPNG.png" class="navbar-brand" @onclick="RedirectBack" />
+        
+        <div class="dropdown">
+            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Menu
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="/">Informers</a>
+                <a class="dropdown-item" href="/catalog-tasks">Tasks</a>
+                <a class="dropdown-item" href="/create-task">Add task</a>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center ml-auto">
+            @if (UserName == "Anonymous (Anonymous)")
+            {
+                @($"Hello, {UserName}!")
+            }
+            else
+            {
+                <Button OnClick="ShowUserProfile" Type="@ButtonType.Link">
                     @($"Hello, {UserName}!")
-                }
-                else
-                {
-                    <Button OnClick="ShowUserProfile" Type="@ButtonType.Link">
-                        @($"Hello, {UserName}!")
-                    </Button>
-                    <a style="margin-top:5px;" href="@($"Logout")">LOGOUT</a>
-                }
-            </form>
+                </Button>
+                <a style="margin-top:5px;" href="@($"Logout")">LOGOUT</a>
+            }
         </div>
     </div>
 </nav>
+
+<style>
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+
+    .nav-item:hover {
+        background-color: #f0f0f0;
+    }
+</style>

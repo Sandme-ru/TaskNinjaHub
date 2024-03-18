@@ -9,6 +9,7 @@ using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
+using TaskNinjaHub.WebClient.Shared;
 using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 
 namespace TaskNinjaHub.WebClient.Components;
@@ -54,40 +55,52 @@ public partial class TaskCreateForm
     
     private string? FilePreviewTitle { get; set; } = string.Empty;
 
-    private Author? CurrentUser { get; set; } = null!;
+    private Author CurrentUser { get; set; } = null!;
 
     private CatalogTask CreatedCatalogTask { get; set; } = new();
 
-    private List<Author> AuthorsList { get; set; } = new();
+    private List<Author> AuthorsList { get; set; } = [];
 
-    private List<Priority> PriorityList { get; set; } = new();
+    private List<Priority> PriorityList { get; set; } = [];
 
-    private List<InformationSystem> InformationSystemList { get; set; } = new();
+    private List<InformationSystem> InformationSystemList { get; set; } = [];
     
-    private List<File> UploadedFileList { get; set; } = new();
+    private List<File> UploadedFileList { get; set; } = [];
 
-    private List<CatalogTaskStatus> TaskStatusList { get; set; } = new();
+    private List<CatalogTaskStatus> TaskStatusList { get; set; } = [];
 
     private CatalogTaskStatus? DefaultStatus { get; set; } = new();
+    public bool IsLoading { get; set; }
 
     #endregion
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         CurrentUser = UserProviderService.User;
+    }
 
-        AuthorsList = (await AuthorService.GetAllAsync() ?? Array.Empty<Author>()).ToList();
-        PriorityList = (await PriorityService.GetAllAsync() ?? Array.Empty<Priority>()).ToList();
-        InformationSystemList = (await InformationSystemService.GetAllAsync() ?? Array.Empty<InformationSystem>()).ToList();
-        TaskStatusList = (await TaskStatusService.GetAllAsync() ?? Array.Empty<CatalogTaskStatus>()).ToList();
-        DefaultStatus = TaskStatusList.FirstOrDefault();
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            AuthorsList = (await AuthorService.GetAllAsync()).ToList();
+            PriorityList = (await PriorityService.GetAllAsync()).ToList();
+            InformationSystemList = (await InformationSystemService.GetAllAsync()).ToList();
+            TaskStatusList = (await TaskStatusService.GetAllAsync()).ToList();
+            DefaultStatus = TaskStatusList.FirstOrDefault();
+
+            StateHasChanged();
+        }
     }
 
     private async Task CreateTask()
     {
-        CreatedCatalogTask.TaskAuthorId = CurrentUser?.Id;
+        IsLoading = true;
+        StateHasChanged();
+
+        CreatedCatalogTask.TaskAuthorId = CurrentUser.Id;
         CreatedCatalogTask.TaskStatusId = DefaultStatus?.Id;
-        CreatedCatalogTask.UserCreated = CurrentUser?.Name;
+        CreatedCatalogTask.UserCreated = CurrentUser.Name;
         CreatedCatalogTask.DateCreated = DateTime.UtcNow;
 
         var responseMessage = await CatalogTaskService.CreateAsync(CreatedCatalogTask);
@@ -110,6 +123,8 @@ public partial class TaskCreateForm
         }
 
         CreatedCatalogTask = new CatalogTask();
+
+        IsLoading = false;
         StateHasChanged();
     }
 
