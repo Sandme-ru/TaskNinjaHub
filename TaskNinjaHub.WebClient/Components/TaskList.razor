@@ -1,74 +1,73 @@
-@using TaskStatus = TaskNinjaHub.Application.Entities.TaskStatuses.Domain.CatalogTaskStatus
-
 <PageTitle>Main page</PageTitle>
 
-<Space Style="width: 100%; justify-content: stretch;"
-       Direction="DirectionVHType.Horizontal">
-    <SpaceItem Style="width: 100%">
-        <Input min="0"
-               Type="number"
-               Placeholder="Enter task number"
-               AllowClear
-                @bind-Value="@SelectedTaskId"
-                OnChange="new EventCallback<int?>(this, async () => await FilterSelectionChanged())" />
-         </SpaceItem>
-         <SpaceItem Style="width: 100%">
-         <Select DataSource="@AuthorsList"
-                 LabelName="@nameof(Author.ShortName)"
-                 Placeholder="Choose author"
-                AllowClear
-                EnableSearch
-                 @bind-Value="@SelectedAuthor"
-                 OnSelectedItemChanged="new EventCallback<Author>(this, async () => await FilterSelectionChanged())">
-         </Select>
-         </SpaceItem>
-         <SpaceItem Style="width: 100%">
-         <Select DataSource="@AuthorsList"
-                 LabelName="@nameof(Author.ShortName)"
-                 Placeholder="Choose executor"
-                AllowClear
-                EnableSearch
-                 @bind-Value="@SelectedExecutor"
-                 OnSelectedItemChanged="new EventCallback<Author>(this, async () => await FilterSelectionChanged())">
-         </Select>
-         </SpaceItem>
-         <SpaceItem Style="width: 100%">
-         <Select DataSource="@InformationSystemList"
-                 LabelName="@nameof(InformationSystem.Name)"
-                 Placeholder="Choose system"
-                AllowClear
-                EnableSearch
-                 @bind-Value="@SelectedInformationSystem"
-                 OnSelectedItemChanged="new EventCallback<InformationSystem>(this, async () => await FilterSelectionChanged())">
-         </Select>
-         </SpaceItem>
-         </Space>
-         <Divider />
+<div class="filter-box">
+    <Space Style="width: 100%; justify-content: stretch;" Direction="DirectionVHType.Horizontal">
+        <SpaceItem Style="width: 100%">
+            <Input min="0"
+                   Type="number"
+                   Placeholder="Enter task number"
+                   AllowClear
+                   @bind-Value="@SelectedTaskId"
+                   OnChange="new EventCallback<int?>(this, async () => await FilterSelectionChanged())" />
+        </SpaceItem>
+        <SpaceItem Style="width: 100%">
+            <Select DataSource="@AuthorsList"
+                    LabelName="@nameof(Author.ShortName)"
+                    Placeholder="Choose author"
+                    AllowClear
+                    EnableSearch
+                    @bind-Value="@SelectedAuthor"
+                    OnSelectedItemChanged="new EventCallback<Author>(this, async () => await FilterSelectionChanged())">
+            </Select>
+        </SpaceItem>
+        <SpaceItem Style="width: 100%">
+            <Select DataSource="@AuthorsList"
+                    LabelName="@nameof(Author.ShortName)"
+                    Placeholder="Choose executor"
+                    AllowClear
+                    EnableSearch
+                    @bind-Value="@SelectedExecutor"
+                    OnSelectedItemChanged="new EventCallback<Author>(this, async () => await FilterSelectionChanged())">
+            </Select>
+        </SpaceItem>
+        <SpaceItem Style="width: 100%">
+            <Select DataSource="@InformationSystemList"
+                    LabelName="@nameof(InformationSystem.Name)"
+                    Placeholder="Choose system"
+                    AllowClear
+                    EnableSearch
+                    @bind-Value="@SelectedInformationSystem"
+                    OnSelectedItemChanged="new EventCallback<InformationSystem>(this, async () => await FilterSelectionChanged())">
+            </Select>
+        </SpaceItem>
+    </Space>
+</div>
+<Divider />
 
-    <Divider />
+<Divider />
 <Loading Spinning="IsLoadingTaskList">
-<div class="task-list">
+    <div class="task-list">
         <AntList Grid="_grid" DataSource="@CatalogTasks">
             <ListItem>
                 @if (context.OriginalTaskId == null)
                 {
                     <Card Bordered Title="@($"{context.Id.ToString()}. {context.TaskAuthor?.Name}")" Id="MainCard">
-                     <Extra>
-                         <Popover Title="Read task">
-                             <Icon class="maincardIcon" Type="up-circle" Theme="fill" @onclick="async (_) => await Open(context)" />
-                         </Popover>
-                         <Popover Title="Edit task">
-                             <Icon class="maincardIcon" Type="edit" Theme="fill" OnClick="async () => await EditTaskEnabled(context)" />
-                         </Popover>
-                         <Popover Title="Delete task">
-                             <Icon class="maincardIcon" Type="delete" Theme="fill" OnClick="async () => DeleteTask(context)" />
-                         </Popover>
-                     </Extra>
-                     <Body>
-                         <div>
-                             <Descriptions Bordered>
-                             <Paragraph Copyable>
-                                 @if (context.Name!.Length > 20)
+                        <Extra>
+                            <Popover Title="Read task">
+                                <Icon class="maincardIcon" Type="up-circle" Theme="fill" @onclick="async (_) => await Open(context)" />
+                            </Popover>
+                            <Popover Title="Edit task">
+                                <Icon class="maincardIcon" Type="edit" Theme="fill" OnClick="async () => await EditTaskEnabled(context)" />
+                            </Popover>
+                            <Popover Title="Delete task">
+                                <Icon class="maincardIcon" Type="delete" Theme="fill" OnClick="async () => DeleteTask(context)" />
+                            </Popover>
+                        </Extra>
+                        <Body>
+                            <div>
+                                <Descriptions Bordered>
+                                    <Paragraph Copyable>
+                                        @if (context.Name!.Length > 20)
                                         {
                                             @context.Name.Substring(0, 20)
                                             <a style="cursor: default; color: black">...</a>
@@ -127,43 +126,43 @@
             </FormItem>
             <FormItem Label="Task author">
                 <Input @bind-Value="@CurrentUser" Disabled />
-             </FormItem>
-             <FormItem Label="Task executor">
-                 <Select Mode="default"
-                         EnableSearch
-                         DataSource="@AuthorsList"
-                         @bind-Value="@context.TaskExecutorId"
-                         LabelName="@nameof(Author.Name)"
-                         ValueName="@nameof(Author.Id)">
-                 </Select>
-             </FormItem>
-             <FormItem Label="Priority">
-                 <Select Mode="default"
-                         EnableSearch
-                         DataSource="@PriorityList"
-                         @bind-Value="@context.PriorityId"
-                         LabelName="@nameof(Priority.Name)"
-                         ValueName="@nameof(Priority.Id)">
-                 </Select>
-             </FormItem>
-             <FormItem Label="Information system">
-                 <Select Mode="default"
-                         EnableSearch
-                         DataSource="@InformationSystemList"
-                         @bind-Value="@context.InformationSystemId"
-                         LabelName="@nameof(Priority.Name)"
-                         ValueName="@nameof(Priority.Id)">
-                 </Select>
-             </FormItem>
-             <FormItem Label="Task status">
-                 <Select Mode="default"
-                         EnableSearch
-                         DataSource="@TaskStatusList"
-                         @bind-Value="@context.TaskStatusId"
-                         LabelName="@nameof(TaskStatus.Name)"
-                         ValueName="@nameof(TaskStatus.Id)">
-                 </Select>
-             </FormItem>
+            </FormItem>
+            <FormItem Label="Task executor">
+                <Select Mode="default"
+                        EnableSearch
+                        DataSource="@AuthorsList"
+                        @bind-Value="@context.TaskExecutorId"
+                        LabelName="@nameof(Author.Name)"
+                        ValueName="@nameof(Author.Id)">
+                </Select>
+            </FormItem>
+            <FormItem Label="Priority">
+                <Select Mode="default"
+                        EnableSearch
+                        DataSource="@PriorityList"
+                        @bind-Value="@context.PriorityId"
+                        LabelName="@nameof(Priority.Name)"
+                        ValueName="@nameof(Priority.Id)">
+                </Select>
+            </FormItem>
+            <FormItem Label="Information system">
+                <Select Mode="default"
+                        EnableSearch
+                        DataSource="@InformationSystemList"
+                        @bind-Value="@context.InformationSystemId"
+                        LabelName="@nameof(Priority.Name)"
+                        ValueName="@nameof(Priority.Id)">
+                </Select>
+            </FormItem>
+            <FormItem Label="Task status">
+                <Select Mode="default"
+                        EnableSearch
+                        DataSource="@TaskStatusList"
+                        @bind-Value="@context.TaskStatusId"
+                        LabelName="@nameof(CatalogTaskStatus.Name)"
+                        ValueName="@nameof(CatalogTaskStatus.Id)">
+                </Select>
+            </FormItem>
             <FormItem Label="Task files">
                 <Upload Name="file"
                         Action=@($"https://localhost:7179/api/file/upload/{context.Id}")
@@ -180,8 +179,8 @@
                     </div>
                 </Upload>
             </FormItem>
-         </Form>
-     </Modal>
+        </Form>
+    </Modal>
 }
 
 <Modal Footer="null"
