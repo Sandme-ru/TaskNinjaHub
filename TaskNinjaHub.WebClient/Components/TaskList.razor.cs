@@ -134,7 +134,7 @@ public partial class TaskList
             InformationSystemList = await InformationSystemService.GetAllAsync();
             TaskStatusList = await TaskStatusService.GetAllAsync();
             CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel
-                { PageNumber = CurrentPage, PageSize = PageSize }))!.ToList();
+                { PageNumber = CurrentPage, PageSize = PageSize })).ToList();
 
             IsLoadingTaskList = false;
             StateHasChanged();
@@ -310,7 +310,10 @@ public partial class TaskList
                         var createdTaskStream = await changeRet.Content.ReadAsStreamAsync();
                         var createdTask = await JsonSerializer.DeserializeAsync<CatalogTask>(
                             createdTaskStream,
-                            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                            new JsonSerializerOptions
+                            {
+                                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                            });
                         foreach (var fileEntity in CatalogTaskForChangelog.Files!)
                             await FileService.ChangeOwnershipAsync(fileEntity.Id, createdTask!.Id);
                     }
@@ -318,7 +321,7 @@ public partial class TaskList
                         foreach (var fileEntity in CatalogTaskForChangelog.Files!)
                             await FileService.DeleteAsync(fileEntity.Id);
 
-                    CatalogTasks = (await CatalogTaskService.GetAllAsync() ?? Array.Empty<CatalogTask>()).ToList();
+                    CatalogTasks = (await CatalogTaskService.GetAllAsync()).ToList();
                 }
                 _visibleModal = false;
                 StateHasChanged();

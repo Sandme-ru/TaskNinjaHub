@@ -174,6 +174,6 @@ public partial class TaskCard
 
     private void GoBack()
     {
-        NavigationManager.NavigateTo("");
+        NavigationManager.NavigateTo("/catalog-tasks");
     }
 }
