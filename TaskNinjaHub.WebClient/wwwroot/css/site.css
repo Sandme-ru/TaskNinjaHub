@@ -451,3 +451,7 @@ html {
     .profile-button:hover {
         background-color: #0056b3;
     }
+
+.filter-box {
+    margin: 0 16px 0 16px;
+}
