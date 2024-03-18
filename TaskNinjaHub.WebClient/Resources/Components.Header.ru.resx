@@ -117,7 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddTask" xml:space="preserve">
+    <value>Добавить задачу</value>
+  </data>
+  <data name="Anonymous" xml:space="preserve">
+    <value>Анонимный пользователь (Нет роли)</value>
+  </data>
+  <data name="Hello" xml:space="preserve">
+    <value>Привет</value>
+  </data>
+  <data name="Informers" xml:space="preserve">
+    <value>Информеры</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Выход</value>
+  </data>
   <data name="Menu" xml:space="preserve">
     <value>Меню</value>
+  </data>
+  <data name="Tasks" xml:space="preserve">
+    <value>Задачи</value>
   </data>
 </root>
