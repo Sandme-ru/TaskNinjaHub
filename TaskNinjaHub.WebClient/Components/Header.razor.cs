@@ -31,7 +31,7 @@ public partial class Header
 
     private void ShowUserProfile()
     {
-        NavigationManager.NavigateTo("/profile"); //todo: Add user profile
+        NavigationManager.NavigateTo("/profile");
     }
 
     private void RedirectBack()

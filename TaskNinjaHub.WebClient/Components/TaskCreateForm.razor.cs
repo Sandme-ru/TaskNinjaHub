@@ -70,6 +70,7 @@ public partial class TaskCreateForm
     private List<CatalogTaskStatus> TaskStatusList { get; set; } = [];
 
     private CatalogTaskStatus? DefaultStatus { get; set; } = new();
+
     public bool IsLoading { get; set; }
 
     #endregion
@@ -83,12 +84,17 @@ public partial class TaskCreateForm
     {
         if (firstRender)
         {
+            IsLoading = true;
+            StateHasChanged();
+
             AuthorsList = (await AuthorService.GetAllAsync()).ToList();
             PriorityList = (await PriorityService.GetAllAsync()).ToList();
             InformationSystemList = (await InformationSystemService.GetAllAsync()).ToList();
             TaskStatusList = (await TaskStatusService.GetAllAsync()).ToList();
-            DefaultStatus = TaskStatusList.FirstOrDefault();
 
+            DefaultStatus = TaskStatusList.FirstOrDefault(t => t.Id == 1);
+
+            IsLoading = false;
             StateHasChanged();
         }
     }
@@ -113,6 +119,7 @@ public partial class TaskCreateForm
                 new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
             foreach (var fileEntity in UploadedFileList)
                 await FileService.ChangeOwnershipAsync(fileEntity.Id, createdTask!.Id);
+
             await Message.Success("The task was successfully added.");
         }
         else
@@ -179,7 +186,7 @@ public partial class TaskCreateForm
         if (fileToRemove is null)
             return false;
 
-        var res = await FileService.DeleteAsync(fileToRemove.Id);
-        return res.IsSuccessStatusCode;
+        var responseMessage = await FileService.DeleteAsync(fileToRemove.Id);
+        return responseMessage.IsSuccessStatusCode;
     }
 }

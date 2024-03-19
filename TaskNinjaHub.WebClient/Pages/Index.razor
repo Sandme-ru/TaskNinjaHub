@@ -1,3 +1,140 @@
 ﻿@page "/"
 
-<PageTitle>Hello page</PageTitle>
+<PageTitle>Informers</PageTitle>
+
+<div class="text-center title">
+    <h2>All tasks</h2>
+</div>
+<div>
+    <Loading Spinning="IsLoading">
+        @if (_allData != null)
+        {
+            <Pie Data="_allData" Config="_config" />
+        }
+    </Loading>
+</div>
+
+<div class="text-center title">
+    <h2>My tasks</h2>
+</div>
+<div>
+    <Loading Spinning="IsLoading">
+        @if (_myData != null)
+        {
+            <Pie Data="_myData" Config="_config" />
+        }
+    </Loading>
+</div>
+
+<style>
+    .title {
+        margin-top: 1%;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+</style>
+
+@code
+{
+    [Inject]
+    protected CatalogTaskService CatalogTaskService { get; set; } = null!;
+
+    [Inject]
+    protected IUserProviderService UserProvider { get; set; } = null!;
+
+    private static List<CatalogTask> CatalogTasks { get; set; } = null!;
+
+    private static List<CatalogTask> MyCatalogTasks { get; set; } = null!;
+
+    private object[] _allData = null!;
+
+    private object[] _myData = null!;
+
+    private bool IsLoading { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            CatalogTasks = (await CatalogTaskService.GetAllAsync()).ToList();
+            MyCatalogTasks = (await CatalogTaskService.GetAllByFilterAsync(new CatalogTask { TaskExecutorId = UserProvider.User.Id })).ToList();
+
+            _allData = [
+                new
+            {
+                type = "Ожидает выполнения",
+                value = CatalogTasks.Count(e => e.TaskStatusId == 1)
+            },
+            new
+            {
+                type = "В работе",
+                value = CatalogTasks.Count(e => e.TaskStatusId == 2)
+            },
+            new
+            {
+                type = "На проверке",
+                value = CatalogTasks.Count(e => e.TaskStatusId == 3)
+            },
+            new
+            {
+                type = "Завершена",
+                value = CatalogTasks.Count(e => e.TaskStatusId == 4)
+            }
+            ];
+
+            _myData = [
+                new
+            {
+                type = "Ожидает выполнения",
+                value = MyCatalogTasks.Count(e => e.TaskStatusId == 1)
+            },
+            new
+            {
+                type = "В работе",
+                value = MyCatalogTasks.Count(e => e.TaskStatusId == 2)
+            },
+            new
+            {
+                type = "На проверке",
+                value = MyCatalogTasks.Count(e => e.TaskStatusId == 3)
+            },
+            new
+            {
+                type = "Завершена",
+                value = MyCatalogTasks.Count(e => e.TaskStatusId == 4)
+            }
+            ];
+
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private readonly PieConfig _config = new()
+        {
+            ForceFit = true,
+            Title = new AntDesign.Charts.Title
+            {
+                Visible = true,
+                Text = string.Empty
+            },
+            Description = new Description
+            {
+                Visible = true,
+                Text = string.Empty
+            },
+            Radius = 0.8,
+            AngleField = "value",
+            ColorField = "type",
+            Label = new PieLabelConfig
+            {
+                Visible = true,
+                Type = "spider"
+            }
+        };
+}
