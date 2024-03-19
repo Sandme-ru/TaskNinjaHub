@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using TaskNinjaHub.Application.BaseUsers;
+using TaskNinjaHub.Application.Entities.Authors.Enums;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Interfaces.Haves;
 
@@ -22,4 +23,6 @@ public class Author: BaseUserCU, IHaveId, IHaveName
 
     [JsonIgnore]
     public virtual List<CatalogTask>? AssignedTasks { get; set; }
+
+    public LocalizationType? LocalizationType { get; set; }
 }

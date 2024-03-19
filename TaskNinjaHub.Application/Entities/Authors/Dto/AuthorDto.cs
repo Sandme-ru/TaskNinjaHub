@@ -1,4 +1,6 @@
-﻿namespace TaskNinjaHub.Application.Entities.Authors.Dto;
+﻿using TaskNinjaHub.Application.Entities.Authors.Enums;
+
+namespace TaskNinjaHub.Application.Entities.Authors.Dto;
 
 public class AuthorDto
 {
@@ -7,4 +9,6 @@ public class AuthorDto
     public string Name { get; set; }
 
     public string Password { get; set; }
+
+    public LocalizationType LocalizationType { get; set; }
 }
