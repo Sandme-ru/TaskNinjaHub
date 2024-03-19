@@ -1,5 +1,10 @@
 ﻿@page "/profile"
+@inherits LocalizationPage
 @inject IStringLocalizer<PersonalProfile> Localizer
+
+@{
+    SetDefaultCulture(UserProviderService.User.LocalizationType);
+}
 
 <PageTitle>@Localizer["PageTitle"]</PageTitle>
 
@@ -7,47 +12,23 @@
 
     <h2>@Localizer["Header"]</h2>
 
-    <form class="profile-form" @onsubmit="EditProfile">
-        <label for="name" class="profile-label">@Localizer["Name"]</label>
-        <input type="text" id="name" class="profile-input" @bind="@Author.Name" />
+    <Loading Spinning="IsLoading">
+        <form class="profile-form" @onsubmit="EditProfile">
+            <label for="name" class="profile-label">@Localizer["Name"]</label>
+            <input type="text" id="name" class="profile-input" @bind="@Author.Name" />
 
-        <label for="password" class="profile-label">@Localizer["Password"]</label>
-        <input type="password" id="password" class="profile-input" @bind="@Author.Password" />
+            <label for="password" class="profile-label">@Localizer["Password"]</label>
+            <input type="password" id="password" class="profile-input" @bind="@Author.Password" />
 
-        <button type="submit" class="profile-button">@Localizer["Save"]</button>
-    </form>
+            <label for="language" class="profile-label">@Localizer["Language"]</label>
+            <select id="language" class="profile-input" @bind="@Author.LocalizationType">
+                @foreach (var language in _localizationTypes)
+                {
+                    <option value="@language.Key">@language.Value</option>
+                }
+            </select>
+
+            <button type="submit" class="profile-button">@Localizer["Save"]</button>
+        </form>
+    </Loading>
 </div>
-
-@code {
-    [Inject]
-    private IUserProviderService UserProviderService { get; set; } = null!;
-
-    [Inject] 
-    private AuthService AuthService { get; set; } = null!;
-
-    [Inject]
-    private IMessageService MessageService { get; set; } = null!;
-
-    private AuthorDto Author { get; set; } = new();
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            Author.Name = UserProviderService.User.Name!;
-            Author.Id = UserProviderService.User.AuthGuid!;
-            Author.Password = string.Empty;
-
-            StateHasChanged();
-        }
-    }
-
-    private async Task EditProfile()
-    {
-        var result = await AuthService.EditUserAsync(Author);
-        if (result.Success)
-            await MessageService.Success("Profile updated");
-        else
-            await MessageService.Error(result.Error);
-    }
-}

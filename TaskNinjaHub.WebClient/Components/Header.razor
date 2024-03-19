@@ -1,10 +1,14 @@
-@inherits LayoutComponentBase
+@inherits LocalizationPage
 @inject IStringLocalizer<Header> Localizer
+
+@{
+    SetDefaultCulture(UserProviderService.User.LocalizationType);
+}
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white">
     <div class="container-fluid">
         <img src="css/HubLogoPNG.png" class="navbar-brand" @onclick="RedirectBack" />
-        
+
         <div class="dropdown">
             <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 @Localizer["Menu"]
@@ -18,17 +22,19 @@
         </div>
 
         <div class="d-flex align-items-center ml-auto">
-            @if (UserName == Localizer["Anonymous"])
-            {
-                @($"{Localizer["Hello"]}, {UserName}!")
-            }
-            else
-            {
-                <Button OnClick="ShowUserProfile" Type="@ButtonType.Link">
+            <Loading Spinning="IsLoading">
+                @if (UserName == Localizer["Anonymous"])
+                {
                     @($"{Localizer["Hello"]}, {UserName}!")
-                </Button>
-                <a style="margin-top:5px;" href="@($"Logout")">@Localizer["Logout"]</a>
-            }
+                }
+                else
+                {
+                    <Button OnClick="ShowUserProfile" Type="@ButtonType.Link">
+                        @($"{Localizer["Hello"]}, {UserName}!")
+                    </Button>
+                    <a style="margin-top:5px;" href="@($"Logout")">@Localizer["Logout"]</a>
+                }
+            </Loading>
         </div>
     </div>
 </nav>

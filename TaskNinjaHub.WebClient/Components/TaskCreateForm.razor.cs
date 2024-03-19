@@ -128,12 +128,12 @@ public partial class TaskCreateForm
         StateHasChanged();
     }
 
-    private async Task OnFinish(EditContext arg)
+    private void OnFinish()
     {
         Console.WriteLine($"Success:{JsonSerializer.Serialize(CreatedCatalogTask)}");
     }
 
-    private async Task OnFinishFailed(EditContext arg)
+    private void OnFinishFailed()
     {
         Console.WriteLine($"Failed:{JsonSerializer.Serialize(CreatedCatalogTask)}");
     }
@@ -141,10 +141,10 @@ public partial class TaskCreateForm
     private bool BeforeUpload(UploadFileItem file)
     {
         var isLt8M = file.Size / 1024 / 1024 < 8;
+
         if (!isLt8M)
-        {
             Message.Error("File must smaller than 8MB!");
-        }
+
         return isLt8M;
     }
 

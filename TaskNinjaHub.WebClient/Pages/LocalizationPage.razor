@@ -1,0 +1,16 @@
+﻿@code
+{
+    protected void SetDefaultCulture(LocalizationType? localizationType)
+    {
+        var cultureName = localizationType switch
+        {
+            LocalizationType.English => "en",
+            LocalizationType.Russian => "ru",
+            _ => "en",
+        };
+
+        var cultureInfo = new CultureInfo(cultureName);
+        CultureInfo.CurrentCulture = cultureInfo;
+        CultureInfo.CurrentUICulture = cultureInfo;
+    }
+}

@@ -120,6 +120,9 @@
   <data name="Header" xml:space="preserve">
     <value>Редактировать профиль</value>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Язык</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Логин:</value>
   </data>
@@ -128,6 +131,9 @@
   </data>
   <data name="Password" xml:space="preserve">
     <value>Пароль:</value>
+  </data>
+  <data name="ProfileUpdated" xml:space="preserve">
+    <value>Профиль обновлен</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Сохранить</value>

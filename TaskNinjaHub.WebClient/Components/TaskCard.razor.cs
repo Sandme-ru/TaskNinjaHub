@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components;
 using System.Text.Json;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.WebClient.Services;
+using TaskNinjaHub.WebClient.Shared;
 
 namespace TaskNinjaHub.WebClient.Components;
 
@@ -36,6 +37,8 @@ public partial class TaskCard
     private string? FilePreviewUrl { get; set; } = string.Empty;
 
     private string? FilePreviewTitle { get; set; } = string.Empty;
+
+    private bool IsLoading { get; set; }
     
     private void OnPreview(UploadFileItem file)
     {
@@ -54,10 +57,16 @@ public partial class TaskCard
     {
         if (firstRender)
         {
+            IsLoading = true;
+            StateHasChanged();
+
             SelectedCatalogTask = await CatalogTaskService.GetIdAsync(Id);
             CatalogTasks = (await CatalogTaskService.GetAllAsync()).ToList();
 
             await Open(SelectedCatalogTask);
+
+            IsLoading = false;
+            StateHasChanged();
         }
     }
 
@@ -80,7 +89,7 @@ public partial class TaskCard
                         f,
                         new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
                     State = UploadState.Success
-                }).ToList()!;
+                }).ToList();
         }
         else
             DefaultFileList = [];
@@ -158,8 +167,6 @@ public partial class TaskCard
                 }
             }
         }
-
-        StateHasChanged();
     }
 
     private string TextCompare(string oldValue, string newValue)

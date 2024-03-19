@@ -438,8 +438,8 @@ public partial class TaskList
         DefaultFileList?.Remove(file);
         EditedTask?.Files?.Remove(fileToRemove);
 
-        var res = await FileService.DeleteAsync(fileToRemove.Id);
-        return res.IsSuccessStatusCode;
+        var responseMessage = await FileService.DeleteAsync(fileToRemove.Id);
+        return responseMessage.IsSuccessStatusCode;
     }
 
 
@@ -451,15 +451,15 @@ public partial class TaskList
         CurrentPage = arg.Page;
         PageSize = arg.PageSize;
 
-        CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel { PageSize = PageSize, PageNumber = CurrentPage }) ?? Array.Empty<CatalogTask>()).ToList();
+        CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel { PageSize = PageSize, PageNumber = CurrentPage })).ToList();
 
         IsLoadingTaskList = false;
         StateHasChanged();
     }
 
-    private async Task Open(CatalogTask context)
+    private async Task Open(CatalogTask task)
     {
-        NavigationManager.NavigateTo($"task-read/{context.Id}");
+        NavigationManager.NavigateTo($"task-read/{task.Id}");
         StateHasChanged();
     }
 }

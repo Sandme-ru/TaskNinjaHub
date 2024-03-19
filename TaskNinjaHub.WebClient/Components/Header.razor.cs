@@ -11,7 +11,23 @@ public partial class Header
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
-    private string UserName => $"{UserProviderService.User.ShortName ?? "Anonymous"} ({UserProviderService.User.RoleName ?? "Anonymous"})";
+    private string UserName { get; set; } = null!;
+
+    private bool IsLoading { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            UserName = $"{UserProviderService.User.ShortName ?? Localizer["Anonymous"].Value} ({UserProviderService.User.RoleName ?? Localizer["Anonymous"].Value})";
+
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
 
     private void ShowUserProfile()
     {
