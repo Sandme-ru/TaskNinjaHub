@@ -2,6 +2,7 @@
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
+using TaskNinjaHub.Application.Entities.RelatedTasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 
@@ -18,4 +19,6 @@ public interface ITaskNinjaHubDbContext
     DbSet<CatalogTask> CatalogTasks { get; set; }
 
     DbSet<CatalogTaskStatus> TaskStatuses { get; set; }
+
+    DbSet<RelatedTask> RelatedTasks { get; set; }
 }
