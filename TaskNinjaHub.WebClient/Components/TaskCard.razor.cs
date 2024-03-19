@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components;
 using System.Text.Json;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.WebClient.Services;
-using TaskNinjaHub.WebClient.Shared;
 
 namespace TaskNinjaHub.WebClient.Components;
 

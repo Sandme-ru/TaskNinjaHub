@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="AntDesign" Version="0.17.4" />
+    <PackageReference Include="AntDesign.Charts" Version="0.5.1" />
     <PackageReference Include="BootstrapBlazor" Version="8.2.2" />
     <PackageReference Include="DiffMatchPatch" Version="3.0.0" />
     <PackageReference Include="Duende.AccessTokenManagement.OpenIdConnect" Version="2.1.0" />
