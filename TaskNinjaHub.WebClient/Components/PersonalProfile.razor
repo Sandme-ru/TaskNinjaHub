@@ -45,9 +45,9 @@
     private async Task EditProfile()
     {
         var result = await AuthService.EditUserAsync(Author);
-        if (result.IsSuccessStatusCode)
+        if (result.Success)
             await MessageService.Success("Profile updated");
         else
-            await MessageService.Error(result.ReasonPhrase); //todo: validate message
+            await MessageService.Error(result.Error);
     }
 }
