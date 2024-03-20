@@ -1,18 +1,25 @@
 ﻿namespace TaskNinjaHub.Application.Utilities.OperationResults;
 
-public class OperationResult
+public class OperationResult<T>
 {
+    public T Body { get; set; }
+
     public bool Success { get; set; }
 
     public string ErrorMessage { get; set; } = null!;
 
-    public static OperationResult SuccessResult()
+    public static OperationResult<T> SuccessResult()
     {
-        return new OperationResult { Success = true };
+        return new OperationResult<T> { Success = true };
     }
 
-    public static OperationResult FailedResult(string errorMessage)
+    public static OperationResult<T> SuccessResult(T body)
     {
-        return new OperationResult { Success = false, ErrorMessage = errorMessage };
+        return new OperationResult<T> { Success = true, Body = body };
+    }
+
+    public static OperationResult<T> FailedResult(string errorMessage)
+    {
+        return new OperationResult<T> { Success = false, ErrorMessage = errorMessage };
     }
 }

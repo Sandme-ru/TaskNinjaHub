@@ -1,15 +1,15 @@
 ﻿using AntDesign;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using System.Text.Json;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
+using TaskNinjaHub.Application.Entities.RelatedTasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
+using TaskNinjaHub.Application.Utilities.OperationResults;
 using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
-using TaskNinjaHub.WebClient.Shared;
 using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 
 namespace TaskNinjaHub.WebClient.Components;
@@ -43,6 +43,9 @@ public partial class TaskCreateForm
     private AuthorService AuthorService { get; set; } = null!;
 
     [Inject]
+    private RelatedTaskService RelatedTaskService { get; set; } = null!;
+
+    [Inject]
     private IUserProviderService UserProviderService { get; set; } = null!;
 
     #endregion
@@ -73,6 +76,10 @@ public partial class TaskCreateForm
 
     public bool IsLoading { get; set; }
 
+    public IEnumerable<CatalogTask> CatalogTaskList { get; set; } = [];
+
+    public int RelatedTaskId { get; set; }
+
     #endregion
 
     protected override void OnInitialized()
@@ -91,6 +98,7 @@ public partial class TaskCreateForm
             PriorityList = (await PriorityService.GetAllAsync()).ToList();
             InformationSystemList = (await InformationSystemService.GetAllAsync()).ToList();
             TaskStatusList = (await TaskStatusService.GetAllAsync()).ToList();
+            CatalogTaskList = (await CatalogTaskService.GetAllAsync()).ToList();
 
             DefaultStatus = TaskStatusList.FirstOrDefault(t => t.Id == 1);
 
@@ -109,30 +117,47 @@ public partial class TaskCreateForm
         CreatedCatalogTask.UserCreated = CurrentUser.Name;
         CreatedCatalogTask.DateCreated = DateTime.UtcNow;
 
-        var responseMessage = await CatalogTaskService.CreateAsync(CreatedCatalogTask);
+        var result = await CatalogTaskService.CreateAsync(CreatedCatalogTask);
 
-        if (responseMessage.IsSuccessStatusCode)
+        if (result.Success)
         {
-            var createdTaskStream = await responseMessage.Content.ReadAsStreamAsync();
-            var createdTask = await JsonSerializer.DeserializeAsync<CatalogTask>(
-                createdTaskStream, 
-                new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            var createdTask = result.Body;
             foreach (var fileEntity in UploadedFileList)
                 await FileService.ChangeOwnershipAsync(fileEntity.Id, createdTask!.Id);
 
             await Message.Success("The task was successfully added.");
+            
+            await AddRelatedTasks(result);
+
+            IsLoading = false;
+            StateHasChanged();
+
+            NavigationManager.NavigateTo("/catalog-tasks");
         }
         else
         {
             foreach (var fileEntity in UploadedFileList)
                 await FileService.DeleteAsync(fileEntity.Id);
-            await Message.Error(responseMessage.ReasonPhrase);
+
+            await Message.Error(result.ErrorMessage);
+
+            IsLoading = false;
+            StateHasChanged();
         }
+    }
 
-        CreatedCatalogTask = new CatalogTask();
+    private async Task AddRelatedTasks(OperationResult<CatalogTask> responseMessage)
+    {
+        if (RelatedTaskId != 0)
+        {
+            var relatedTask = new RelatedTask
+            {
+                MainTaskId = responseMessage.Body.Id,
+                SubordinateTaskId = RelatedTaskId
+            };
 
-        IsLoading = false;
-        StateHasChanged();
+            await RelatedTaskService.CreateAsync(relatedTask);
+        }
     }
 
     private void OnFinish()

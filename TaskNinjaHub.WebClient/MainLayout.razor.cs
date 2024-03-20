@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Globalization;
-using TaskNinjaHub.Application.Entities.Authors.Enums;
 using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
 
@@ -22,7 +20,7 @@ public partial class MainLayout
         {
             var response = await AuthorService.CreateAsync(UserProviderService.User);
 
-            Console.WriteLine(response.IsSuccessStatusCode ? "Add new author" : response.ReasonPhrase);
+            Console.WriteLine(response.Success ? "Add new author" : response.ErrorMessage);
         }
     }
 }

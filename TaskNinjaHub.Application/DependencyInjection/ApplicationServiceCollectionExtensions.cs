@@ -8,6 +8,8 @@ using TaskNinjaHub.Application.Entities.InformationSystems.Interfaces;
 using TaskNinjaHub.Application.Entities.InformationSystems.Repositories;
 using TaskNinjaHub.Application.Entities.Priorities.Interfaces;
 using TaskNinjaHub.Application.Entities.Priorities.Repositories;
+using TaskNinjaHub.Application.Entities.RelatedTasks.Interfaces;
+using TaskNinjaHub.Application.Entities.RelatedTasks.Repositories;
 using TaskNinjaHub.Application.Entities.Tasks.Interfaces;
 using TaskNinjaHub.Application.Entities.Tasks.Repositories;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Interfaces;
@@ -26,6 +28,7 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<IInformationSystemRepository, InformationSystemRepository>();
         services.AddScoped<IPriorityRepository, PriorityRepository>();
         services.AddScoped<ITaskRepository, TaskRepository>();
+        services.AddScoped<IRelatedTaskRepository, RelatedTaskRepository>();
         services.AddScoped<ITaskStatusRepository, TaskStatusRepository>();
 
         #endregion

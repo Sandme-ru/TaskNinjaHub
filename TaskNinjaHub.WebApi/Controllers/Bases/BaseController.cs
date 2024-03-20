@@ -2,6 +2,7 @@
 using TaskNinjaHub.Application.Entities.Bases.Interfaces;
 using TaskNinjaHub.Application.Filters;
 using TaskNinjaHub.Application.Interfaces.Haves;
+using TaskNinjaHub.Application.Utilities.OperationResults;
 
 namespace TaskNinjaHub.WebApi.Controllers.Bases;
 
@@ -56,31 +57,23 @@ public class BaseController<TEntity, TRepository>(TRepository repository) : Cont
     }
 
     [HttpPost("Create")]
-    public async Task<ActionResult<TEntity>?> Create([FromBody] TEntity? entity)
+    public async Task<OperationResult<TEntity>?> Create([FromBody] TEntity? entity)
     {
         if (entity == null)
-            return BadRequest("An empty object was passed to add");
+            return OperationResult<TEntity>.FailedResult("An empty object was passed to add");
 
         var result = await repository.AddAsync(entity);
-
-        if (result.Success)
-            return Ok(entity);
-        else
-            return BadRequest(result.ErrorMessage);
+        return result;
     }
 
     [HttpPut("UpdateAsync")]
-    public async Task<ActionResult<TEntity>?> Put([FromBody] TEntity? entity)
+    public async Task<OperationResult<TEntity>?> Put([FromBody] TEntity? entity)
     {
         if (entity == null)
-            return BadRequest("An empty object was passed to update");
+            return OperationResult<TEntity>.FailedResult("An empty object was passed to update");
 
         var result = await repository.UpdateAsync(entity);
-
-        if (result.Success)
-            return Ok(entity);
-        else
-            return BadRequest(result.ErrorMessage);
+        return result;
     }
 
     [HttpDelete("{id}")]

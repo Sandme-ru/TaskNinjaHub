@@ -6,20 +6,18 @@ using TaskNinjaHub.Application.Utilities.OperationResults;
 
 namespace TaskNinjaHub.Application.Entities.Bases.Repositories;
 
-public abstract class BaseRepository<T>(DbContext? context) : IBaseRepository<T> where T : class, IHaveId
+public abstract class BaseRepository<T>(DbContext context) : IBaseRepository<T> where T : class, IHaveId
 {
-    protected readonly DbContext? Context = context;
+    protected readonly DbContext Context = context;
 
     public async Task<T?> GetByIdAsync(int id)
     {
-        if (Context != null)
-            return await Context.Set<T>().FindAsync(id);
-        return null;
+        return await Context.Set<T>().FindAsync(id);
     }
 
     public async Task<IEnumerable<T>?> GetAllAsync()
     {
-        return await Context?.Set<T>()
+        return await Context.Set<T>()
             .OrderByDescending(entity => entity.Id)
             .ToListAsync()!;
     }
@@ -29,7 +27,7 @@ public abstract class BaseRepository<T>(DbContext? context) : IBaseRepository<T>
         if (pageNumber < 1 || pageSize < 1)
             return null;
 
-        var queryable = Context?.Set<T>()
+        var queryable = Context.Set<T>()
             .OrderByDescending(entity => entity.Id)
             .AsQueryable();
 
@@ -76,7 +74,7 @@ public abstract class BaseRepository<T>(DbContext? context) : IBaseRepository<T>
             }
         }
 
-        var filteredList = Context?.Set<T>()
+        var filteredList = Context.Set<T>()
             .OrderByDescending(entity => entity.Id)
             .ToList()
             .Where(predicate.Compile());
@@ -116,7 +114,7 @@ public abstract class BaseRepository<T>(DbContext? context) : IBaseRepository<T>
             }
         }
 
-        var queryable = Context?.Set<T>()
+        var queryable = Context.Set<T>()
             .OrderByDescending(entity => entity.Id)
             .ToList()
             .Where(predicate.Compile()); 
@@ -130,48 +128,48 @@ public abstract class BaseRepository<T>(DbContext? context) : IBaseRepository<T>
 
     public Task<IEnumerable<T>?> FindAsync(Expression<Func<T, bool>> expression)
     {
-        return Task.FromResult<IEnumerable<T>?>(Context?.Set<T>().Where(expression));
+        return Task.FromResult<IEnumerable<T>?>(Context.Set<T>().Where(expression));
     }
 
-    public async Task<OperationResult> AddAsync(T entity)
+    public async Task<OperationResult<T>> AddAsync(T entity)
     {
         try
         {
-            await (Context?.Set<T>()!).AddAsync(entity);
-            await Context?.SaveChangesAsync()!;
-            return OperationResult.SuccessResult();
+            await Context.Set<T>().AddAsync(entity);
+            await Context.SaveChangesAsync();
+            return OperationResult<T>.SuccessResult(entity);
         }
         catch (Exception ex)
         {
-            return OperationResult.FailedResult($"Failed to add entity: {ex.Message}");
+            return OperationResult<T>.FailedResult($"Failed to add entity: {ex.Message}");
         }
     }
 
-    public async Task<OperationResult> UpdateAsync(T entity)
+    public async Task<OperationResult<T>> UpdateAsync(T entity)
     {
         try
         {
-            Context?.Set<T>().Update(entity);
-            await Context?.SaveChangesAsync()!;
-            return OperationResult.SuccessResult();
+            Context.Set<T>().Update(entity);
+            await Context.SaveChangesAsync();
+            return OperationResult<T>.SuccessResult(entity);
         }
         catch (Exception ex)
         {
-            return OperationResult.FailedResult($"Failed to update entity: {ex.Message}");
+            return OperationResult<T>.FailedResult($"Failed to update entity: {ex.Message}");
         }
     }
 
-    public async Task<OperationResult> RemoveAsync(T entity)
+    public async Task<OperationResult<T>> RemoveAsync(T entity)
     {
         try
         {
-            Context?.Set<T>().Remove(entity);
-            await Context?.SaveChangesAsync()!;
-            return OperationResult.SuccessResult();
+            Context.Set<T>().Remove(entity);
+            await Context.SaveChangesAsync();
+            return OperationResult<T>.SuccessResult();
         }
         catch (Exception ex)
         {
-            return OperationResult.FailedResult($"Failed to remove entity: {ex.Message}");
+            return OperationResult<T>.FailedResult($"Failed to remove entity: {ex.Message}");
         }
     }
 }

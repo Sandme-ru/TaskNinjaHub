@@ -2,6 +2,7 @@
 using DiffMatchPatch;
 using Microsoft.AspNetCore.Components;
 using System.Text.Json;
+using TaskNinjaHub.Application.Entities.RelatedTasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.WebClient.Services;
 
@@ -21,6 +22,9 @@ public partial class TaskCard
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
+    [Inject]
+    private RelatedTaskService RelatedTaskService { get; set; } = null!;
+
     public CatalogTask SelectedCatalogTask { get; set; } = null!;
     
     public List<CatalogTask> CatalogTasks { get; set; } = null!;
@@ -31,6 +35,10 @@ public partial class TaskCard
 
     private List<CatalogTask>? CatalogTasksForChangelog { get; set; }
 
+    private List<RelatedTask>? MainRelatedTasks { get; set; }
+
+    private List<RelatedTask>? SubordinateRelatedTasks { get; set; }
+
     private bool IsPreviewVisible { get; set; }
 
     private string? FilePreviewUrl { get; set; } = string.Empty;
@@ -38,7 +46,9 @@ public partial class TaskCard
     private string? FilePreviewTitle { get; set; } = string.Empty;
 
     private bool IsLoading { get; set; }
-    
+
+    public bool ShowRelatedTasks { get; set; } = true;
+
     private void OnPreview(UploadFileItem file)
     {
         if (!file.IsPicture())
@@ -61,6 +71,9 @@ public partial class TaskCard
 
             SelectedCatalogTask = await CatalogTaskService.GetIdAsync(Id);
             CatalogTasks = (await CatalogTaskService.GetAllAsync()).ToList();
+            
+            MainRelatedTasks = (await RelatedTaskService.GetAllByFilterAsync(new RelatedTask { MainTaskId = Id })).ToList();
+            SubordinateRelatedTasks = (await RelatedTaskService.GetAllByFilterAsync(new RelatedTask { SubordinateTaskId = Id })).ToList();
 
             await Open(SelectedCatalogTask);
 
@@ -181,5 +194,22 @@ public partial class TaskCard
     private void GoBack()
     {
         NavigationManager.NavigateTo("/catalog-tasks");
+    }
+
+    private void NavigateToSubordinateTask(RelatedTask task)
+    {
+        if (task.SubordinateTask != null)
+            NavigationManager.NavigateTo($"task-read/{task.SubordinateTask.Id}", true);
+    }
+
+    private void NavigateToMainTask(RelatedTask task)
+    {
+        if (task.MainTask != null)
+            NavigationManager.NavigateTo($"task-read/{task.MainTask.Id}", true);
+    }
+
+    private void ToggleRelatedTasks()
+    {
+        ShowRelatedTasks = !ShowRelatedTasks;
     }
 }
