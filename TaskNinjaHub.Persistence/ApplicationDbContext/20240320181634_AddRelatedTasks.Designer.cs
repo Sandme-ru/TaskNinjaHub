@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TaskNinjaHub.Persistence;
@@ -11,9 +12,11 @@ using TaskNinjaHub.Persistence;
 namespace TaskNinjaHub.Persistence.ApplicationDbContext
 {
     [DbContext(typeof(TaskNinjaHubDbContext))]
-    partial class TaskNinjaHubDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240320181634_AddRelatedTasks")]
+    partial class AddRelatedTasks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,10 +48,6 @@ namespace TaskNinjaHub.Persistence.ApplicationDbContext
                     b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("date_updated");
-
-                    b.Property<int>("LocalizationType")
-                        .HasColumnType("integer")
-                        .HasColumnName("localization_type");
 
                     b.Property<string>("Name")
                         .HasColumnType("text")

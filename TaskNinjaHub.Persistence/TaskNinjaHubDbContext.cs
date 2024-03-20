@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
+using TaskNinjaHub.Application.Entities.RelatedTasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.Application.Interfaces;
@@ -43,6 +44,8 @@ public class TaskNinjaHubDbContext(DbContextOptions<TaskNinjaHubDbContext> optio
     public DbSet<Priority> Priorities { get; set; } = null!;
 
     public DbSet<CatalogTaskStatus> TaskStatuses { get; set; } = null!;
+
+    public DbSet<RelatedTask> RelatedTasks { get; set; } = null!;
 
     public DbSet<File> Files { get; set; } = null!;
 
