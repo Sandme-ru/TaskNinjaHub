@@ -27,4 +27,8 @@
     <ProjectReference Include="..\TaskNinjaHub.Persistence\TaskNinjaHub.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

@@ -5,7 +5,6 @@
 @if (SelectedCatalogTask != null)
 {
     <button class="back-button" @onclick="GoBack">Go back</button>
-
     
     <div class="card">
         <table class="task-table">
@@ -27,6 +26,52 @@
             </tr>
         </table>
 
+        @if (MainRelatedTasks != null || SubordinateRelatedTasks != null)
+        {
+            <div class="related-tasks">
+                <h3 class="related-tasks-header">
+                    <span class="related-tasks-header-text">Related tasks</span>
+                    <button class="toggle-button" @onclick="ToggleRelatedTasks">
+                        @if (ShowRelatedTasks)
+                        {
+                            <i class="fas fa-chevron-up"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-chevron-down"></i>
+                        }
+                    </button>
+                </h3>
+                @if (ShowRelatedTasks)
+                {
+                    <div class="related-tasks-list">
+                        @if (MainRelatedTasks != null)
+                        {
+                            foreach (var task in MainRelatedTasks)
+                            {
+                                <NavLink class="related-task-link" @onclick="() => NavigateToSubordinateTask(task)">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span>@task.SubordinateTask?.Name</span>
+                                    
+                                </NavLink>
+                            }
+                        }
+                
+                        @if (SubordinateRelatedTasks != null)
+                        {
+                            foreach (var task in SubordinateRelatedTasks)
+                            {
+                                <NavLink class="related-task-link" @onclick="() => NavigateToMainTask(task)">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span>@task.MainTask?.Name</span>
+                                </NavLink>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        }
+
         @if (HtmlMarkupForTask != null)
         {
             <AntList DataSource="@HtmlMarkupForTask" Bordered>
@@ -43,3 +88,49 @@
         </Upload>
     </div>
 }
+
+<style>
+    .related-tasks {
+        margin-top: 20px;
+    }
+
+    .related-tasks-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .related-tasks-header-text {
+        margin-right: 10px;
+    }
+
+    .toggle-button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+    }
+
+    .related-tasks-list {
+        margin-top: 10px;
+    }
+
+    .related-task-link {
+        display: block;
+        padding: 5px;
+        margin-bottom: 5px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        color: #333;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .related-task-link:hover {
+            background-color: #e9ecef;
+        }
+
+        .related-task-link i {
+            margin-left: 5px;
+        }
+</style>

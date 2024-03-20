@@ -69,7 +69,7 @@ public partial class PersonalProfile
 
             switch (userEditResult.Success)
             {
-                case true when authorUpdateResult.IsSuccessStatusCode:
+                case true when authorUpdateResult.Success:
                     await MessageService.Success(Localizer["ProfileUpdated"].Value);
                     NavigationManager.NavigateTo("Logout?", true);
                     break;
@@ -78,8 +78,8 @@ public partial class PersonalProfile
                     break;
             }
 
-            if (!authorUpdateResult.IsSuccessStatusCode)
-                await MessageService.Error(authorUpdateResult.ReasonPhrase);
+            if (!authorUpdateResult.Success)
+                await MessageService.Error(authorUpdateResult.ErrorMessage);
         }
 
         IsLoading = false;

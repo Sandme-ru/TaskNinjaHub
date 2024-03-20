@@ -18,9 +18,9 @@ public interface IBaseRepository<T> where T : class, IHaveId
 
     Task<IEnumerable<T>?> FindAsync(Expression<Func<T, bool>> expression);
 
-    Task<OperationResult> AddAsync(T entity);
+    Task<OperationResult<T>> AddAsync(T entity);
 
-    Task<OperationResult> UpdateAsync(T entity);
+    Task<OperationResult<T>> UpdateAsync(T entity);
 
-    Task<OperationResult> RemoveAsync(T entity);
+    Task<OperationResult<T>> RemoveAsync(T entity);
 }

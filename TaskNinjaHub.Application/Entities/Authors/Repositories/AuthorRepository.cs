@@ -11,7 +11,7 @@ public class AuthorRepository(ITaskNinjaHubDbContext? context) : BaseRepository<
 {
     private readonly ITaskNinjaHubDbContext _context = context!;
 
-    public new async Task<OperationResult> AddAsync(Author author)
+    public new async Task<OperationResult<Author>> AddAsync(Author author)
     {
         try
         {
@@ -26,17 +26,17 @@ public class AuthorRepository(ITaskNinjaHubDbContext? context) : BaseRepository<
                 _context.Authors.Update(updatedAuthor);
                 await ((DbContext)_context).SaveChangesAsync();
 
-                return OperationResult.SuccessResult();
+                return OperationResult<Author>.SuccessResult(updatedAuthor);
             }
 
             _context.Authors.Update(author);
             await ((DbContext)_context).SaveChangesAsync();
 
-            return OperationResult.SuccessResult();
+            return OperationResult<Author>.SuccessResult(author);
         }
         catch (Exception ex)
         {
-            return OperationResult.FailedResult($"Failed to add author: {ex.Message}");
+            return OperationResult<Author>.FailedResult($"Failed to add author: {ex.Message}");
         }
     }
 }

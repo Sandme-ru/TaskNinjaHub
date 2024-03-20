@@ -10,9 +10,9 @@ public class RelatedTask : BaseUserCU, IHaveId
 
     public int MainTaskId { get; set; }
 
-    public virtual CatalogTask MainTask { get; set; }
+    public virtual CatalogTask? MainTask { get; set; }
 
     public int SubordinateTaskId { get; set; }
 
-    public virtual CatalogTask SubordinateTask { get; set; }
+    public virtual CatalogTask? SubordinateTask { get; set; }
 }

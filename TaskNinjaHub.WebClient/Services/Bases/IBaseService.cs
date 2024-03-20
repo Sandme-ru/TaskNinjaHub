@@ -1,4 +1,5 @@
 ﻿using TaskNinjaHub.Application.Filters;
+using TaskNinjaHub.Application.Utilities.OperationResults;
 
 namespace TaskNinjaHub.WebClient.Services.Bases;
 
@@ -16,7 +17,7 @@ public interface IBaseService<TEntity> where TEntity : class
 
     Task<HttpResponseMessage> DeleteAsync(int id);
 
-    Task<HttpResponseMessage> CreateAsync(TEntity entity);
+    Task<OperationResult<TEntity>> CreateAsync(TEntity entity);
 
-    Task<HttpResponseMessage> UpdateAsync(TEntity entity);
+    Task<OperationResult<TEntity>> UpdateAsync(TEntity entity);
 }

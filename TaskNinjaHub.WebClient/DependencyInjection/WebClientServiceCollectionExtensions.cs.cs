@@ -13,6 +13,7 @@ public static class WebClientServiceCollectionExtensions
         services.AddScoped<FileService>();
         services.AddScoped<TaskStatusService>();
         services.AddScoped<AuthService>();
+        services.AddScoped<RelatedTaskService>();
 
         return services;
     }

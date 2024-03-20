@@ -257,6 +257,9 @@ public partial class TaskList
             }
             else
             {
+                IsLoadingTaskList = true;
+                StateHasChanged();
+
                 Console.WriteLine($"{EditedTask?.Id} {EditedTask?.Name} is updated.");
 
                 UpdatingDependentAttributes();
@@ -265,19 +268,13 @@ public partial class TaskList
                 EditedTask.DateUpdated = DateTime.Now;
 
                 var changeRet = await CatalogTaskService.UpdateAsync(EditedTask!);
-                if (changeRet.IsSuccessStatusCode)
+                if (changeRet.Success)
                 {
                     Console.WriteLine($"{EditedTask?.Id} {EditedTask?.Name} is updated.");
 
                     if (EditedTask?.Files is { Count: > 0 })
                     {
-                        var createdTaskStream = await changeRet.Content.ReadAsStreamAsync();
-                        var createdTask = await JsonSerializer.DeserializeAsync<CatalogTask>(
-                            createdTaskStream,
-                            new JsonSerializerOptions
-                            {
-                                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                            });
+                        var createdTask = changeRet.Body;
                         foreach (var fileEntity in EditedTask.Files!)
                             await FileService.ChangeOwnershipAsync(fileEntity.Id, createdTask!.Id);
                     }
@@ -301,29 +298,26 @@ public partial class TaskList
                     Files = EditedTask.Files
                 };
 
-                var responseMessage = await CatalogTaskService.CreateAsync(CatalogTaskForChangelog);
-                if (responseMessage.IsSuccessStatusCode)
+                var createRet = await CatalogTaskService.CreateAsync(CatalogTaskForChangelog);
+                if (createRet.Success)
                 {
                     Console.WriteLine($"{EditedTask?.Id} {EditedTask?.Name} is updated.");
                     if (CatalogTaskForChangelog.Files is { Count: > 0 })
                     {
-                        var createdTaskStream = await changeRet.Content.ReadAsStreamAsync();
-                        var createdTask = await JsonSerializer.DeserializeAsync<CatalogTask>(
-                            createdTaskStream,
-                            new JsonSerializerOptions
-                            {
-                                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                            });
+                        var createdTask = createRet.Body;
                         foreach (var fileEntity in CatalogTaskForChangelog.Files!)
                             await FileService.ChangeOwnershipAsync(fileEntity.Id, createdTask!.Id);
                     }
                     else
                         foreach (var fileEntity in CatalogTaskForChangelog.Files!)
                             await FileService.DeleteAsync(fileEntity.Id);
-
-                    CatalogTasks = (await CatalogTaskService.GetAllAsync()).ToList();
                 }
+
                 _visibleModal = false;
+
+                CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel { PageNumber = CurrentPage, PageSize = PageSize })).ToList();
+
+                IsLoadingTaskList = false;
                 StateHasChanged();
             }
         }

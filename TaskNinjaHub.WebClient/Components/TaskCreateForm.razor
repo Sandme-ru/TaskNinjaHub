@@ -48,6 +48,15 @@
                         ValueName="@nameof(Priority.Id)">
                 </Select>
             </FormItem>
+            <FormItem Label="Related Task">
+                <Select Mode="default"
+                        DataSource="@CatalogTaskList"
+                        EnableSearch
+                        @bind-Value="@RelatedTaskId"
+                        LabelName="@nameof(Priority.Name)"
+                        ValueName="@nameof(Priority.Id)">
+                </Select>
+            </FormItem>
             <FormItem Label="Task status">
                 <Input @bind-Value="@DefaultStatus!.Name" Disabled />
             </FormItem>
