@@ -159,7 +159,7 @@ public abstract class BaseRepository<T>(DbContext context) : IBaseRepository<T> 
         }
     }
 
-    public async Task<OperationResult<T>> RemoveAsync(T entity)
+    public virtual async Task<OperationResult<T>> RemoveAsync(T entity)
     {
         try
         {
