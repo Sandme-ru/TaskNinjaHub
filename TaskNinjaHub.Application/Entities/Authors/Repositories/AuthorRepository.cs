@@ -7,15 +7,13 @@ using TaskNinjaHub.Application.Utilities.OperationResults;
 
 namespace TaskNinjaHub.Application.Entities.Authors.Repositories;
 
-public class AuthorRepository(ITaskNinjaHubDbContext? context) : BaseRepository<Author>((DbContext)context!), IAuthorRepository
+public class AuthorRepository(ITaskNinjaHubDbContext context) : BaseRepository<Author>((DbContext)context), IAuthorRepository
 {
-    private readonly ITaskNinjaHubDbContext _context = context!;
-
     public new async Task<OperationResult<Author>> AddAsync(Author author)
     {
         try
         {
-            var updatedAuthor = await _context.Authors.FirstOrDefaultAsync(a => a.Name == author.Name);
+            var updatedAuthor = await context.Authors.FirstOrDefaultAsync(a => a.Name == author.Name);
 
             if (updatedAuthor != null)
             {
@@ -23,14 +21,14 @@ public class AuthorRepository(ITaskNinjaHubDbContext? context) : BaseRepository<
                 updatedAuthor.RoleName = author.RoleName;
                 updatedAuthor.ShortName = author.ShortName;
 
-                _context.Authors.Update(updatedAuthor);
-                await ((DbContext)_context).SaveChangesAsync();
+                context.Authors.Update(updatedAuthor);
+                await ((DbContext)context).SaveChangesAsync();
 
                 return OperationResult<Author>.SuccessResult(updatedAuthor);
             }
 
-            _context.Authors.Update(author);
-            await ((DbContext)_context).SaveChangesAsync();
+            context.Authors.Update(author);
+            await ((DbContext)context).SaveChangesAsync();
 
             return OperationResult<Author>.SuccessResult(author);
         }

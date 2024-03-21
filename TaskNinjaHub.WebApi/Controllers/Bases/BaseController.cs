@@ -20,11 +20,10 @@ public class BaseController<TEntity, TRepository>(TRepository repository) : Cont
     }
     
     [HttpGet("GetAllCount")]
-    public async Task<int> GetAllCount()
+    public virtual async Task<int> GetAllCount()
     {
-        var allCount = (await repository.GetAllAsync() ?? Array.Empty<TEntity>())
-            .ToList().Count;
-        return allCount;
+        var count = (await repository.GetAllAsync() ?? []).ToList().Count;
+        return count;
     }
 
     [HttpGet("GetAllByPage")]

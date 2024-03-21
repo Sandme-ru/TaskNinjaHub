@@ -6,8 +6,7 @@ using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 
 namespace TaskNinjaHub.WebApi.Controllers;
 
-public class FileController(IFileRepository repository, IWebHostEnvironment environment)
-    : ControllerBase
+public class FileController(IFileRepository repository, IWebHostEnvironment environment) : ControllerBase
 {
     [HttpGet("/api/file")]
     public async Task<IEnumerable<File?>> GetAllByTaskId(

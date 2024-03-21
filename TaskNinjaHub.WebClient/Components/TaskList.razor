@@ -44,59 +44,63 @@
         </SpaceItem>
     </Space>
 </div>
-<Divider />
 
 <Divider />
+
+<div style="text-align: center;">
+    <span style="font-size: larger;">Records count: </span>
+    <span class="badge bg-primary">@CatalogTasksCount</span>
+</div>
+
+<Divider />
+
 <Loading Spinning="IsLoadingTaskList">
     <div class="task-list">
         <AntList Grid="_grid" DataSource="@CatalogTasks">
             <ListItem>
-                @if (context.OriginalTaskId == null)
-                {
-                    <Card Bordered Title="@($"{context.Id.ToString()}. {context.TaskAuthor?.Name}")" Id="MainCard">
-                        <Extra>
-                            <Popover Title="Read task">
-                                <Icon class="maincardIcon" Type="up-circle" Theme="fill" @onclick="async (_) => await Open(context)" />
-                            </Popover>
-                            <Popover Title="Edit task">
-                                <Icon class="maincardIcon" Type="edit" Theme="fill" OnClick="async () => await EditTaskEnabled(context)" />
-                            </Popover>
-                            <Popover Title="Delete task">
-                                <Icon class="maincardIcon" Type="delete" Theme="fill" OnClick="async () => DeleteTask(context)" />
-                            </Popover>
-                        </Extra>
-                        <Body>
-                            <div>
-                                <Descriptions Bordered>
-                                    <Paragraph Copyable>
-                                        @if (context.Name!.Length > 20)
-                                        {
-                                            @context.Name.Substring(0, 20)
-                                            <a style="cursor: default; color: black">...</a>
-                                        }
-                                        else
-                                        {
-                                            @context.Name
-                                        }
-                                    </Paragraph>
-                                </Descriptions>
-                                <Paragraph style="padding-top: 0.2em">
-                                    <Popover Title="@context.TaskAuthor?.Name">
-                                        <Avatar Size="small">U</Avatar>
-                                    </Popover>
-                                    <PriorityIcon PriorityName="@context.Priority?.Name"></PriorityIcon>
-                                    <TaskStatusIcon TaskStatusName="@context.TaskStatus?.Name"></TaskStatusIcon>
-                                    @if (context.Files is not null and { Count: > 0 })
+                <Card Bordered Title="@($"{context.Id.ToString()}. {context.TaskAuthor?.Name}")" Id="MainCard">
+                    <Extra>
+                        <Popover Title="Read task">
+                            <Icon class="maincardIcon" Type="up-circle" Theme="fill" @onclick="async (_) => await Open(context)" />
+                        </Popover>
+                        <Popover Title="Edit task">
+                            <Icon class="maincardIcon" Type="edit" Theme="fill" OnClick="async () => await EditTaskEnabled(context)" />
+                        </Popover>
+                        <Popover Title="Delete task">
+                            <Icon class="maincardIcon" Type="delete" Theme="fill" OnClick="async () => DeleteTask(context)" />
+                        </Popover>
+                    </Extra>
+                    <Body>
+                        <div>
+                            <Descriptions Bordered>
+                                <Paragraph Copyable>
+                                    @if (context.Name!.Length > 20)
                                     {
-                                        <Popover Title="Files">
-                                            <Icon Type="file" Theme="outline" @onclick="async (_) => await Open(context)" />
-                                        </Popover>
+                                        @context.Name.Substring(0, 20)
+                                        <a style="cursor: default; color: black">...</a>
+                                    }
+                                    else
+                                    {
+                                        @context.Name
                                     }
                                 </Paragraph>
-                            </div>
-                        </Body>
-                    </Card>
-                }
+                            </Descriptions>
+                            <Paragraph style="padding-top: 0.2em">
+                                <Popover Title="@context.TaskAuthor?.Name">
+                                    <Avatar Size="small">U</Avatar>
+                                </Popover>
+                                <PriorityIcon PriorityName="@context.Priority?.Name"></PriorityIcon>
+                                <TaskStatusIcon TaskStatusName="@context.TaskStatus?.Name"></TaskStatusIcon>
+                                @if (context.Files is not null and { Count: > 0 })
+                                {
+                                    <Popover Title="Files">
+                                        <Icon Type="file" Theme="outline" @onclick="async (_) => await Open(context)" />
+                                    </Popover>
+                                }
+                            </Paragraph>
+                        </div>
+                    </Body>
+                </Card>
             </ListItem>
         </AntList>
 

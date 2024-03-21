@@ -6,4 +6,4 @@ using TaskNinjaHub.Application.Interfaces;
 
 namespace TaskNinjaHub.Application.Entities.TaskStatuses.Repositories;
 
-public class TaskStatusRepository(ITaskNinjaHubDbContext? context) : BaseRepository<CatalogTaskStatus>((DbContext)context!), ITaskStatusRepository;
+public class TaskStatusRepository(ITaskNinjaHubDbContext context) : BaseRepository<CatalogTaskStatus>((DbContext)context), ITaskStatusRepository;

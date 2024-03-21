@@ -6,4 +6,4 @@ using TaskNinjaHub.Application.Interfaces;
 
 namespace TaskNinjaHub.Application.Entities.InformationSystems.Repositories;
 
-public class InformationSystemRepository(ITaskNinjaHubDbContext? context) : BaseRepository<InformationSystem>((DbContext)context!), IInformationSystemRepository;
+public class InformationSystemRepository(ITaskNinjaHubDbContext context) : BaseRepository<InformationSystem>((DbContext)context), IInformationSystemRepository;

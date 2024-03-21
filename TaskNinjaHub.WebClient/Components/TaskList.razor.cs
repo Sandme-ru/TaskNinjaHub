@@ -87,7 +87,6 @@ public partial class TaskList
         Xxl = 3,
     };
 
-
     private bool _visibleModal = false;
     
     private IEnumerable<Author>? AuthorsList { get; set; }
@@ -118,6 +117,8 @@ public partial class TaskList
 
     private bool IsLoadingTaskList { get; set; }
 
+    private CatalogTask Filter { get; set; } = null!;
+
     #endregion
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -133,8 +134,7 @@ public partial class TaskList
             PriorityList = await PriorityService.GetAllAsync();
             InformationSystemList = await InformationSystemService.GetAllAsync();
             TaskStatusList = await TaskStatusService.GetAllAsync();
-            CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel
-                { PageNumber = CurrentPage, PageSize = PageSize })).ToList();
+            CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel { PageNumber = CurrentPage, PageSize = PageSize })).ToList();
 
             IsLoadingTaskList = false;
             StateHasChanged();
@@ -361,7 +361,7 @@ public partial class TaskList
         IsLoadingTaskList = true;
         StateHasChanged();
 
-        var filter = new CatalogTask
+        Filter = new CatalogTask
         {
             Id = SelectedTaskId ?? 0,
             InformationSystemId = SelectedInformationSystem?.Id,
@@ -369,12 +369,10 @@ public partial class TaskList
             TaskExecutorId = SelectedExecutor?.Id
         };
 
-        var result = (await CatalogTaskService.GetAllByFilterByPageAsync(filter, CurrentPage, PageSize))!
-            .Where(t => t.OriginalTaskId == null).ToList();
+        var result = (await CatalogTaskService.GetAllByFilterByPageAsync(Filter, CurrentPage, PageSize)).ToList();
 
         CatalogTasks = new List<CatalogTask>(result);
-
-        CatalogTasksCount = CatalogTasks.Count;
+        CatalogTasksCount = (await CatalogTaskService.GetAllByFilterAsync(Filter)).Count();
 
         IsLoadingTaskList = false;
         StateHasChanged();
@@ -445,7 +443,7 @@ public partial class TaskList
         CurrentPage = arg.Page;
         PageSize = arg.PageSize;
 
-        CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel { PageSize = PageSize, PageNumber = CurrentPage })).ToList();
+        CatalogTasks = Filter == null ? (await CatalogTaskService.GetAllByPageAsync(new FilterModel { PageSize = PageSize, PageNumber = CurrentPage })).ToList() : (await CatalogTaskService.GetAllByFilterByPageAsync(Filter, CurrentPage, PageSize)).ToList();
 
         IsLoadingTaskList = false;
         StateHasChanged();

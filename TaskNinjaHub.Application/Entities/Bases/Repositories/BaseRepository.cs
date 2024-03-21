@@ -19,10 +19,10 @@ public abstract class BaseRepository<T>(DbContext context) : IBaseRepository<T> 
     {
         return await Context.Set<T>()
             .OrderByDescending(entity => entity.Id)
-            .ToListAsync()!;
+            .ToListAsync();
     }
 
-    public async Task<IEnumerable<T>?> GetAllByPageAsync(int pageNumber, int pageSize)
+    public virtual async Task<IEnumerable<T>?> GetAllByPageAsync(int pageNumber, int pageSize)
     {
         if (pageNumber < 1 || pageSize < 1)
             return null;
@@ -42,7 +42,7 @@ public abstract class BaseRepository<T>(DbContext context) : IBaseRepository<T> 
         return paginatedList;
     }
     
-    public async Task<IEnumerable<T>?> GetAllByFilterAsync(IDictionary<string, string?> filter)
+    public virtual async Task<IEnumerable<T>?> GetAllByFilterAsync(IDictionary<string, string?> filter)
     {
         Expression<Func<T, bool>> predicate = _ => true;
 
@@ -82,7 +82,7 @@ public abstract class BaseRepository<T>(DbContext context) : IBaseRepository<T> 
         return filteredList;
     }
 
-    public async Task<IEnumerable<T>?> GetAllByFilterByPageAsync(IDictionary<string, string?> filter, int pageNumber, int pageSize)
+    public virtual async Task<IEnumerable<T>?> GetAllByFilterByPageAsync(IDictionary<string, string?> filter, int pageNumber, int pageSize)
     {
         Expression<Func<T, bool>> predicate = _ => true;
 
@@ -119,7 +119,7 @@ public abstract class BaseRepository<T>(DbContext context) : IBaseRepository<T> 
             .ToList()
             .Where(predicate.Compile()); 
 
-        var paginatedList = queryable!
+        var paginatedList = queryable
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize);
 
