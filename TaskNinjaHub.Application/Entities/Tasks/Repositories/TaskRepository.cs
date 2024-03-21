@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
+using System.Xml.Linq;
 using TaskNinjaHub.Application.Entities.Bases.Repositories;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Interfaces;
 using TaskNinjaHub.Application.Interfaces;
+using TaskNinjaHub.Application.Utilities.OperationResults;
 
 namespace TaskNinjaHub.Application.Entities.Tasks.Repositories;
 
@@ -115,5 +116,23 @@ public class TaskRepository(ITaskNinjaHubDbContext context) : BaseRepository<Cat
             .Take(pageSize);
 
         return paginatedList;
+    }
+
+    public override async Task<OperationResult<CatalogTask>> RemoveAsync(CatalogTask task)
+    {
+        try
+        {
+            var catalogTasks = Context.Set<CatalogTask>().Where(t => t.OriginalTaskId == task.Id);
+            catalogTasks.Append(task);
+
+            Context.Set<CatalogTask>().RemoveRange(catalogTasks);
+            await Context.SaveChangesAsync();
+
+            return OperationResult<CatalogTask>.SuccessResult();
+        }
+        catch (Exception ex)
+        {
+            return OperationResult<CatalogTask>.FailedResult($"Failed to remove entity: {ex.Message}");
+        }
     }
 }

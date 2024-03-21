@@ -135,10 +135,10 @@ public partial class TaskCard
                     if (prev.Description != item.Description)
                     {
                         header += "<p>Description<p>";
-                        body += TextCompare(item.Description!, prev.Description!);
+                        body += TextCompare(item.Description ?? string.Empty, prev.Description ?? string.Empty);
                     }
                     else
-                        body += TextCompare(item.Description!, prev.Description!);
+                        body += TextCompare(item.Description ?? string.Empty, prev.Description ?? string.Empty);
 
                     if (prev.InformationSystemId != item.InformationSystemId)
                     {
@@ -186,6 +186,7 @@ public partial class TaskCard
         var dmp = new diff_match_patch();
         List<Diff> diff = dmp.diff_main(oldValue, newValue);
         dmp.diff_cleanupSemantic(diff);
+
         var result = dmp.diff_prettyHtml(diff);
 
         return $"<p>Description: {result}</p>";
