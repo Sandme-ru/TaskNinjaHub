@@ -205,8 +205,8 @@ public partial class TaskList
                 {
                     Id = $"{f.Id}",
                     FileName = f.Name,
-                    Url = $"https://localhost:7179/{f.Path}", //TODO remove connection to localhost
-                    ObjectURL = $"https://localhost:7179/{f.Path}",
+                    //Url = $"https://localhost:7179/{f.Path}", //TODO remove connection to localhost
+                    //ObjectURL = $"https://localhost:7179/{f.Path}",
                     Response = JsonSerializer.Serialize(
                         f,
                         new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),

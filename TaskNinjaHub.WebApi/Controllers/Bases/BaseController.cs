@@ -22,7 +22,7 @@ public class BaseController<TEntity, TRepository>(TRepository repository) : Cont
     [HttpGet("GetAllCount")]
     public virtual async Task<int> GetAllCount()
     {
-        var count = (await repository.GetAllAsync() ?? []).ToList().Count;
+        var count = (await repository.GetAllAsync() ?? new List<TEntity>()).ToList().Count;
         return count;
     }
 

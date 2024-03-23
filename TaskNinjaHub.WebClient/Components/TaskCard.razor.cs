@@ -95,8 +95,8 @@ public partial class TaskCard
                 {
                     Id = $"{f.Id}",
                     FileName = f.Name,
-                    Url = $"https://localhost:7179/{f.Path}", //TODO remove connection to localhost
-                    ObjectURL = $"https://localhost:7179/{f.Path}",
+                    //Url = $"https://localhost:7179/{f.Path}", //TODO remove connection to localhost
+                    //ObjectURL = $"https://localhost:7179/{f.Path}",
                     Response = JsonSerializer.Serialize(
                         f,
                         new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
@@ -104,7 +104,7 @@ public partial class TaskCard
                 }).ToList();
         }
         else
-            DefaultFileList = [];
+            DefaultFileList = new List<UploadFileItem>();
 
         CatalogTasksForChangelog = CatalogTasks.Where(t => t.OriginalTaskId == catalogTask.Id).OrderByDescending(t => t.DateCreated).ToList();
         if (CatalogTasksForChangelog.Any())
