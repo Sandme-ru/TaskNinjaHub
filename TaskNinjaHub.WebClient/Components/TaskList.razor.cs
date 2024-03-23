@@ -4,6 +4,7 @@ using System.Text.Json;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
+using TaskNinjaHub.Application.Entities.RelatedTasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.Application.Filters;
@@ -40,6 +41,9 @@ public partial class TaskList
 
     [Inject]
     private AuthorService AuthorService { get; set; } = null!;
+
+    [Inject]
+    private RelatedTaskService RelatedTaskService { get; set; } = null!;
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
@@ -119,6 +123,12 @@ public partial class TaskList
 
     private CatalogTask Filter { get; set; } = null!;
 
+    public IEnumerable<int> RelatedTaskIds { get; set; }
+
+    public IEnumerable<RelatedTask> RelatedTasks { get; set; }
+
+    public IEnumerable<CatalogTask> CatalogTaskList { get; set; }
+
     #endregion
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -135,6 +145,7 @@ public partial class TaskList
             InformationSystemList = await InformationSystemService.GetAllAsync();
             TaskStatusList = await TaskStatusService.GetAllAsync();
             CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel { PageNumber = CurrentPage, PageSize = PageSize })).ToList();
+            CatalogTaskList = (await CatalogTaskService.GetAllAsync()).Where(task => task.OriginalTaskId == null).ToList();
 
             IsLoadingTaskList = false;
             StateHasChanged();
@@ -182,6 +193,9 @@ public partial class TaskList
     private async Task EditTaskEnabled(CatalogTask? catalogTask)
     {
         EditedTask = catalogTask;
+
+        await LoadRelatedTasks();
+
         var taskFiles = await FileService.GetAllByTaskIdAsync(catalogTask!.Id);
         if (taskFiles?.ToList() is not null and { Count: > 0 } files)
         {
@@ -197,7 +211,7 @@ public partial class TaskList
                         f,
                         new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
                     State = UploadState.Success
-                }).ToList()!;
+                }).ToList();
         }
         else
         {
@@ -222,6 +236,15 @@ public partial class TaskList
         StateHasChanged();
     }
 
+    private async Task LoadRelatedTasks()
+    {
+        var mainTaskList = await RelatedTaskService.GetAllByFilterAsync(new RelatedTask { SubordinateTaskId = EditedTask!.Id });
+        var subordinateTaskList = await RelatedTaskService.GetAllByFilterAsync(new RelatedTask { MainTaskId = EditedTask!.Id });
+
+        RelatedTasks = [..mainTaskList, ..subordinateTaskList];
+        RelatedTaskIds = [..mainTaskList.Select(task => task.MainTaskId), ..subordinateTaskList.Select(task => task.SubordinateTaskId)];
+    }
+
     private Task HandleCancel()
     {
         if (EditedTask != null)
@@ -240,7 +263,7 @@ public partial class TaskList
         return Task.CompletedTask;
     }
 
-    private async Task EditTask()
+    private async Task SaveEditedTask()
     {
         if (EditedTask != null)
         {
@@ -267,20 +290,22 @@ public partial class TaskList
                 EditedTask!.UserUpdated = CurrentUser;
                 EditedTask.DateUpdated = DateTime.Now;
 
-                var changeRet = await CatalogTaskService.UpdateAsync(EditedTask!);
-                if (changeRet.Success)
+                var updateResult = await CatalogTaskService.UpdateAsync(EditedTask!);
+                if (updateResult.Success)
                 {
                     Console.WriteLine($"{EditedTask?.Id} {EditedTask?.Name} is updated.");
 
                     if (EditedTask?.Files is { Count: > 0 })
                     {
-                        var createdTask = changeRet.Body;
+                        var createdTask = updateResult.Body;
                         foreach (var fileEntity in EditedTask.Files!)
                             await FileService.ChangeOwnershipAsync(fileEntity.Id, createdTask!.Id);
                     }
                     else
                         foreach (var fileEntity in EditedTask?.Files!)
                             await FileService.DeleteAsync(fileEntity.Id);
+
+                    await UpdateRelatedTasks();
                 }
 
                 CatalogTaskForChangelog = new CatalogTask
@@ -320,6 +345,24 @@ public partial class TaskList
                 IsLoadingTaskList = false;
                 StateHasChanged();
             }
+        }
+    }
+
+    private async Task UpdateRelatedTasks()
+    {
+        foreach (var relatedTask in RelatedTasks)
+            await RelatedTaskService.DeleteAsync(relatedTask.Id);
+
+        foreach (var relatedTaskId in RelatedTaskIds)
+        {
+            var relatedTask = new RelatedTask
+            {
+                MainTaskId = EditedTask!.Id,
+                SubordinateTaskId = relatedTaskId
+            };
+
+            var result = await RelatedTaskService.CreateAsync(relatedTask);
+            Console.WriteLine(result.Success ? $"Related task {relatedTaskId} was added" : result.ErrorMessage);
         }
     }
 
