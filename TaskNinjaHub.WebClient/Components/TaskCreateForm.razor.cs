@@ -78,7 +78,7 @@ public partial class TaskCreateForm
 
     public IEnumerable<CatalogTask> CatalogTaskList { get; set; } = [];
 
-    public int RelatedTaskId { get; set; }
+    public IEnumerable<int> RelatedTaskId { get; set; }
 
     #endregion
 
@@ -98,7 +98,7 @@ public partial class TaskCreateForm
             PriorityList = (await PriorityService.GetAllAsync()).ToList();
             InformationSystemList = (await InformationSystemService.GetAllAsync()).ToList();
             TaskStatusList = (await TaskStatusService.GetAllAsync()).ToList();
-            CatalogTaskList = (await CatalogTaskService.GetAllAsync()).ToList();
+            CatalogTaskList = (await CatalogTaskService.GetAllAsync()).Where(task => task.OriginalTaskId == null).ToList();
 
             DefaultStatus = TaskStatusList.FirstOrDefault(t => t.Id == 1);
 
@@ -148,15 +148,18 @@ public partial class TaskCreateForm
 
     private async Task AddRelatedTasks(OperationResult<CatalogTask> responseMessage)
     {
-        if (RelatedTaskId != 0)
+        foreach (var relatedTaskId in RelatedTaskId)
         {
-            var relatedTask = new RelatedTask
+            if (relatedTaskId != 0)
             {
-                MainTaskId = responseMessage.Body.Id,
-                SubordinateTaskId = RelatedTaskId
-            };
+                var relatedTask = new RelatedTask
+                {
+                    MainTaskId = responseMessage.Body.Id,
+                    SubordinateTaskId = relatedTaskId
+                };
 
-            await RelatedTaskService.CreateAsync(relatedTask);
+                await RelatedTaskService.CreateAsync(relatedTask);
+            }
         }
     }
 

@@ -116,7 +116,7 @@
 {
     <Modal Title="EDIT TASK"
            Visible="@_visibleModal"
-           OnOk="@EditTask"
+           OnOk="@SaveEditedTask"
            OnCancel="@HandleCancel">
         <Form Model="@EditedTask"
               LabelColSpan="8"
@@ -167,6 +167,15 @@
                         @bind-Value="@context.TaskStatusId"
                         LabelName="@nameof(CatalogTaskStatus.Name)"
                         ValueName="@nameof(CatalogTaskStatus.Id)">
+                </Select>
+            </FormItem>
+            <FormItem Label="Related tasks">
+                <Select Mode="multiple"
+                        DataSource="@CatalogTaskList"
+                        EnableSearch
+                        @bind-Values="@RelatedTaskIds"
+                        LabelName="@nameof(CatalogTask.Name)"
+                        ValueName="@nameof(CatalogTask.Id)">
                 </Select>
             </FormItem>
             <FormItem Label="Task files">

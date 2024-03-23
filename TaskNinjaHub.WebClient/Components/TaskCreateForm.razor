@@ -48,11 +48,11 @@
                         ValueName="@nameof(Priority.Id)">
                 </Select>
             </FormItem>
-            <FormItem Label="Related Task">
-                <Select Mode="default"
+            <FormItem Label="Related tasks">
+                <Select Mode="multiple"
                         DataSource="@CatalogTaskList"
                         EnableSearch
-                        @bind-Value="@RelatedTaskId"
+                        @bind-Values="@RelatedTaskId"
                         LabelName="@nameof(Priority.Name)"
                         ValueName="@nameof(Priority.Id)">
                 </Select>
