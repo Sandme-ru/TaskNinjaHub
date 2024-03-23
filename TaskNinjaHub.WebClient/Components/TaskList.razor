@@ -1,4 +1,4 @@
-@page "/catalog-tasks"
+﻿@page "/catalog-tasks"
 
 <PageTitle>Catalog tasks</PageTitle>
 
@@ -178,21 +178,20 @@
                         ValueName="@nameof(CatalogTask.Id)">
                 </Select>
             </FormItem>
-            <FormItem Label="Task files">
-                <Upload Name="file"
-                        Action=@($"https://localhost:7179/api/file/upload/{context.Id}")
+            <FormItem Label="Загруженные фото:">
+                <Upload Action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                        Name="avatar"
                         @bind-FileList="DefaultFileList"
-                        Class="avatar-uploader"
-                        ListType="picture-card"
-                        BeforeUpload="BeforeUpload"
-                        OnChange="HandleChange"
-                        OnPreview="OnPreview"
-                        OnRemove="OnRemove">
+                        ShowButton="false"
+                        ListType="picture-card">
                     <div>
                         <Icon Type="plus"></Icon>
                         <div className="ant-upload-text">Upload</div>
                     </div>
                 </Upload>
+            </FormItem>
+            <FormItem Label="Фото">
+                <InputFile multiple OnChange="HandleFileSelected" />
             </FormItem>
         </Form>
     </Modal>

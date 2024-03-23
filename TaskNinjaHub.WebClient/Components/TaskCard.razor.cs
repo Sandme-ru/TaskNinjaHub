@@ -1,10 +1,10 @@
 ﻿using AntDesign;
 using DiffMatchPatch;
 using Microsoft.AspNetCore.Components;
-using System.Text.Json;
 using TaskNinjaHub.Application.Entities.RelatedTasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.WebClient.Services;
+using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 
 namespace TaskNinjaHub.WebClient.Components;
 
@@ -12,7 +12,7 @@ public partial class TaskCard
 {
     [Parameter]
     public int Id { get; set; }
-    
+
     [Inject]
     private FileService FileService { get; set; } = null!;
 
@@ -26,9 +26,9 @@ public partial class TaskCard
     private RelatedTaskService RelatedTaskService { get; set; } = null!;
 
     public CatalogTask SelectedCatalogTask { get; set; } = null!;
-    
+
     public List<CatalogTask> CatalogTasks { get; set; } = null!;
-    
+
     private List<string> HtmlMarkupForTask { get; set; } = null!;
 
     private List<UploadFileItem>? DefaultFileList { get; set; } = [];
@@ -39,28 +39,9 @@ public partial class TaskCard
 
     private List<RelatedTask>? SubordinateRelatedTasks { get; set; }
 
-    private bool IsPreviewVisible { get; set; }
-
-    private string? FilePreviewUrl { get; set; } = string.Empty;
-
-    private string? FilePreviewTitle { get; set; } = string.Empty;
-
     private bool IsLoading { get; set; }
 
     public bool ShowRelatedTasks { get; set; } = true;
-
-    private void OnPreview(UploadFileItem file)
-    {
-        if (!file.IsPicture())
-        {
-            NavigationManager.NavigateTo(file.ObjectURL, true);
-            return;
-        }
-
-        IsPreviewVisible = true;
-        FilePreviewTitle = file.FileName;
-        FilePreviewUrl = file.ObjectURL;
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -71,7 +52,7 @@ public partial class TaskCard
 
             SelectedCatalogTask = await CatalogTaskService.GetIdAsync(Id);
             CatalogTasks = (await CatalogTaskService.GetAllAsync()).ToList();
-            
+
             MainRelatedTasks = (await RelatedTaskService.GetAllByFilterAsync(new RelatedTask { MainTaskId = Id })).ToList();
             SubordinateRelatedTasks = (await RelatedTaskService.GetAllByFilterAsync(new RelatedTask { SubordinateTaskId = Id })).ToList();
 
@@ -86,22 +67,22 @@ public partial class TaskCard
     {
         HtmlMarkupForTask = [];
 
-        var taskFiles = await FileService.GetAllByTaskIdAsync(catalogTask!.Id);
+        var taskFiles = (await FileService.GetAllByFilterAsync(new File { TaskId = Id }) ?? Array.Empty<File>()).ToList();
         if (taskFiles?.ToList() is not null and { Count: > 0 } files)
         {
             catalogTask.Files = files;
-            DefaultFileList = catalogTask.Files
-                .Select(f => new UploadFileItem
+
+            foreach (var file in taskFiles)
+            {
+                var selectedFile = new UploadFileItem
                 {
-                    Id = $"{f.Id}",
-                    FileName = f.Name,
-                    //Url = $"https://localhost:7179/{f.Path}", //TODO remove connection to localhost
-                    //ObjectURL = $"https://localhost:7179/{f.Path}",
-                    Response = JsonSerializer.Serialize(
-                        f,
-                        new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
-                    State = UploadState.Success
-                }).ToList();
+                    Id = file.Id.ToString(),
+                    FileName = file.Name,
+                    Url = $"https://sandme.ru/file-storage/api/File/GetFile?bucketName=task-files&fileName={file.Name}"
+                };
+
+                DefaultFileList?.Add(selectedFile);
+            }
         }
         else
             DefaultFileList = new List<UploadFileItem>();

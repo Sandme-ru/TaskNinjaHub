@@ -80,11 +80,12 @@
                 </ListItem>
             </AntList>
         }
-        <Upload OnRemove="(_) => Task.FromResult(false)"
-                OnPreview="OnPreview"
+        <Upload Action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                Name="avatar"
+                OnRemove="(_) => Task.FromResult(false)"
                 ShowButton="false"
-                ListType="picture-card"
-                @bind-FileList="DefaultFileList">
+                @bind-FileList="DefaultFileList"
+                ListType="picture-card">
         </Upload>
     </div>
 }
