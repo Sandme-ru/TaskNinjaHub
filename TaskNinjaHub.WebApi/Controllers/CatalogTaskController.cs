@@ -8,7 +8,7 @@ public class CatalogTaskController(ITaskRepository repository) : BaseController<
 {
     public override async Task<int> GetAllCount()
     {
-        var count = (await repository.GetAllAsync() ?? new List<CatalogTask>())
+        var count = (await repository.GetAllAsync() ?? [])
         .Where(task => task.OriginalTaskId == null)
             .ToList()
             .Count;
