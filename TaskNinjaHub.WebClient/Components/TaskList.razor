@@ -1,4 +1,4 @@
-@page "/catalog-tasks"
+﻿@page "/catalog-tasks"
 
 <PageTitle>Catalog tasks</PageTitle>
 
@@ -178,21 +178,33 @@
                         ValueName="@nameof(CatalogTask.Id)">
                 </Select>
             </FormItem>
-            <FormItem Label="Task files">
-                <Upload Name="file"
-                        Action=@($"https://localhost:7179/api/file/upload/{context.Id}")
+            <FormItem Label="Documents:">
+                <Upload Action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                        Name="file"
+                        ShowButton="false"
                         @bind-FileList="DefaultFileList"
-                        Class="avatar-uploader"
                         ListType="picture-card"
-                        BeforeUpload="BeforeUpload"
-                        OnChange="HandleChange"
-                        OnPreview="OnPreview"
-                        OnRemove="OnRemove">
-                    <div>
-                        <Icon Type="plus"></Icon>
-                        <div className="ant-upload-text">Upload</div>
-                    </div>
+                        OnPreview="(file)=> { 
+                          if (file.IsPicture()){
+                              PreviewVisible = true;
+                              PreviewTitle = file.FileName;
+                              ImgUrl = file.Url;
+                          }
+                          else
+                              NavigationManager.NavigateTo(file.Url); 
+                        }">
                 </Upload>
+                <Modal Visible="PreviewVisible"
+                       Title="@PreviewTitle"
+                       OnCancel="() => PreviewVisible = false"
+                       OnOk="() => NavigationManager.NavigateTo(ImgUrl)"
+                       OkText="@("Download")"
+                       CancelText="@("Cancel")">
+                    <img style="width: 100%" src="@ImgUrl"/>
+                </Modal>
+            </FormItem>
+            <FormItem Label="Upload:">
+                <InputFile multiple OnChange="HandleFileSelected" />
             </FormItem>
         </Form>
     </Modal>

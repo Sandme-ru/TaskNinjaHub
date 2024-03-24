@@ -60,24 +60,8 @@
             <FormItem Label="Task status">
                 <Input @bind-Value="@DefaultStatus!.Name" Disabled />
             </FormItem>
-            <FormItem Label="Task files">
-                @*TODO issues with localhost*@
-                <Upload Name="file"
-                        Action="https://localhost:7179/api/file/upload"
-                        BeforeUpload="BeforeUpload"
-                        OnChange="HandleChange"
-                        OnPreview="OnPreview"
-                        OnRemove="OnRemove">
-                    <Button Icon="upload">
-                        <span>Click to Upload</span>
-                    </Button>
-                </Upload>
-                <Modal Footer="null"
-                       Visible="IsPreviewVisible"
-                       Title="@FilePreviewTitle"
-                       OnCancel="() => IsPreviewVisible = false">
-                    <img style="width: 100%" src="@FilePreviewUrl" alt="" />
-                </Modal>
+            <FormItem Label="Files">
+                <InputFile multiple OnChange="HandleFileSelected" />
             </FormItem>
         </Form>
         <div class="createTaskButton">

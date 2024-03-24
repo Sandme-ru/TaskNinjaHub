@@ -1,5 +1,8 @@
 ﻿using AntDesign;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.IdentityModel.Tokens;
+using System.Drawing;
 using System.Text.Json;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
@@ -18,7 +21,7 @@ public partial class TaskCreateForm
 {
     #region INJECTIONS
 
-    [Inject] 
+    [Inject]
     private IMessageService Message { get; set; } = null!;
 
     [Inject]
@@ -26,13 +29,13 @@ public partial class TaskCreateForm
 
     [Inject]
     private CatalogTaskService CatalogTaskService { get; set; } = null!;
-    
+
     [Inject]
     private FileService FileService { get; set; } = null!;
 
     [Inject]
     private TaskStatusService TaskStatusService { get; set; } = null!;
-    
+
     [Inject]
     private PriorityService PriorityService { get; set; } = null!;
 
@@ -53,12 +56,14 @@ public partial class TaskCreateForm
     #region PROPERTY
 
     private bool IsPreviewVisible { get; set; }
-    
+
     private string? FilePreviewUrl { get; set; } = string.Empty;
-    
+
     private string? FilePreviewTitle { get; set; } = string.Empty;
 
     private Author CurrentUser { get; set; } = null!;
+
+    private File File { get; set; } = null!;
 
     private CatalogTask CreatedCatalogTask { get; set; } = new();
 
@@ -67,7 +72,7 @@ public partial class TaskCreateForm
     private List<Priority> PriorityList { get; set; } = [];
 
     private List<InformationSystem> InformationSystemList { get; set; } = [];
-    
+
     private List<File> UploadedFileList { get; set; } = [];
 
     private List<CatalogTaskStatus> TaskStatusList { get; set; } = [];
@@ -79,6 +84,10 @@ public partial class TaskCreateForm
     public IEnumerable<CatalogTask> CatalogTaskList { get; set; } = [];
 
     public IEnumerable<int> RelatedTaskId { get; set; }
+
+    private List<IBrowserFile> SelectedFiles = new List<IBrowserFile>();
+
+    private HttpClient HttpClient { get; set; } = new();
 
     #endregion
 
@@ -112,7 +121,12 @@ public partial class TaskCreateForm
         IsLoading = true;
         StateHasChanged();
 
-        CreatedCatalogTask.TaskAuthorId = CurrentUser.Id;
+        CreatedCatalogTask.TaskAuthorId =
+            (await AuthorService.GetAllByFilterAsync(new Author { AuthGuid = CurrentUser.AuthGuid }))
+            .FirstOrDefault()
+            ?.Id;
+
+        //CreatedCatalogTask.TaskAuthorId = CurrentUser.Id;
         CreatedCatalogTask.TaskStatusId = DefaultStatus?.Id;
         CreatedCatalogTask.UserCreated = CurrentUser.Name;
         CreatedCatalogTask.DateCreated = DateTime.UtcNow;
@@ -121,12 +135,11 @@ public partial class TaskCreateForm
 
         if (result.Success)
         {
-            var createdTask = result.Body;
-            foreach (var fileEntity in UploadedFileList)
-                await FileService.ChangeOwnershipAsync(fileEntity.Id, createdTask!.Id);
+            foreach (var file in SelectedFiles)
+                await UploadFile(file, result.Body);
 
             await Message.Success("The task was successfully added.");
-            
+
             await AddRelatedTasks(result);
 
             IsLoading = false;
@@ -136,9 +149,6 @@ public partial class TaskCreateForm
         }
         else
         {
-            foreach (var fileEntity in UploadedFileList)
-                await FileService.DeleteAsync(fileEntity.Id);
-
             await Message.Error(result.ErrorMessage);
 
             IsLoading = false;
@@ -148,17 +158,20 @@ public partial class TaskCreateForm
 
     private async Task AddRelatedTasks(OperationResult<CatalogTask> responseMessage)
     {
-        foreach (var relatedTaskId in RelatedTaskId)
+        if (!RelatedTaskId.IsNullOrEmpty())
         {
-            if (relatedTaskId != 0)
+            foreach (var relatedTaskId in RelatedTaskId)
             {
-                var relatedTask = new RelatedTask
+                if (relatedTaskId != 0)
                 {
-                    MainTaskId = responseMessage.Body.Id,
-                    SubordinateTaskId = relatedTaskId
-                };
+                    var relatedTask = new RelatedTask
+                    {
+                        MainTaskId = responseMessage.Body.Id,
+                        SubordinateTaskId = relatedTaskId
+                    };
 
-                await RelatedTaskService.CreateAsync(relatedTask);
+                    await RelatedTaskService.CreateAsync(relatedTask);
+                }
             }
         }
     }
@@ -173,48 +186,50 @@ public partial class TaskCreateForm
         Console.WriteLine($"Failed:{JsonSerializer.Serialize(CreatedCatalogTask)}");
     }
 
-    private bool BeforeUpload(UploadFileItem file)
+    // TODO: ПОДУМАТЬ НАД РЕМУВОМ
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
     {
-        var isLt8M = file.Size / 1024 / 1024 < 8;
-
-        if (!isLt8M)
-            Message.Error("File must smaller than 8MB!");
-
-        return isLt8M;
+        SelectedFiles.Clear();
+        SelectedFiles.AddRange(e.GetMultipleFiles());
     }
 
-    private void HandleChange(UploadInfo fileInfo)
+    private async Task UploadFile(IBrowserFile file, CatalogTask task)
     {
-        if (fileInfo.File.State != UploadState.Success) return;
-
-        var uploadedFile = fileInfo.File.GetResponse<File>(new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-
-        if (uploadedFile is not null)
-            UploadedFileList.Add(uploadedFile);
-    }
-    
-    private void OnPreview(UploadFileItem file)
-    {
-        if (!file.IsPicture())
+        if (file != null)
         {
-            NavigationManager.NavigateTo(file.ObjectURL,true);
-            return;
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            var formFile = new MultipartFormDataContent();
+
+            var fileName = $"{timestamp}_{task.Name}_{file.Name}";
+
+            formFile.Add(new StreamContent(file.OpenReadStream(524288000)), "file", fileName);
+
+            var createResponse =
+                await HttpClient.PostAsync(
+                    "https://sandme.ru/file-storage/api/File/UploadFile?bucketName=task-files", formFile);
+                
+            if (createResponse.IsSuccessStatusCode)
+            {
+                File = new File
+                {
+                    TaskId = task.Id,
+                    Name = fileName,
+                    DateCreated = DateTime.UtcNow.AddHours(3),
+                };
+
+                var result = await FileService.CreateAsync(File);
+
+                if (!result.Success)
+                {
+                    await HttpClient.PostAsJsonAsync(
+                        $"https://sandme.ru/file-storage/api/File/UploadFile?bucketName=task-files&{fileName}", string.Empty);
+
+                    await Message.Error($"Error adding a file {file.Name}");
+                }
+            }
+            else
+                await Message.Error("File upload error");
         }
-
-        IsPreviewVisible = true;
-        FilePreviewTitle = file.FileName;
-        FilePreviewUrl = file.ObjectURL;
-    }
-    
-    private async Task<bool> OnRemove(UploadFileItem file)
-    {
-        var uploadedFile = file.GetResponse<File>(new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-        var fileToRemove = UploadedFileList.FirstOrDefault(f => f.Id == uploadedFile!.Id);
-
-        if (fileToRemove is null)
-            return false;
-
-        var responseMessage = await FileService.DeleteAsync(fileToRemove.Id);
-        return responseMessage.IsSuccessStatusCode;
     }
 }
