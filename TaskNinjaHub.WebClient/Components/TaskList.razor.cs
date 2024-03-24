@@ -274,7 +274,9 @@ public partial class TaskList
             EditedTask.TaskStatusId = CloneTask?.TaskStatusId;
         }
 
+        DefaultFileList = new();
         _visibleModal = false;
+
         StateHasChanged();
         return Task.CompletedTask;
     }
@@ -359,6 +361,7 @@ public partial class TaskList
                             await FileService.DeleteAsync(fileEntity.Id);
                 }
 
+                DefaultFileList = new();
                 _visibleModal = false;
 
                 CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel { PageNumber = CurrentPage, PageSize = PageSize })).ToList();
