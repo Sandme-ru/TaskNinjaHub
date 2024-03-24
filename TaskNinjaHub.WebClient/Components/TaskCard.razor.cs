@@ -90,7 +90,7 @@ public partial class TaskCard
             }
         }
         else
-            DefaultFileList = new List<UploadFileItem>();
+            DefaultFileList = [];
 
         CatalogTasksForChangelog = CatalogTasks.Where(t => t.OriginalTaskId == catalogTask.Id).OrderByDescending(t => t.DateCreated).ToList();
         if (CatalogTasksForChangelog.Any())
