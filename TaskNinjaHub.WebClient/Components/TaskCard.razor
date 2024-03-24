@@ -5,7 +5,7 @@
 @if (SelectedCatalogTask != null)
 {
     <button class="back-button" @onclick="GoBack">Go back</button>
-    
+
     <div class="card">
         <table class="task-table">
             <tr>
@@ -52,11 +52,11 @@
                                 <NavLink class="related-task-link" @onclick="() => NavigateToSubordinateTask(task)">
                                     <i class="fas fa-external-link-alt"></i>
                                     <span>@task.SubordinateTask?.Name</span>
-                                    
+
                                 </NavLink>
                             }
                         }
-                
+
                         @if (SubordinateRelatedTasks != null)
                         {
                             foreach (var task in SubordinateRelatedTasks)
@@ -75,18 +75,35 @@
         @if (HtmlMarkupForTask != null)
         {
             <AntList DataSource="@HtmlMarkupForTask" Bordered>
-                <ListItem class="history_of_changes">
-                    @((MarkupString)context)
-                </ListItem>
-            </AntList>
+             <ListItem class="history_of_changes">
+                 @((MarkupString)context)
+             </ListItem>
+         </AntList>
         }
         <Upload Action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                 Name="avatar"
                 OnRemove="(_) => Task.FromResult(false)"
                 ShowButton="false"
                 @bind-FileList="DefaultFileList"
-                ListType="picture-card">
+                ListType="picture-card"
+                OnPreview="(file)=> { 
+                  if (file.IsPicture()){
+                      PreviewVisible = true;
+                      PreviewTitle = file.FileName;
+                      ImgUrl = file.Url;
+                  }
+                  else
+                      NavigationManager.NavigateTo(file.Url); 
+                }">
         </Upload>
+        <Modal Visible="PreviewVisible"
+               Title="@PreviewTitle"
+               OnCancel="() => PreviewVisible = false"
+               OnOk="() => NavigationManager.NavigateTo(ImgUrl)"
+               OkText="@("Download")"
+               CancelText="@("Cancle")">
+            <img style="width: 100%" src="@ImgUrl"/>
+        </Modal>
     </div>
 }
 

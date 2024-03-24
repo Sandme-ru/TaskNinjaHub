@@ -43,6 +43,11 @@ public partial class TaskCard
 
     public bool ShowRelatedTasks { get; set; } = true;
 
+    private bool PreviewVisible { get; set; } = false;
+
+    private string PreviewTitle { get; set; } = string.Empty;
+    private string ImgUrl { get; set; } = string.Empty;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)

@@ -181,14 +181,28 @@
             <FormItem Label="Загруженные фото:">
                 <Upload Action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                         Name="avatar"
-                        @bind-FileList="DefaultFileList"
+                        OnRemove="(_) => Task.FromResult(false)"
                         ShowButton="false"
-                        ListType="picture-card">
-                    <div>
-                        <Icon Type="plus"></Icon>
-                        <div className="ant-upload-text">Upload</div>
-                    </div>
+                        @bind-FileList="DefaultFileList"
+                        ListType="picture-card"
+                        OnPreview="(file)=> { 
+                          if (file.IsPicture()){
+                              PreviewVisible = true;
+                              PreviewTitle = file.FileName;
+                              ImgUrl = file.Url;
+                          }
+                          else
+                              NavigationManager.NavigateTo(file.Url); 
+                        }">
                 </Upload>
+                <Modal Visible="PreviewVisible"
+                       Title="@PreviewTitle"
+                       OnCancel="() => PreviewVisible = false"
+                       OnOk="() => NavigationManager.NavigateTo(ImgUrl)"
+                       OkText="@("Download")"
+                       CancelText="@("Cancle")">
+                    <img style="width: 100%" src="@ImgUrl"/>
+                </Modal>
             </FormItem>
             <FormItem Label="Фото">
                 <InputFile multiple OnChange="HandleFileSelected" />

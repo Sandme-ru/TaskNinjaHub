@@ -140,6 +140,11 @@ public partial class TaskList
 
     private HttpClient HttpClient { get; set; } = new();
 
+    private bool PreviewVisible { get; set; } = false;
+
+    private string PreviewTitle { get; set; } = string.Empty;
+    private string ImgUrl { get; set; } = string.Empty;
+
     #endregion
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
