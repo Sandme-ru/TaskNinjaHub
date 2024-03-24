@@ -131,7 +131,7 @@ public abstract class BaseRepository<T>(DbContext context) : IBaseRepository<T> 
         return Task.FromResult<IEnumerable<T>?>(Context.Set<T>().Where(expression));
     }
 
-    public async Task<OperationResult<T>> AddAsync(T entity)
+    public virtual async Task<OperationResult<T>> AddAsync(T entity)
     {
         try
         {
@@ -145,7 +145,7 @@ public abstract class BaseRepository<T>(DbContext context) : IBaseRepository<T> 
         }
     }
 
-    public async Task<OperationResult<T>> UpdateAsync(T entity)
+    public virtual async Task<OperationResult<T>> UpdateAsync(T entity)
     {
         try
         {
