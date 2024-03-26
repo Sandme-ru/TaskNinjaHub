@@ -346,7 +346,7 @@ public partial class TaskList
                     Files = EditedTask.Files
                 };
 
-                var createRet = await CatalogTaskService.CreateAsync(CatalogTaskForChangelog);
+                var createRet = await CatalogTaskService.CreateSameTaskAsync(CatalogTaskForChangelog, true);
                 if (createRet.Success)
                 {
                     Console.WriteLine($"{EditedTask?.Id} {EditedTask?.Name} is updated.");

@@ -1,15 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Xml.Linq;
+using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.Bases.Repositories;
+using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
+using TaskNinjaHub.Application.Entities.Priorities.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Interfaces;
+using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.Application.Interfaces;
 using TaskNinjaHub.Application.Utilities.OperationResults;
 
 namespace TaskNinjaHub.Application.Entities.Tasks.Repositories;
 
-public class TaskRepository(ITaskNinjaHubDbContext context) : BaseRepository<CatalogTask>((DbContext)context), ITaskRepository
+public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailService) : BaseRepository<CatalogTask>((DbContext)context), ITaskRepository
 {
     public override async Task<IEnumerable<CatalogTask>?> GetAllByPageAsync(int pageNumber, int pageSize)
     {
@@ -116,6 +119,70 @@ public class TaskRepository(ITaskNinjaHubDbContext context) : BaseRepository<Cat
             .Take(pageSize);
 
         return paginatedList;
+    }
+
+    public override async Task<OperationResult<CatalogTask>> AddAsync(CatalogTask entity)
+    {
+        try
+        {
+            await Context.Set<CatalogTask>().AddAsync(entity);
+            await Context.SaveChangesAsync();
+
+            entity.TaskAuthor = await Context.Set<Author>().FindAsync(entity.TaskAuthorId);
+            entity.Priority = await Context.Set<Priority>().FindAsync(entity.PriorityId);
+            entity.InformationSystem = await Context.Set<InformationSystem>().FindAsync(entity.InformationSystemId);
+            entity.TaskStatus = await Context.Set<CatalogTaskStatus>().FindAsync(entity.TaskStatusId);
+
+            await emailService.SendCreateEmailAsync("shvyrkalovm@mail.ru" /*entity.TaskExecutor?.Name*/ , entity);
+
+            return OperationResult<CatalogTask>.SuccessResult(entity);
+        }
+        catch (Exception ex)
+        {
+            return OperationResult<CatalogTask>.FailedResult($"Failed to add entity: {ex.Message}");
+        }
+    }
+
+    public async Task<OperationResult<CatalogTask>> CreateSameTask(CatalogTask entity, bool isUpdated)
+    {
+        try
+        {
+            await Context.Set<CatalogTask>().AddAsync(entity);
+            await Context.SaveChangesAsync();
+
+            entity.TaskAuthor = await Context.Set<Author>().FindAsync(entity.TaskAuthorId);
+            entity.Priority = await Context.Set<Priority>().FindAsync(entity.PriorityId);
+            entity.InformationSystem = await Context.Set<InformationSystem>().FindAsync(entity.InformationSystemId);
+            entity.TaskStatus = await Context.Set<CatalogTaskStatus>().FindAsync(entity.TaskStatusId);
+
+            if (!isUpdated)
+                await emailService.SendCreateEmailAsync("shvyrkalovm@mail.ru" /*entity.TaskExecutor?.Name*/ , entity);
+
+            return OperationResult<CatalogTask>.SuccessResult(entity);
+        }
+        catch (Exception ex)
+        {
+            return OperationResult<CatalogTask>.FailedResult($"Failed to add entity: {ex.Message}");
+        }
+    }
+
+    public override async Task<OperationResult<CatalogTask>> UpdateAsync(CatalogTask entity)
+    {
+        try
+        {
+            Context.Set<CatalogTask>().Update(entity);
+            await Context.SaveChangesAsync();
+
+            entity.TaskAuthor = await Context.Set<Author>().FindAsync(entity.TaskAuthorId);
+
+            await emailService.SendUpdateEmailAsync("shvyrkalovm@mail.ru" /*entity.TaskExecutor?.Name*/ , entity);
+
+            return OperationResult<CatalogTask>.SuccessResult(entity);
+        }
+        catch (Exception ex)
+        {
+            return OperationResult<CatalogTask>.FailedResult($"Failed to update entity: {ex.Message}");
+        }
     }
 
     public override async Task<OperationResult<CatalogTask>> RemoveAsync(CatalogTask task)
