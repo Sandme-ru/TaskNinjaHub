@@ -14,6 +14,8 @@ using TaskNinjaHub.Application.Entities.Tasks.Interfaces;
 using TaskNinjaHub.Application.Entities.Tasks.Repositories;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Interfaces;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Repositories;
+using TaskNinjaHub.Application.Interfaces;
+using TaskNinjaHub.Application.Utilities;
 
 namespace TaskNinjaHub.Application.DependencyInjection;
 
@@ -30,6 +32,12 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<ITaskRepository, TaskRepository>();
         services.AddScoped<IRelatedTaskRepository, RelatedTaskRepository>();
         services.AddScoped<ITaskStatusRepository, TaskStatusRepository>();
+
+        #endregion
+
+        #region SERVICE
+
+        services.AddScoped<IEmailService, EmailService>();
 
         #endregion
 
