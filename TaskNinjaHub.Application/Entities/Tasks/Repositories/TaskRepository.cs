@@ -143,6 +143,29 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
         }
     }
 
+    public async Task<OperationResult<CatalogTask>> CreateSameTask(CatalogTask entity, bool isUpdated)
+    {
+        try
+        {
+            await Context.Set<CatalogTask>().AddAsync(entity);
+            await Context.SaveChangesAsync();
+
+            entity.TaskAuthor = await Context.Set<Author>().FindAsync(entity.TaskAuthorId);
+            entity.Priority = await Context.Set<Priority>().FindAsync(entity.PriorityId);
+            entity.InformationSystem = await Context.Set<InformationSystem>().FindAsync(entity.InformationSystemId);
+            entity.TaskStatus = await Context.Set<CatalogTaskStatus>().FindAsync(entity.TaskStatusId);
+
+            if (!isUpdated)
+                await emailService.SendCreateEmailAsync("shvyrkalovm@mail.ru" /*entity.TaskExecutor?.Name*/ , entity);
+
+            return OperationResult<CatalogTask>.SuccessResult(entity);
+        }
+        catch (Exception ex)
+        {
+            return OperationResult<CatalogTask>.FailedResult($"Failed to add entity: {ex.Message}");
+        }
+    }
+
     public override async Task<OperationResult<CatalogTask>> UpdateAsync(CatalogTask entity)
     {
         try
