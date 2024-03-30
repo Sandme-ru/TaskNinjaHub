@@ -28,7 +28,7 @@
 
         <label for="month">Select month:</label>
         <select id="month" @onchange="HandleMonthChange">
-            @for (var i = 1; i <= 12; i++)
+            @for (var i = 1; i <= MonthPeerYear; i++)
             {
                 <option value="@i" selected="@(_month == i)">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
             }
@@ -67,7 +67,7 @@
                                     {
                                         if (task.EndDate >= new DateTime(_year, _month, day.DayNumber))
                                         {
-                                            <div class="task-block">
+                                            <div class="task-block" style="background-color: @task.Color;">
                                                 <div>
                                                     <a href="/task-read/@(task.TaskId)" class="task-link">
                                                         Задача: @task.TaskId
@@ -77,7 +77,6 @@
                                         }
                                     }
                                 }
-
                             </td>
                         }
                     </tr>
