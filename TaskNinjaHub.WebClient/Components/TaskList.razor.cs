@@ -210,10 +210,9 @@ public partial class TaskList
 
         await LoadRelatedTasks();
 
-        Files = (await FileService.GetAllByFilterAsync(new File { TaskId = EditedTask?.Id }) ?? Array.Empty<File>()).ToList();
-
-
-        if (Files?.ToList() is not null and { Count: > 0 } files)
+        Files = (await FileService.GetAllByFilterAsync(new File { TaskId = EditedTask?.Id })).ToList();
+        
+        if (Files.ToList() is not null and { Count: > 0 } files)
         {
             foreach (var file in Files)
             {
@@ -235,14 +234,14 @@ public partial class TaskList
 
         CloneTask = new CatalogTask
         {
-            Name = catalogTask.Name,
-            Description = catalogTask.Description,
-            TaskAuthorId = catalogTask.TaskAuthorId,
-            TaskExecutorId = catalogTask.TaskExecutorId,
-            InformationSystemId = catalogTask.InformationSystemId,
-            PriorityId = catalogTask.PriorityId,
-            TaskStatusId = catalogTask.TaskStatusId,
-            Files = catalogTask.Files
+            Name = catalogTask?.Name,
+            Description = catalogTask?.Description,
+            TaskAuthorId = catalogTask?.TaskAuthorId,
+            TaskExecutorId = catalogTask?.TaskExecutorId,
+            InformationSystemId = catalogTask?.InformationSystemId,
+            PriorityId = catalogTask?.PriorityId,
+            TaskStatusId = catalogTask?.TaskStatusId,
+            Files = catalogTask?.Files
         };
 
         _visibleModal = true;
@@ -272,7 +271,7 @@ public partial class TaskList
             EditedTask.TaskStatusId = CloneTask?.TaskStatusId;
         }
 
-        DefaultFileList = new();
+        DefaultFileList = [];
         _visibleModal = false;
 
         StateHasChanged();
@@ -283,17 +282,8 @@ public partial class TaskList
     {
         if (EditedTask != null)
         {
-            if (EditedTask.Name == CloneTask?.Name
-                && EditedTask.Description == CloneTask?.Description
-                && EditedTask.TaskAuthorId == CloneTask?.TaskAuthorId
-                && EditedTask.TaskExecutorId == CloneTask?.TaskExecutorId
-                && EditedTask.InformationSystemId == CloneTask?.InformationSystemId
-                && EditedTask.PriorityId == CloneTask?.PriorityId
-                && EditedTask.TaskStatusId == CloneTask?.TaskStatusId
-                && Equals(EditedTask.Files?.ToArray(), DefaultFileList?.ToArray()))
-            {
+            if (CheckCloneTask())
                 await MessageService.Error("Change one or more attributes");
-            }
             else
             {
                 IsLoadingTaskList = true;
@@ -368,6 +358,18 @@ public partial class TaskList
                 StateHasChanged();
             }
         }
+    }
+
+    private bool CheckCloneTask()
+    {
+        return EditedTask?.Name == CloneTask?.Name
+               && EditedTask?.Description == CloneTask?.Description
+               && EditedTask?.TaskAuthorId == CloneTask?.TaskAuthorId
+               && EditedTask?.TaskExecutorId == CloneTask?.TaskExecutorId
+               && EditedTask?.InformationSystemId == CloneTask?.InformationSystemId
+               && EditedTask?.PriorityId == CloneTask?.PriorityId
+               && EditedTask?.TaskStatusId == CloneTask?.TaskStatusId
+               && Equals(EditedTask?.Files?.ToArray(), DefaultFileList?.ToArray());
     }
 
     private async Task UpdateRelatedTasks()

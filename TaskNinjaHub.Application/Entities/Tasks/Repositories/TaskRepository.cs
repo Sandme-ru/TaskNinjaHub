@@ -7,6 +7,7 @@ using TaskNinjaHub.Application.Entities.Priorities.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Interfaces;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
+using TaskNinjaHub.Application.Entities.TaskStatuses.Enum;
 using TaskNinjaHub.Application.Interfaces;
 using TaskNinjaHub.Application.Utilities.OperationResults;
 
@@ -170,6 +171,16 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
     {
         try
         {
+            switch (entity.TaskStatusId)
+            {
+                case (int)EnumTaskStatus.AtWork:
+                    entity.DateStart = DateTime.Now;
+                    break;
+                case (int)EnumTaskStatus.Done:
+                    entity.DateEnd = DateTime.Now;
+                    break;
+            }
+
             Context.Set<CatalogTask>().Update(entity);
             await Context.SaveChangesAsync();
 

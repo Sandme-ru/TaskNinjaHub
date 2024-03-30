@@ -41,4 +41,8 @@ public class CatalogTask : BaseUserCU, IHaveId, IHaveName
     public int? OriginalTaskId { get; set; }
 
     public virtual CatalogTask? OriginalTask { get; set; }
+
+    public DateTime? DateStart { get; set; }
+
+    public DateTime? DateEnd { get; set; }
 }

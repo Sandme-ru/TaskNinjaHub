@@ -12,4 +12,8 @@ public class CalendarDay
 public class TaskInfo
 {
     public int TaskId { get; set; }
+
+    public DateTime StartDate { get; set; }
+
+    public DateTime? EndDate { get; set; }
 }
