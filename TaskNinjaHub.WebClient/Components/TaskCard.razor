@@ -7,6 +7,39 @@
     <button class="back-button" @onclick="GoBack">Go back</button>
 
     <div class="card">
+        
+        <div>
+            <Steps>
+                @switch (SelectedCatalogTask.TaskStatusId)
+                {
+                    case (int)EnumTaskStatus.AwaitingExecution:
+                        <Step Status="finish" Title="Awaiting execution" Icon="user"/>
+                        <Step Status="process" Title="At work" Icon="solution" />
+                        <Step Status="wait" Title="Awaiting verification" Icon="bulb" />
+                        <Step Status="wait" Title="Done" Icon="smile" />
+                        break;
+                    case (int)EnumTaskStatus.AtWork:
+                        <Step Status="finish" Title="Awaiting execution" Icon="user"/>
+                        <Step Status="finish" Title="At work" Icon="solution" />
+                        <Step Status="process" Title="Awaiting verification" Icon="bulb" />
+                        <Step Status="wait" Title="Done" Icon="smile" />
+                        break;
+                    case (int)EnumTaskStatus.AwaitingVerification:
+                        <Step Status="finish" Title="Awaiting execution" Icon="user"/>
+                        <Step Status="finish" Title="At work" Icon="solution" />
+                        <Step Status="finish" Title="Awaiting verification" Icon="bulb" />
+                        <Step Status="process" Title="Done" Icon="smile" />
+                        break;
+                    case (int)EnumTaskStatus.Done:
+                        <Step Status="finish" Title="Awaiting execution" Icon="user"/>
+                        <Step Status="finish" Title="At work" Icon="solution" />
+                        <Step Status="finish" Title="Awaiting verification" Icon="bulb" />
+                        <Step Status="finish" Title="Done" Icon="smile" />
+                        break;
+                }
+            </Steps>
+        </div>
+
         <table class="task-table">
             <tr>
                 <td><strong>Name:</strong></td>
@@ -75,10 +108,10 @@
         @if (HtmlMarkupForTask != null)
         {
             <AntList DataSource="@HtmlMarkupForTask" Bordered>
-             <ListItem class="history_of_changes">
-                 @((MarkupString)context)
-             </ListItem>
-         </AntList>
+                <ListItem class="history_of_changes">
+                    @((MarkupString)context)
+                </ListItem>
+            </AntList>
         }
         <Upload Action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                 Name="avatar"
@@ -86,15 +119,7 @@
                 ShowButton="false"
                 @bind-FileList="DefaultFileList"
                 ListType="picture-card"
-                OnPreview="(file)=> { 
-                  if (file.IsPicture()){
-                      PreviewVisible = true;
-                      PreviewTitle = file.FileName;
-                      ImgUrl = file.Url;
-                  }
-                  else
-                      NavigationManager.NavigateTo(file.Url); 
-                }">
+                OnPreview="(file) => { if (file.IsPicture()) { PreviewVisible = true; PreviewTitle = file.FileName; ImgUrl = file.Url; }else NavigationManager.NavigateTo(file.Url); }">
         </Upload>
         <Modal Visible="PreviewVisible"
                Title="@PreviewTitle"

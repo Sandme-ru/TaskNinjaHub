@@ -13,6 +13,8 @@ public partial class TaskCard
     [Parameter]
     public int Id { get; set; }
 
+    #region INJECTIONS
+
     [Inject]
     private FileService FileService { get; set; } = null!;
 
@@ -24,6 +26,10 @@ public partial class TaskCard
 
     [Inject]
     private RelatedTaskService RelatedTaskService { get; set; } = null!;
+
+    #endregion
+
+    #region PROPERTY
 
     public CatalogTask SelectedCatalogTask { get; set; } = null!;
 
@@ -46,7 +52,10 @@ public partial class TaskCard
     private bool PreviewVisible { get; set; } = false;
 
     private string PreviewTitle { get; set; } = string.Empty;
+
     private string ImgUrl { get; set; } = string.Empty;
+
+    #endregion
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
