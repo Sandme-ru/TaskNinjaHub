@@ -40,29 +40,55 @@
     }
 
     .filter-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-bottom: 10px;
     }
+
+        .filter-container label {
+            margin-right: 10px;
+        }
+
+        .filter-container select,
+        .filter-container input[type="number"] {
+            padding: 5px;
+            margin-right: 10px;
+        }
+
+        .filter-container button.go-button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+            .filter-container button.go-button:hover {
+                background-color: #0056b3;
+            }
+
 </style>
 
 <div class="calendar-container">
     <div class="navigation-buttons">
         <a class="arrow-button" @onclick="PreviousMonth">&lt;&lt&lt</a>
-        <span class="month-year-header">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Month) @Year</span>
+        <span class="month-year-header">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(_month) @_year</span>
         <a class="arrow-button" @onclick="NextMonth">&gt;&gt;&gt;</a>
     </div>
 
     <div class="filter-container">
         <label for="month">Select month:</label>
         <select id="month" @onchange="HandleMonthChange">
-            @for (int i = 1; i <= 12; i++)
+            @for (var i = 1; i <= 12; i++)
             {
-                <option value="@i">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
+                <option value="@i" selected="@(_month == i)">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
             }
         </select>
-
+    
         <label for="year">Enter year:</label>
-        <input type="number" id="year" @bind="Year" min="1900" max="2100" />
-        <button @onclick="GoToSelectedMonthYear">Go</button>
+        <input type="number" id="year" @bind-value="_year" min="1900" max="2100" @oninput="GoToSelectedMonthYear" />
+        <button class="go-button" @onclick="GoToSelected">Go</button>
     </div>
 
     @if (CalendarDays != null)
@@ -98,91 +124,92 @@
     private class CalendarDay
     {
         public int DayNumber { get; set; }
+
         public bool IsToday { get; set; }
     }
 
-    private int Year = DateTime.Today.Year;
-    private int Month = DateTime.Today.Month;
+    private int _year = DateTime.Today.Year;
 
-    private List<List<CalendarDay>> CalendarDays { get; set; }
+    private int _month = DateTime.Today.Month;
+
+    private List<List<CalendarDay>> CalendarDays { get; set; } = null!;
 
     private void GenerateCalendar(int year, int month)
     {
         var daysInMonth = DateTime.DaysInMonth(year, month);
         var firstDayOfMonth = new DateTime(year, month, 1);
         var startingDayOfWeek = (int)firstDayOfMonth.DayOfWeek;
-        // Adjust starting day of the week to Monday (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
         startingDayOfWeek = (startingDayOfWeek == 0) ? 6 : startingDayOfWeek - 1;
 
-        CalendarDays = new List<List<CalendarDay>>();
+        CalendarDays = [];
 
         var currentDay = 1;
-        for (int i = 0; i < 6; i++)
+        for (var i = 0; i < 6; i++)
         {
             var week = new List<CalendarDay>();
-            for (int j = 0; j < 7; j++)
+            for (var j = 0; j < 7; j++)
             {
                 if ((i == 0 && j < startingDayOfWeek) || currentDay > daysInMonth)
-                {
-                    week.Add(new CalendarDay { DayNumber = 0 }); // Set DayNumber to 0 for empty cells
-                }
+                    week.Add(new CalendarDay { DayNumber = 0 });
                 else
                 {
-                    var isToday = (currentDay == DateTime.Today.Day && year == DateTime.Today.Year && month == DateTime.Today.Month);
+                    var isToday = currentDay == DateTime.Today.Day && year == DateTime.Today.Year && month == DateTime.Today.Month;
                     week.Add(new CalendarDay { DayNumber = currentDay, IsToday = isToday });
                     currentDay++;
                 }
             }
             CalendarDays.Add(week);
             if (currentDay > daysInMonth)
-            {
                 break;
-            }
         }
     }
 
     private void PreviousMonth()
     {
-        if (Month == 1)
+        if (_month == 1)
         {
-            Year--;
-            Month = 12;
+            _year--;
+            _month = 12;
         }
         else
-        {
-            Month--;
-        }
-        GenerateCalendar(Year, Month);
+            _month--;
+
+        GenerateCalendar(_year, _month);
     }
 
     private void NextMonth()
     {
-        if (Month == 12)
+        if (_month == 12)
         {
-            Year++;
-            Month = 1;
+            _year++;
+            _month = 1;
         }
         else
-        {
-            Month++;
-        }
-        GenerateCalendar(Year, Month);
+            _month++;
+
+        GenerateCalendar(_year, _month);
     }
 
     private void HandleMonthChange(ChangeEventArgs e)
     {
-        Month = int.Parse(e.Value.ToString());
-        GenerateCalendar(Year, Month);
+        _month = int.Parse(e.Value?.ToString()!);
+        GenerateCalendar(_year, _month);
     }
 
-    private void GoToSelectedMonthYear()
+    private void GoToSelectedMonthYear(ChangeEventArgs e)
     {
-        GenerateCalendar(Year, Month);
+        _year = int.Parse(e.Value?.ToString()!);
+        GenerateCalendar(_year, _month);
+    }
+
+    private void GoToSelected()
+    {
+        GenerateCalendar(_year, _month);
     }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        GenerateCalendar(Year, Month);
+        GenerateCalendar(_year, _month);
     }
 }
