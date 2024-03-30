@@ -2,13 +2,34 @@
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.Authors.Interfaces;
 using TaskNinjaHub.Application.Entities.Bases.Repositories;
+using TaskNinjaHub.Application.Entities.Tasks.Interfaces;
+using TaskNinjaHub.Application.Entities.TaskStatuses.Enum;
 using TaskNinjaHub.Application.Interfaces;
 using TaskNinjaHub.Application.Utilities.OperationResults;
 
 namespace TaskNinjaHub.Application.Entities.Authors.Repositories;
 
-public class AuthorRepository(ITaskNinjaHubDbContext context) : BaseRepository<Author>((DbContext)context), IAuthorRepository
+public class AuthorRepository(ITaskNinjaHubDbContext context, ITaskRepository taskRepository) : BaseRepository<Author>((DbContext)context), IAuthorRepository
 {
+    public new async Task<IEnumerable<Author>?> GetAllAsync()
+    {
+        var authors = await Context.Set<Author>()
+            .OrderByDescending(entity => entity.Id)
+            .ToListAsync();
+
+        foreach (var author in authors)
+        {
+            var tasks = await taskRepository.GetAllByFilterAsync(new Dictionary<string, string?> { { "TaskExecutorId", author.Id.ToString() } });
+            if (tasks != null)
+            {
+                tasks = tasks.Where(task => task.TaskStatusId != (int)EnumTaskStatus.Done);
+                author.CountPerformedTasks = tasks.Count();
+            }
+        }
+
+        return authors;
+    }
+
     public new async Task<OperationResult<Author>> AddAsync(Author author)
     {
         try
