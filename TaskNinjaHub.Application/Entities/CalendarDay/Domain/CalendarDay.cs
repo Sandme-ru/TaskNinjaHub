@@ -17,5 +17,5 @@ public class TaskInfo
 
     public DateTime? EndDate { get; set; }
 
-    public string Color { get; set; }
+    public string Color { get; set; } = null!;
 }

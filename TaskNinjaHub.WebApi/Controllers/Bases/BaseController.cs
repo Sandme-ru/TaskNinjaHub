@@ -41,8 +41,7 @@ public class BaseController<TEntity, TRepository>(TRepository repository) : Cont
     }
     
     [HttpPost("FilterByPage")]
-    public async Task<IEnumerable<TEntity>?> GetAllByFilterByPage([FromBody] IDictionary<string, string?> query,
-        [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<IEnumerable<TEntity>?> GetAllByFilterByPage([FromBody] IDictionary<string, string?> query, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
         var entities = await repository.GetAllByFilterByPageAsync(query, pageNumber, pageSize);
         return entities ?? null;
@@ -78,7 +77,7 @@ public class BaseController<TEntity, TRepository>(TRepository repository) : Cont
     [HttpDelete("{id}")]
     public async Task<ActionResult<TEntity>?> Delete(int id)
     {
-        var entity = (repository.FindAsync(x => x.Id == id).Result ?? Array.Empty<TEntity>()).FirstOrDefault();
+        var entity = (repository.FindAsync(x => x.Id == id).Result ?? []).FirstOrDefault();
 
         if (entity != null)
         {

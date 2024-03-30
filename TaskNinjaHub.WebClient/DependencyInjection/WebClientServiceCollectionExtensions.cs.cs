@@ -14,6 +14,7 @@ public static class WebClientServiceCollectionExtensions
         services.AddScoped<TaskStatusService>();
         services.AddScoped<AuthService>();
         services.AddScoped<RelatedTaskService>();
+        services.AddScoped<MinioService>();
 
         return services;
     }

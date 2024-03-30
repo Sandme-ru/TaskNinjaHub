@@ -19,13 +19,13 @@ public class CatalogTaskController(ITaskRepository repository) : BaseController<
         return count;
     }
 
-    [HttpPost("CreateSameTask")]
-    public async Task<OperationResult<CatalogTask>?> CreateSameTask([FromBody] CatalogTaskRequestModel? entity)
+    [HttpPost("CreateChangelogTask")]
+    public async Task<OperationResult<CatalogTask>?> CreateChangelogTask([FromBody] CatalogTaskRequestModel? entity)
     {
         if (entity?.Task == null)
             return OperationResult<CatalogTask>.FailedResult("An empty object was passed to add");
 
-        var result = await repository.CreateSameTask(entity.Task, entity.IsUpdated);
+        var result = await repository.CreateChangelogTask(entity.Task, entity.IsUpdated);
         return result;
     }
 }
