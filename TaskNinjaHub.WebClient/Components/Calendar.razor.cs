@@ -36,7 +36,7 @@ public partial class Calendar
         var startingDayOfWeek = (int)firstDayOfMonth.DayOfWeek;
         startingDayOfWeek = (startingDayOfWeek == 0) ? 6 : startingDayOfWeek - 1;
 
-        CalendarDays = new List<List<CalendarDay>>();
+        CalendarDays = [];
 
         var currentDay = 1;
         for (var i = 0; i < 6; i++)
@@ -58,7 +58,17 @@ public partial class Calendar
                     {
                         var day = new CalendarDay { DayNumber = currentDay, IsToday = isToday };
                         foreach (var task in tasksForDay)
-                            day.Tasks.Add(new TaskInfo { TaskId = task.Id, StartDate = task.DateStart.Value, EndDate = task.DateEnd });
+                        {
+                            var taskEndDate = task.DateEnd ?? DateTime.Today;
+                            if (taskEndDate > currentDate)
+                                taskEndDate = currentDate;
+                            day.Tasks.Add(new TaskInfo
+                            {
+                                TaskId = task.Id,
+                                StartDate = task.DateStart!.Value,
+                                EndDate = taskEndDate
+                            });
+                        }
                         week.Add(day);
                     }
                     else
@@ -124,8 +134,7 @@ public partial class Calendar
             var selectedAuthor = Authors.FirstOrDefault(author => author.Id == executorId);
             if (selectedAuthor != null)
             {
-                Tasks = (await CatalogTaskService.GetAllByFilterAsync(new CatalogTask
-                    { TaskExecutorId = selectedAuthor.Id, TaskStatusId = (int)EnumTaskStatus.AtWork })).ToList();
+                Tasks = (await CatalogTaskService.GetAllByFilterAsync(new CatalogTask { TaskExecutorId = selectedAuthor.Id, TaskStatusId = (int)EnumTaskStatus.AtWork })).ToList();
                 Tasks.AddRange(await CatalogTaskService.GetAllByFilterAsync(new CatalogTask { TaskExecutorId = selectedAuthor.Id, TaskStatusId = (int)EnumTaskStatus.Done }));
                 Tasks.AddRange(await CatalogTaskService.GetAllByFilterAsync(new CatalogTask { TaskExecutorId = selectedAuthor.Id, TaskStatusId = (int)EnumTaskStatus.AwaitingVerification }));
 
@@ -137,8 +146,7 @@ public partial class Calendar
     
     protected override async void OnInitialized()
     {
-        Tasks = (await CatalogTaskService.GetAllByFilterAsync(new CatalogTask
-            { TaskExecutorId = UserProviderService.User.Id, TaskStatusId = (int)EnumTaskStatus.AtWork })).ToList();
+        Tasks = (await CatalogTaskService.GetAllByFilterAsync(new CatalogTask { TaskExecutorId = UserProviderService.User.Id, TaskStatusId = (int)EnumTaskStatus.AtWork })).ToList();
         Tasks.AddRange(await CatalogTaskService.GetAllByFilterAsync(new CatalogTask { TaskExecutorId = UserProviderService.User.Id, TaskStatusId = (int)EnumTaskStatus.Done }));
         Tasks.AddRange(await CatalogTaskService.GetAllByFilterAsync(new CatalogTask { TaskExecutorId = UserProviderService.User.Id, TaskStatusId = (int)EnumTaskStatus.AwaitingVerification }));
 

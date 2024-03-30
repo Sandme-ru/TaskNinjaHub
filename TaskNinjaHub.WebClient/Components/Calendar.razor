@@ -11,7 +11,7 @@
 
     <div class="filter-container">
         <label for="author">Select executor:</label>
-        
+
         <select id="author" @onchange="HandleExecutorChange">
             @foreach (var author in Authors)
             {
@@ -35,7 +35,7 @@
         </select>
 
         <label for="year">Enter year:</label>
-        <input type="number" id="year" @bind-value="_year" min="1900" max="2100" @oninput="GoToSelectedMonthYear"/>
+        <input type="number" id="year" @bind-value="_year" min="1900" max="2100" @oninput="GoToSelectedMonthYear" />
         <button class="go-button" @onclick="GoToSelected">Go</button>
     </div>
 
@@ -54,30 +54,34 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach (var week in CalendarDays)
-            {
-                <tr>
-                    @foreach (var day in week)
-                    {
-                        <td class="@(day.IsToday ? "today" : (day.DayNumber == 0 ? "empty-cell" : ""))">
-                            @((day.DayNumber == 0) ? "" : day.DayNumber)
-                            @if (day.DayNumber != 0 && day.Tasks.Any())
-                            {
-                                <div class="task-block">
+                @foreach (var week in CalendarDays)
+                {
+                    <tr>
+                        @foreach (var day in week)
+                        {
+                            <td class="@(day.IsToday ? "today" : (day.DayNumber == 0 ? "empty-cell" : ""))">
+                                @((day.DayNumber == 0) ? "" : day.DayNumber)
+                                @if (day.DayNumber != 0 && day.Tasks.Any())
+                                {
                                     @foreach (var task in day.Tasks)
                                     {
-                                        <div>
-                                            <a href="/task-read/@(task.TaskId)" class="task-link">
-                                                Задача: @task.TaskId
-                                            </a>
-                                        </div>
+                                        if (task.EndDate >= new DateTime(_year, _month, day.DayNumber))
+                                        {
+                                            <div class="task-block">
+                                                <div>
+                                                    <a href="/task-read/@(task.TaskId)" class="task-link">
+                                                        Задача: @task.TaskId
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        }
                                     }
-                                </div>
-                            }
-                        </td>
-                    }
-                </tr>
-            }
+                                }
+
+                            </td>
+                        }
+                    </tr>
+                }
             </tbody>
         </table>
     }
