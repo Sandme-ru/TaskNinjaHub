@@ -123,6 +123,9 @@
   <data name="Anonymous" xml:space="preserve">
     <value>Анонимный пользователь (Нет роли)</value>
   </data>
+  <data name="Calendar" xml:space="preserve">
+    <value>Календарь</value>
+  </data>
   <data name="Hello" xml:space="preserve">
     <value>Привет</value>
   </data>
