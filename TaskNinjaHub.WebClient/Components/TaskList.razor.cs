@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.IdentityModel.Tokens;
-using OneOf.Types;
-using System.Text.Json;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;

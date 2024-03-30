@@ -2,11 +2,11 @@
 
 public enum EnumTaskStatus
 {
-    AwaitingExecution,
+    AwaitingExecution = 1,
 
-    AtWork,
+    AtWork = 2,
 
-    AwaitingVerification,
+    AwaitingVerification = 3,
 
-    Done
+    Done = 4
 }

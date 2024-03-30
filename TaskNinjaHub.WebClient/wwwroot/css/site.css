@@ -455,3 +455,95 @@ html {
 .filter-box {
     margin: 0 16px 0 16px;
 }
+
+.calendar-container {
+    text-align: center;
+}
+
+.calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .calendar-table th,
+    .calendar-table td {
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #ccc;
+    }
+
+.today {
+    background-color: lightblue;
+}
+
+.empty-cell {
+    background-color: #f9f9f9;
+}
+
+.month-year-header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.navigation-buttons {
+    margin-bottom: 10px;
+}
+
+.arrow-button {
+    font-size: 20px;
+}
+
+.filter-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+    .filter-container label {
+        margin-right: 10px;
+    }
+
+    .filter-container select,
+    .filter-container input[type="number"] {
+        padding: 5px;
+        margin-right: 10px;
+    }
+
+    .filter-container button.go-button {
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+        .filter-container button.go-button:hover {
+            background-color: #0056b3;
+        }
+
+.task-block {
+    margin-top: 5px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-link {
+    text-decoration: none;
+    color: #007bff !important;
+    font-weight: bold;
+    transition: color 0.3s, transform 0.3s;
+}
+
+    .task-link:hover {
+        color: #00bcd4;
+        transform: scale(1.1);
+    }
+
+    .task-link:active {
+        transform: scale(0.9);
+        transition: transform 0.1s;
+    }
