@@ -67,7 +67,9 @@
                                     @foreach (var task in day.Tasks)
                                     {
                                         <div>
-                                            <a href="/task-read/@(task.TaskId)" class="task-link">Задача: @task.TaskId</a>
+                                            <a href="/task-read/@(task.TaskId)" class="task-link">
+                                                Задача: @task.TaskId
+                                            </a>
                                         </div>
                                     }
                                 </div>

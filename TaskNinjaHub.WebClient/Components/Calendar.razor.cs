@@ -19,7 +19,7 @@ public partial class Calendar
     [Inject]
     private AuthorService AuthorService { get; set; } = null!;
 
-    private IEnumerable<CatalogTask> Tasks { get; set; } = null!;
+    private List<CatalogTask> Tasks { get; set; } = null!;
 
     private List<Author> Authors { get; set; } = [];
 
@@ -36,7 +36,7 @@ public partial class Calendar
         var startingDayOfWeek = (int)firstDayOfMonth.DayOfWeek;
         startingDayOfWeek = (startingDayOfWeek == 0) ? 6 : startingDayOfWeek - 1;
 
-        CalendarDays = [];
+        CalendarDays = new List<List<CalendarDay>>();
 
         var currentDay = 1;
         for (var i = 0; i < 6; i++)
@@ -49,12 +49,16 @@ public partial class Calendar
                 else
                 {
                     var isToday = currentDay == DateTime.Today.Day && year == DateTime.Today.Year && month == DateTime.Today.Month;
-                    var tasksForDay = Tasks.Where(task => task.DateCreated != null && task.DateCreated.Value.Day == currentDay && task.DateCreated.Value.Month == month && task.DateCreated.Value.Year == year).ToList();
+                    var currentDate = new DateTime(year, month, currentDay);
+                    var tasksForDay = Tasks.Where(task =>
+                        task.DateStart.HasValue && task.DateStart.Value.Date <= currentDate &&
+                        (!task.DateEnd.HasValue || task.DateEnd.Value.Date >= currentDate)).ToList();
+
                     if (tasksForDay.Any())
                     {
                         var day = new CalendarDay { DayNumber = currentDay, IsToday = isToday };
                         foreach (var task in tasksForDay)
-                            day.Tasks.Add(new TaskInfo {TaskId = task.Id });
+                            day.Tasks.Add(new TaskInfo { TaskId = task.Id, StartDate = task.DateStart.Value, EndDate = task.DateEnd });
                         week.Add(day);
                     }
                     else
@@ -69,7 +73,6 @@ public partial class Calendar
                 break;
         }
     }
-
 
     private void PreviousMonth()
     {
@@ -121,7 +124,11 @@ public partial class Calendar
             var selectedAuthor = Authors.FirstOrDefault(author => author.Id == executorId);
             if (selectedAuthor != null)
             {
-                Tasks = await CatalogTaskService.GetAllByFilterAsync(new CatalogTask { TaskExecutorId = selectedAuthor.Id, TaskStatusId = (int)EnumTaskStatus.AtWork });
+                Tasks = (await CatalogTaskService.GetAllByFilterAsync(new CatalogTask
+                    { TaskExecutorId = selectedAuthor.Id, TaskStatusId = (int)EnumTaskStatus.AtWork })).ToList();
+                Tasks.AddRange(await CatalogTaskService.GetAllByFilterAsync(new CatalogTask { TaskExecutorId = selectedAuthor.Id, TaskStatusId = (int)EnumTaskStatus.Done }));
+                Tasks.AddRange(await CatalogTaskService.GetAllByFilterAsync(new CatalogTask { TaskExecutorId = selectedAuthor.Id, TaskStatusId = (int)EnumTaskStatus.AwaitingVerification }));
+
                 GenerateCalendar(_year, _month);
                 StateHasChanged();
             }
@@ -130,7 +137,11 @@ public partial class Calendar
     
     protected override async void OnInitialized()
     {
-        Tasks = await CatalogTaskService.GetAllByFilterAsync(new CatalogTask { TaskExecutorId = UserProviderService.User.Id, TaskStatusId = (int)EnumTaskStatus.AtWork });
+        Tasks = (await CatalogTaskService.GetAllByFilterAsync(new CatalogTask
+            { TaskExecutorId = UserProviderService.User.Id, TaskStatusId = (int)EnumTaskStatus.AtWork })).ToList();
+        Tasks.AddRange(await CatalogTaskService.GetAllByFilterAsync(new CatalogTask { TaskExecutorId = UserProviderService.User.Id, TaskStatusId = (int)EnumTaskStatus.Done }));
+        Tasks.AddRange(await CatalogTaskService.GetAllByFilterAsync(new CatalogTask { TaskExecutorId = UserProviderService.User.Id, TaskStatusId = (int)EnumTaskStatus.AwaitingVerification }));
+
         Authors = (await AuthorService.GetAllAsync()).ToList();
 
         await base.OnInitializedAsync();
