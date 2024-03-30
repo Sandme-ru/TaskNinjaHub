@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using TaskNinjaHub.Application.BaseUsers;
 using TaskNinjaHub.Application.Entities.Authors.Enums;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
@@ -25,4 +26,10 @@ public class Author: BaseUserCU, IHaveId, IHaveName
     public virtual List<CatalogTask>? AssignedTasks { get; set; }
 
     public LocalizationType? LocalizationType { get; set; }
+
+    [NotMapped]
+    public int? CountPerformedTasks { get; set; }
+
+    [NotMapped] 
+    public string? FullName => $"{ShortName} [{CountPerformedTasks}]";
 }
