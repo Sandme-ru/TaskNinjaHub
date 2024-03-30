@@ -130,11 +130,12 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
             await Context.SaveChangesAsync();
 
             entity.TaskAuthor = await Context.Set<Author>().FindAsync(entity.TaskAuthorId);
+            entity.TaskExecutor = await Context.Set<Author>().FindAsync(entity.TaskExecutorId);
             entity.Priority = await Context.Set<Priority>().FindAsync(entity.PriorityId);
             entity.InformationSystem = await Context.Set<InformationSystem>().FindAsync(entity.InformationSystemId);
             entity.TaskStatus = await Context.Set<CatalogTaskStatus>().FindAsync(entity.TaskStatusId);
 
-            await emailService.SendCreateEmailAsync("shvyrkalovm@mail.ru" /*entity.TaskExecutor?.Name*/ , entity);
+            await emailService.SendCreateEmailAsync(entity.TaskExecutor?.Name! , entity);
 
             return OperationResult<CatalogTask>.SuccessResult(entity);
         }
@@ -144,7 +145,7 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
         }
     }
 
-    public async Task<OperationResult<CatalogTask>> CreateSameTask(CatalogTask entity, bool isUpdated)
+    public async Task<OperationResult<CatalogTask>> CreateChangelogTask(CatalogTask entity, bool isUpdated)
     {
         try
         {
@@ -152,12 +153,13 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
             await Context.SaveChangesAsync();
 
             entity.TaskAuthor = await Context.Set<Author>().FindAsync(entity.TaskAuthorId);
+            entity.TaskExecutor = await Context.Set<Author>().FindAsync(entity.TaskExecutorId);
             entity.Priority = await Context.Set<Priority>().FindAsync(entity.PriorityId);
             entity.InformationSystem = await Context.Set<InformationSystem>().FindAsync(entity.InformationSystemId);
             entity.TaskStatus = await Context.Set<CatalogTaskStatus>().FindAsync(entity.TaskStatusId);
 
             if (!isUpdated)
-                await emailService.SendCreateEmailAsync("shvyrkalovm@mail.ru" /*entity.TaskExecutor?.Name*/ , entity);
+                await emailService.SendCreateEmailAsync(entity.TaskExecutor?.Name! , entity);
 
             return OperationResult<CatalogTask>.SuccessResult(entity);
         }
@@ -185,8 +187,9 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
             await Context.SaveChangesAsync();
 
             entity.TaskAuthor = await Context.Set<Author>().FindAsync(entity.TaskAuthorId);
+            entity.TaskExecutor = await Context.Set<Author>().FindAsync(entity.TaskExecutorId);
 
-            await emailService.SendUpdateEmailAsync("shvyrkalovm@mail.ru" /*entity.TaskExecutor?.Name*/ , entity);
+            await emailService.SendUpdateEmailAsync(entity.TaskExecutor?.Name! , entity);
 
             return OperationResult<CatalogTask>.SuccessResult(entity);
         }

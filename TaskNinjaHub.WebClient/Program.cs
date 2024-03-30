@@ -35,6 +35,8 @@ public class Program
 
         #endif
 
+        var minioUrl = builder.Configuration.GetSection("HttpClientSettings:MinioUrl").Value;
+
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddAntDesign();
@@ -47,6 +49,11 @@ public class Program
         builder.Services.AddHttpClient("AuthClient", client =>
         {
             client.BaseAddress = new Uri(authUrl!);
+        });
+
+        builder.Services.AddHttpClient("Minio", client =>
+        {
+            client.BaseAddress = new Uri(minioUrl!);
         });
 
         builder.Services.AddWebClientServiceCollection();

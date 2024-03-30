@@ -1,6 +1,4 @@
-﻿using IdentityModel;
-using Newtonsoft.Json;
-using System.Net.Http;
+﻿using Newtonsoft.Json;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Utilities.OperationResults;
 using TaskNinjaHub.WebClient.Services.Bases;
@@ -21,10 +19,10 @@ public class CatalogTaskService(IHttpClientFactory httpClientFactory) : BaseServ
 
     #endif
 
-    public async Task<OperationResult<CatalogTask>> CreateSameTaskAsync(CatalogTask entity, bool isUpdated)
+    public async Task<OperationResult<CatalogTask>> CreateChangelogTaskAsync(CatalogTask entity, bool isUpdated)
     {
         var data = new { Task = entity, IsUpdated = isUpdated };
-        var response = await _httpClient.PostAsJsonAsync($"{BasePath}/CreateSameTask", data);
+        var response = await _httpClient.PostAsJsonAsync($"{BasePath}/CreateChangelogTask", data);
         var result = JsonConvert.DeserializeObject<OperationResult<CatalogTask>>(await response.Content.ReadAsStringAsync());
 
         return result!;

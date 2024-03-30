@@ -55,6 +55,9 @@ public partial class TaskList
     [Inject]
     private IUserProviderService UserProviderService { get; set; } = null!;
 
+    [Inject]
+    private MinioService MinioService { get; set; } = null!;
+
     #endregion
 
     #region PROPERTY
@@ -92,7 +95,7 @@ public partial class TaskList
         Xxl = 3,
     };
 
-    private bool _visibleModal = false;
+    private bool _visibleModal;
 
     private IEnumerable<Author>? AuthorsList { get; set; }
 
@@ -128,19 +131,18 @@ public partial class TaskList
 
     private CatalogTask Filter { get; set; } = null!;
 
-    public IEnumerable<int> RelatedTaskIds { get; set; }
+    public IEnumerable<int> RelatedTaskIds { get; set; } = null!;
 
-    public IEnumerable<RelatedTask> RelatedTasks { get; set; }
+    public IEnumerable<RelatedTask> RelatedTasks { get; set; } = null!;
 
-    public IEnumerable<CatalogTask> CatalogTaskList { get; set; }
+    public IEnumerable<CatalogTask> CatalogTaskList { get; set; } = null!;
 
-    private List<IBrowserFile> SelectedFiles = new List<IBrowserFile>();
-
-    private HttpClient HttpClient { get; set; } = new();
-
+    private List<IBrowserFile> SelectedFiles = [];
+    
     private bool PreviewVisible { get; set; } = false;
 
     private string PreviewTitle { get; set; } = string.Empty;
+
     private string ImgUrl { get; set; } = string.Empty;
 
     #endregion
@@ -334,7 +336,7 @@ public partial class TaskList
                     Files = EditedTask.Files
                 };
 
-                var createRet = await CatalogTaskService.CreateSameTaskAsync(CatalogTaskForChangelog, true);
+                var createRet = await CatalogTaskService.CreateChangelogTaskAsync(CatalogTaskForChangelog, true);
                 if (createRet.Success)
                 {
                     Console.WriteLine($"{EditedTask?.Id} {EditedTask?.Name} is updated.");
@@ -349,7 +351,7 @@ public partial class TaskList
                             await FileService.DeleteAsync(fileEntity.Id);
                 }
 
-                DefaultFileList = new();
+                DefaultFileList = [];
                 _visibleModal = false;
 
                 CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel { PageNumber = CurrentPage, PageSize = PageSize })).ToList();
@@ -476,16 +478,14 @@ public partial class TaskList
     {
         if (file != null)
         {
-            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            var timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
             var formFile = new MultipartFormDataContent();
 
             var fileName = $"{timestamp}_{task.Name}_{file.Name}";
 
             formFile.Add(new StreamContent(file.OpenReadStream(524288000)), "file", fileName);
 
-            var createResponse =
-                await HttpClient.PostAsync(
-                    "https://sandme.ru/file-storage/api/File/UploadFile?bucketName=task-files", formFile);
+            var createResponse = await MinioService.UploadFile(formFile);
 
             if (createResponse.IsSuccessStatusCode)
             {
@@ -500,8 +500,7 @@ public partial class TaskList
 
                 if (!result.Success)
                 {
-                    await HttpClient.PostAsJsonAsync(
-                        $"https://sandme.ru/file-storage/api/File/UploadFile?bucketName=task-files&{fileName}", string.Empty);
+                    await MinioService.UploadFileByName(fileName);
 
                     await Message.Error($"Error adding a file {file.Name}");
                 }
@@ -513,16 +512,15 @@ public partial class TaskList
 
     private async Task DeleteFiles()
     {
-        var exceptedPictures = new List<File>();
-
         var selectedFilesIds = DefaultFileList?.Select(file => file.Id);
-        exceptedPictures = Files?.Where(picture => !selectedFilesIds!.Contains(picture.Id.ToString())).ToList();
+        var exceptedPictures = Files.Where(picture => !selectedFilesIds!.Contains(picture.Id.ToString())).ToList();
 
         if (!exceptedPictures.IsNullOrEmpty())
         {
             foreach (var exceptedPicture in exceptedPictures)
             {
-                await HttpClient.PostAsJsonAsync($"https://sandme.ru/file-storage/api/File/DeleteFile?bucketName=task-files&fileName={exceptedPicture.Name}", string.Empty);
+                if (exceptedPicture.Name != null) 
+                    await MinioService.DeleteFile(exceptedPicture.Name);
                 await FileService.DeleteAsync(Convert.ToInt32(exceptedPicture.Id));
             }
         }

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.IdentityModel.Tokens;
-using System.Drawing;
 using System.Text.Json;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
@@ -51,15 +50,12 @@ public partial class TaskCreateForm
     [Inject]
     private IUserProviderService UserProviderService { get; set; } = null!;
 
+    [Inject]
+    private MinioService MinioService { get; set; } = null!;
+
     #endregion
 
     #region PROPERTY
-
-    private bool IsPreviewVisible { get; set; }
-
-    private string? FilePreviewUrl { get; set; } = string.Empty;
-
-    private string? FilePreviewTitle { get; set; } = string.Empty;
 
     private Author CurrentUser { get; set; } = null!;
 
@@ -73,8 +69,6 @@ public partial class TaskCreateForm
 
     private List<InformationSystem> InformationSystemList { get; set; } = [];
 
-    private List<File> UploadedFileList { get; set; } = [];
-
     private List<CatalogTaskStatus> TaskStatusList { get; set; } = [];
 
     private CatalogTaskStatus? DefaultStatus { get; set; } = new();
@@ -83,11 +77,10 @@ public partial class TaskCreateForm
 
     public IEnumerable<CatalogTask> CatalogTaskList { get; set; } = [];
 
-    public IEnumerable<int> RelatedTaskId { get; set; }
+    public IEnumerable<int> RelatedTaskId { get; set; } = null!;
 
-    private List<IBrowserFile> SelectedFiles = new List<IBrowserFile>();
 
-    private HttpClient HttpClient { get; set; } = new();
+    private List<IBrowserFile> _selectedFiles = [];
 
     #endregion
 
@@ -126,7 +119,6 @@ public partial class TaskCreateForm
             .FirstOrDefault()
             ?.Id;
 
-        //CreatedCatalogTask.TaskAuthorId = CurrentUser.Id;
         CreatedCatalogTask.TaskStatusId = DefaultStatus?.Id;
         CreatedCatalogTask.UserCreated = CurrentUser.Name;
         CreatedCatalogTask.DateCreated = DateTime.UtcNow;
@@ -135,7 +127,7 @@ public partial class TaskCreateForm
 
         if (result.Success)
         {
-            foreach (var file in SelectedFiles)
+            foreach (var file in _selectedFiles)
                 await UploadFile(file, result.Body);
 
             await Message.Success("The task was successfully added.");
@@ -190,24 +182,22 @@ public partial class TaskCreateForm
 
     private void HandleFileSelected(InputFileChangeEventArgs e)
     {
-        SelectedFiles.Clear();
-        SelectedFiles.AddRange(e.GetMultipleFiles());
+        _selectedFiles.Clear();
+        _selectedFiles.AddRange(e.GetMultipleFiles());
     }
 
     private async Task UploadFile(IBrowserFile file, CatalogTask task)
     {
         if (file != null)
         {
-            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            var timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
             var formFile = new MultipartFormDataContent();
 
             var fileName = $"{timestamp}_{task.Name}_{file.Name}";
 
             formFile.Add(new StreamContent(file.OpenReadStream(524288000)), "file", fileName);
 
-            var createResponse =
-                await HttpClient.PostAsync(
-                    "https://sandme.ru/file-storage/api/File/UploadFile?bucketName=task-files", formFile);
+            var createResponse = await MinioService.UploadFile(formFile);
                 
             if (createResponse.IsSuccessStatusCode)
             {
@@ -222,9 +212,7 @@ public partial class TaskCreateForm
 
                 if (!result.Success)
                 {
-                    await HttpClient.PostAsJsonAsync(
-                        $"https://sandme.ru/file-storage/api/File/UploadFile?bucketName=task-files&{fileName}", string.Empty);
-
+                    await MinioService.UploadFileByName(fileName);
                     await Message.Error($"Error adding a file {file.Name}");
                 }
             }

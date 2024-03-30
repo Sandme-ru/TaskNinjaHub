@@ -6,5 +6,5 @@ namespace TaskNinjaHub.Application.Entities.Tasks.Interfaces;
 
 public interface ITaskRepository : IBaseRepository<CatalogTask>
 {
-    Task<OperationResult<CatalogTask>> CreateSameTask(CatalogTask entity, bool isUpdated);
+    Task<OperationResult<CatalogTask>> CreateChangelogTask(CatalogTask entity, bool isUpdated);
 }
