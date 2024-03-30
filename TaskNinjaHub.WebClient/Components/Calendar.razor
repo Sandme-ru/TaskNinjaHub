@@ -10,6 +10,22 @@
     </div>
 
     <div class="filter-container">
+        <label for="author">Select executor:</label>
+        
+        <select id="author" @onchange="HandleExecutorChange">
+            @foreach (var author in Authors)
+            {
+                if (author.Id == UserProviderService.User.Id)
+                {
+                    <option value="@author.Id" selected>@author.ShortName</option>
+                }
+                else
+                {
+                    <option value="@author.Id">@author.ShortName</option>
+                }
+            }
+        </select>
+
         <label for="month">Select month:</label>
         <select id="month" @onchange="HandleMonthChange">
             @for (var i = 1; i <= 12; i++)
@@ -17,9 +33,9 @@
                 <option value="@i" selected="@(_month == i)">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
             }
         </select>
-    
+
         <label for="year">Enter year:</label>
-        <input type="number" id="year" @bind-value="_year" min="1900" max="2100" @oninput="GoToSelectedMonthYear" />
+        <input type="number" id="year" @bind-value="_year" min="1900" max="2100" @oninput="GoToSelectedMonthYear"/>
         <button class="go-button" @onclick="GoToSelected">Go</button>
     </div>
 
