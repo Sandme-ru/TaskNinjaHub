@@ -8,6 +8,7 @@ using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
 using TaskNinjaHub.Application.Entities.RelatedTasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
+using TaskNinjaHub.Application.Entities.Tasks.Dto;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.Application.Utilities.OperationResults;
 using TaskNinjaHub.WebClient.Services;
@@ -53,6 +54,9 @@ public partial class TaskCreateForm
     [Inject]
     private MinioService MinioService { get; set; } = null!;
 
+    [Inject]
+    private MachineLearningService MachineLearningService { get; set; } = null!;
+
     #endregion
 
     #region PROPERTY
@@ -79,6 +83,11 @@ public partial class TaskCreateForm
 
     public IEnumerable<int> RelatedTaskId { get; set; } = null!;
 
+    public string PredictProbabilityMessage { get; set; } = null!;
+
+    public string PredictProbabilityMessageStyle { get; set; } = string.Empty;
+
+    private Author SelectedExecutor { get; set; } = null!;
 
     private List<IBrowserFile> _selectedFiles = [];
 
@@ -218,6 +227,96 @@ public partial class TaskCreateForm
             }
             else
                 await Message.Error("File upload error");
+        }
+    }
+
+    private async Task SelectedExecutorHandler(Author author)
+    {
+        if(CreatedCatalogTask is { InformationSystemId: not null, PriorityId: not null })
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            SelectedExecutor = author;
+
+            var taskInputDto = new TaskInputDto
+            {
+                TaskExecutorId = author.Id,
+                InformationSystemId = Convert.ToDouble(CreatedCatalogTask.InformationSystemId),
+                PriorityId = Convert.ToDouble(CreatedCatalogTask.PriorityId)
+            };
+
+            await PredictProbability(SelectedExecutor, taskInputDto);
+
+            IsLoading = false;
+            StateHasChanged();
+        }
+        else
+        {
+            CreatedCatalogTask.TaskExecutorId = null;
+            StateHasChanged();
+
+            await Message.Warning("Fill in all the fields");
+        }
+    }
+
+    private async Task PredictProbability(Author author, TaskInputDto taskInputDto)
+    {
+        var result = await MachineLearningService.PredictProbability(taskInputDto);
+        if (result is { Success: true })
+        {
+            PredictProbabilityMessageStyle = result.Body switch
+            {
+                > 0.75 => "success",
+                > 0.5 => "warning",
+                _ => "danger"
+            };
+
+            PredictProbabilityMessage = $"There is a {result.Body * 100}% chance that the performer {author.ShortName} is suitable for this task";
+        }
+        else
+            await Message.Error(result?.ErrorMessage);
+    }
+
+    private async Task SelectedPriorityHandler(Priority priority)
+    {
+        if (CreatedCatalogTask is { InformationSystemId: not null, TaskExecutorId: not null })
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            var taskInputDto = new TaskInputDto
+            {
+                TaskExecutorId = Convert.ToDouble(CreatedCatalogTask.TaskExecutorId),
+                InformationSystemId = Convert.ToDouble(CreatedCatalogTask.InformationSystemId),
+                PriorityId = Convert.ToDouble(priority.Id)
+            };
+
+            await PredictProbability(SelectedExecutor, taskInputDto);
+
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task SelectedInformationSystemHandler(InformationSystem informationSystem)
+    {
+        if (CreatedCatalogTask is { PriorityId: not null, TaskExecutorId: not null })
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            var taskInputDto = new TaskInputDto
+            {
+                TaskExecutorId = Convert.ToDouble(CreatedCatalogTask.TaskExecutorId),
+                InformationSystemId = Convert.ToDouble(informationSystem.Id),
+                PriorityId = Convert.ToDouble(CreatedCatalogTask.PriorityId)
+            };
+
+            await PredictProbability(SelectedExecutor, taskInputDto);
+
+            IsLoading = false;
+            StateHasChanged();
         }
     }
 }
