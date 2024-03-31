@@ -20,9 +20,6 @@ public partial class TaskList
     #region INJECTIONS
 
     [Inject]
-    private IMessageService Message { get; set; } = null!;
-
-    [Inject]
     private ModalService ModalService { get; set; } = null!;
 
     [Inject]
@@ -85,7 +82,7 @@ public partial class TaskList
 
     private List<CatalogTask>? CatalogTasks { get; set; }
 
-    private List<UploadFileItem>? DefaultFileList { get; set; } = new();
+    private List<UploadFileItem>? DefaultFileList { get; set; } = [];
 
     private readonly ListGridType _grid = new()
     {
@@ -100,13 +97,13 @@ public partial class TaskList
 
     private bool _visibleModal;
 
-    private IEnumerable<Author>? AuthorsList { get; set; }
+    private IEnumerable<Author>? Authors { get; set; }
 
-    private IEnumerable<Priority>? PriorityList { get; set; }
+    private IEnumerable<Priority>? Priorities { get; set; }
 
-    private IEnumerable<InformationSystem>? InformationSystemList { get; set; }
+    private IEnumerable<InformationSystem>? InformationSystems { get; set; }
 
-    private IEnumerable<CatalogTaskStatus>? TaskStatusList { get; set; }
+    private IEnumerable<CatalogTaskStatus>? TaskStatuses { get; set; }
 
     private static CatalogTask? DeletedTask { get; set; }
 
@@ -120,7 +117,7 @@ public partial class TaskList
 
     private File File { get; set; } = null!;
 
-    private List<File> Files { get; set; } = null!;
+    private List<File> Files { get; set; } = [];
 
     private int? SelectedTaskId { get; set; }
 
@@ -134,21 +131,23 @@ public partial class TaskList
 
     private CatalogTask Filter { get; set; } = null!;
 
-    public IEnumerable<int> RelatedTaskIds { get; set; } = null!;
+    public IEnumerable<int> RelatedTaskIds { get; set; } = [];
 
-    public IEnumerable<RelatedTask> RelatedTasks { get; set; } = null!;
+    public IEnumerable<RelatedTask> RelatedTasks { get; set; } = [];
 
-    public IEnumerable<CatalogTask> CatalogTaskList { get; set; } = null!;
+    public IEnumerable<CatalogTask> Tasks { get; set; } = [];
 
-    private List<IBrowserFile> SelectedFiles = [];
+    private List<IBrowserFile> _selectedFiles = [];
     
-    private bool PreviewVisible { get; set; } = false;
+    private bool PreviewVisible { get; set; }
 
     private string PreviewTitle { get; set; } = string.Empty;
 
     private string ImgUrl { get; set; } = string.Empty;
 
     #endregion
+
+    #region METHODS
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -159,12 +158,12 @@ public partial class TaskList
 
             CatalogTasksCount = await CatalogTaskService.GetAllCountAsync();
 
-            AuthorsList = await AuthorService.GetAllAsync();
-            PriorityList = await PriorityService.GetAllAsync();
-            InformationSystemList = await InformationSystemService.GetAllAsync();
-            TaskStatusList = await TaskStatusService.GetAllAsync();
+            Authors = await AuthorService.GetAllAsync();
+            Priorities = await PriorityService.GetAllAsync();
+            InformationSystems = await InformationSystemService.GetAllAsync();
+            TaskStatuses = await TaskStatusService.GetAllAsync();
             CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel { PageNumber = CurrentPage, PageSize = PageSize })).ToList();
-            CatalogTaskList = (await CatalogTaskService.GetAllAsync()).Where(task => task.OriginalTaskId == null).ToList();
+            Tasks = (await CatalogTaskService.GetAllAsync()).Where(task => task.OriginalTaskId == null).ToList();
 
             IsLoadingTaskList = false;
             StateHasChanged();
@@ -310,7 +309,7 @@ public partial class TaskList
 
                     await DeleteFiles();
 
-                    foreach (var file in SelectedFiles)
+                    foreach (var file in _selectedFiles)
                         await UploadFile(file, createdTask);
 
                     if (EditedTask?.Files is { Count: > 0 })
@@ -346,7 +345,7 @@ public partial class TaskList
                     if (CatalogTaskForChangelog.Files is { Count: > 0 })
                     {
                         var createdTask = createRet.Body;
-                        foreach (var file in SelectedFiles)
+                        foreach (var file in _selectedFiles)
                             await UploadFile(file, createdTask);
                     }
                     else
@@ -400,18 +399,18 @@ public partial class TaskList
         if (EditedTask == null)
             return;
 
-        if (AuthorsList != null)
+        if (Authors != null)
         {
-            EditedTask.TaskAuthor = AuthorsList.FirstOrDefault(a => a.Id == EditedTask.TaskAuthorId);
-            EditedTask.TaskExecutor = AuthorsList.FirstOrDefault(a => a.Id == EditedTask.TaskExecutorId);
+            EditedTask.TaskAuthor = Authors.FirstOrDefault(a => a.Id == EditedTask.TaskAuthorId);
+            EditedTask.TaskExecutor = Authors.FirstOrDefault(a => a.Id == EditedTask.TaskExecutorId);
         }
 
-        if (InformationSystemList != null)
-            EditedTask.InformationSystem = InformationSystemList.FirstOrDefault(a => a.Id == EditedTask.InformationSystemId);
-        if (PriorityList != null)
-            EditedTask.Priority = PriorityList.FirstOrDefault(a => a.Id == EditedTask.PriorityId);
-        if (TaskStatusList != null)
-            EditedTask.TaskStatus = TaskStatusList.FirstOrDefault(a => a.Id == EditedTask.TaskStatusId);
+        if (InformationSystems != null)
+            EditedTask.InformationSystem = InformationSystems.FirstOrDefault(a => a.Id == EditedTask.InformationSystemId);
+        if (Priorities != null)
+            EditedTask.Priority = Priorities.FirstOrDefault(a => a.Id == EditedTask.PriorityId);
+        if (TaskStatuses != null)
+            EditedTask.TaskStatus = TaskStatuses.FirstOrDefault(a => a.Id == EditedTask.TaskStatusId);
     }
 
     private void DeleteTask(CatalogTask task)
@@ -473,8 +472,8 @@ public partial class TaskList
 
     private void HandleFileSelected(InputFileChangeEventArgs e)
     {
-        SelectedFiles.Clear();
-        SelectedFiles.AddRange(e.GetMultipleFiles());
+        _selectedFiles.Clear();
+        _selectedFiles.AddRange(e.GetMultipleFiles());
     }
 
     private async Task UploadFile(IBrowserFile file, CatalogTask task)
@@ -505,11 +504,11 @@ public partial class TaskList
                 {
                     await MinioService.UploadFileByName(fileName);
 
-                    await Message.Error($"Error adding a file {file.Name}");
+                    await MessageService.Error($"Error adding a file {file.Name}");
                 }
             }
             else
-                await Message.Error("File upload error");
+                await MessageService.Error("File upload error");
         }
     }
 
@@ -524,6 +523,7 @@ public partial class TaskList
             {
                 if (exceptedPicture.Name != null) 
                     await MinioService.DeleteFile(exceptedPicture.Name);
+
                 await FileService.DeleteAsync(Convert.ToInt32(exceptedPicture.Id));
             }
         }
@@ -545,4 +545,6 @@ public partial class TaskList
         IsLoadingTaskList = false;
         StateHasChanged();
     }
+
+    #endregion
 }

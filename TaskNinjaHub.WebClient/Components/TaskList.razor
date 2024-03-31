@@ -13,7 +13,7 @@
                    OnChange="new EventCallback<int?>(this, async () => await FilterSelectionChanged())" />
         </SpaceItem>
         <SpaceItem Style="width: 100%">
-            <Select DataSource="@AuthorsList"
+            <Select DataSource="@Authors"
                     LabelName="@nameof(Author.ShortName)"
                     Placeholder="Choose author"
                     AllowClear
@@ -23,7 +23,7 @@
             </Select>
         </SpaceItem>
         <SpaceItem Style="width: 100%">
-            <Select DataSource="@AuthorsList"
+            <Select DataSource="@Authors"
                     LabelName="@nameof(Author.ShortName)"
                     Placeholder="Choose executor"
                     AllowClear
@@ -33,7 +33,7 @@
             </Select>
         </SpaceItem>
         <SpaceItem Style="width: 100%">
-            <Select DataSource="@InformationSystemList"
+            <Select DataSource="@InformationSystems"
                     LabelName="@nameof(InformationSystem.Name)"
                     Placeholder="Choose system"
                     AllowClear
@@ -136,7 +136,7 @@
             <FormItem Label="Task executor">
                 <Select Mode="default"
                         EnableSearch
-                        DataSource="@AuthorsList"
+                        DataSource="@Authors"
                         @bind-Value="@context.TaskExecutorId"
                         LabelName="@nameof(Author.Name)"
                         ValueName="@nameof(Author.Id)">
@@ -145,7 +145,7 @@
             <FormItem Label="Priority">
                 <Select Mode="default"
                         EnableSearch
-                        DataSource="@PriorityList"
+                        DataSource="@Priorities"
                         @bind-Value="@context.PriorityId"
                         LabelName="@nameof(Priority.Name)"
                         ValueName="@nameof(Priority.Id)">
@@ -154,7 +154,7 @@
             <FormItem Label="Information system">
                 <Select Mode="default"
                         EnableSearch
-                        DataSource="@InformationSystemList"
+                        DataSource="@InformationSystems"
                         @bind-Value="@context.InformationSystemId"
                         LabelName="@nameof(Priority.Name)"
                         ValueName="@nameof(Priority.Id)">
@@ -163,7 +163,7 @@
             <FormItem Label="Task status">
                 <Select Mode="default"
                         EnableSearch
-                        DataSource="@TaskStatusList"
+                        DataSource="@TaskStatuses"
                         @bind-Value="@context.TaskStatusId"
                         LabelName="@nameof(CatalogTaskStatus.Name)"
                         ValueName="@nameof(CatalogTaskStatus.Id)">
@@ -171,7 +171,7 @@
             </FormItem>
             <FormItem Label="Related tasks">
                 <Select Mode="multiple"
-                        DataSource="@CatalogTaskList"
+                        DataSource="@Tasks"
                         EnableSearch
                         @bind-Values="@RelatedTaskIds"
                         LabelName="@nameof(CatalogTask.Name)"

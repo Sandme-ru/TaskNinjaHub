@@ -10,6 +10,8 @@ namespace TaskNinjaHub.WebClient.Components;
 
 public partial class PersonalProfile
 {
+    #region INJECTIONS
+
     [Inject]
     private IUserProviderService UserProviderService { get; set; } = null!;
 
@@ -25,6 +27,10 @@ public partial class PersonalProfile
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
+    #endregion
+
+    #region PROPERTY
+
     private bool IsLoading { get; set; }
 
     private readonly Dictionary<LocalizationType, string> _localizationTypes = new()
@@ -34,6 +40,10 @@ public partial class PersonalProfile
     };
 
     private AuthorDto Author { get; set; } = new();
+
+    #endregion
+
+    #region METHODS
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -85,4 +95,6 @@ public partial class PersonalProfile
         IsLoading = false;
         StateHasChanged();
     }
+
+    #endregion
 }

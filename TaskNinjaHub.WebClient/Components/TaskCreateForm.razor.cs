@@ -10,6 +10,7 @@ using TaskNinjaHub.Application.Entities.RelatedTasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Dto;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
+using TaskNinjaHub.Application.Entities.TaskStatuses.Enum;
 using TaskNinjaHub.Application.Utilities.OperationResults;
 using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
@@ -22,7 +23,7 @@ public partial class TaskCreateForm
     #region INJECTIONS
 
     [Inject]
-    private IMessageService Message { get; set; } = null!;
+    private IMessageService MessageService { get; set; } = null!;
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
@@ -65,33 +66,35 @@ public partial class TaskCreateForm
 
     private File File { get; set; } = null!;
 
-    private CatalogTask CreatedCatalogTask { get; set; } = new();
+    private CatalogTask CreatedTask { get; set; } = new();
 
-    private List<Author> AuthorsList { get; set; } = [];
+    private List<Author> Authors { get; set; } = [];
 
-    private List<Priority> PriorityList { get; set; } = [];
+    private List<Priority> Priorities { get; set; } = [];
 
-    private List<InformationSystem> InformationSystemList { get; set; } = [];
+    private List<InformationSystem> InformationSystems { get; set; } = [];
 
-    private List<CatalogTaskStatus> TaskStatusList { get; set; } = [];
+    private List<CatalogTaskStatus> TaskStatuses { get; set; } = [];
 
     private CatalogTaskStatus? DefaultStatus { get; set; } = new();
 
-    public bool IsLoading { get; set; }
+    private bool IsLoading { get; set; }
 
-    public IEnumerable<CatalogTask> CatalogTaskList { get; set; } = [];
+    private IEnumerable<CatalogTask> CatalogTaskList { get; set; } = [];
 
-    public IEnumerable<int> RelatedTaskId { get; set; } = null!;
+    private IEnumerable<int> RelatedTaskId { get; set; } = [];
 
-    public string PredictProbabilityMessage { get; set; } = null!;
+    private string PredictProbabilityMessage { get; set; } = string.Empty;
 
-    public string PredictProbabilityMessageStyle { get; set; } = string.Empty;
+    private string PredictProbabilityMessageStyle { get; set; } = string.Empty;
 
     private Author SelectedExecutor { get; set; } = null!;
 
     private List<IBrowserFile> _selectedFiles = [];
 
     #endregion
+
+    #region METHODS
 
     protected override void OnInitialized()
     {
@@ -105,13 +108,13 @@ public partial class TaskCreateForm
             IsLoading = true;
             StateHasChanged();
 
-            AuthorsList = (await AuthorService.GetAllAsync()).ToList();
-            PriorityList = (await PriorityService.GetAllAsync()).ToList();
-            InformationSystemList = (await InformationSystemService.GetAllAsync()).ToList();
-            TaskStatusList = (await TaskStatusService.GetAllAsync()).ToList();
+            Authors = (await AuthorService.GetAllAsync()).ToList();
+            Priorities = (await PriorityService.GetAllAsync()).ToList();
+            InformationSystems = (await InformationSystemService.GetAllAsync()).ToList();
+            TaskStatuses = (await TaskStatusService.GetAllAsync()).ToList();
             CatalogTaskList = (await CatalogTaskService.GetAllAsync()).Where(task => task.OriginalTaskId == null).ToList();
 
-            DefaultStatus = TaskStatusList.FirstOrDefault(t => t.Id == 1);
+            DefaultStatus = TaskStatuses.FirstOrDefault(t => t.Id == (int)EnumTaskStatus.AwaitingExecution);
 
             IsLoading = false;
             StateHasChanged();
@@ -123,23 +126,24 @@ public partial class TaskCreateForm
         IsLoading = true;
         StateHasChanged();
 
-        CreatedCatalogTask.TaskAuthorId =
-            (await AuthorService.GetAllByFilterAsync(new Author { AuthGuid = CurrentUser.AuthGuid }))
+        var taskAuthor = await AuthorService.GetAllByFilterAsync(new Author { Id = CurrentUser.Id });
+        CreatedTask.TaskAuthorId =
+            taskAuthor
             .FirstOrDefault()
             ?.Id;
 
-        CreatedCatalogTask.TaskStatusId = DefaultStatus?.Id;
-        CreatedCatalogTask.UserCreated = CurrentUser.Name;
-        CreatedCatalogTask.DateCreated = DateTime.UtcNow;
+        CreatedTask.TaskStatusId = DefaultStatus?.Id;
+        CreatedTask.UserCreated = CurrentUser.Name;
+        CreatedTask.DateCreated = DateTime.UtcNow;
 
-        var result = await CatalogTaskService.CreateAsync(CreatedCatalogTask);
+        var result = await CatalogTaskService.CreateAsync(CreatedTask);
 
         if (result.Success)
         {
             foreach (var file in _selectedFiles)
                 await UploadFile(file, result.Body);
 
-            await Message.Success("The task was successfully added.");
+            await MessageService.Success("The task was successfully added.");
 
             await AddRelatedTasks(result);
 
@@ -150,7 +154,7 @@ public partial class TaskCreateForm
         }
         else
         {
-            await Message.Error(result.ErrorMessage);
+            await MessageService.Error(result.ErrorMessage);
 
             IsLoading = false;
             StateHasChanged();
@@ -179,12 +183,12 @@ public partial class TaskCreateForm
 
     private void OnFinish()
     {
-        Console.WriteLine($"Success:{JsonSerializer.Serialize(CreatedCatalogTask)}");
+        Console.WriteLine($"Success:{JsonSerializer.Serialize(CreatedTask)}");
     }
 
     private void OnFinishFailed()
     {
-        Console.WriteLine($"Failed:{JsonSerializer.Serialize(CreatedCatalogTask)}");
+        Console.WriteLine($"Failed:{JsonSerializer.Serialize(CreatedTask)}");
     }
 
     // TODO: ПОДУМАТЬ НАД РЕМУВОМ
@@ -222,17 +226,17 @@ public partial class TaskCreateForm
                 if (!result.Success)
                 {
                     await MinioService.UploadFileByName(fileName);
-                    await Message.Error($"Error adding a file {file.Name}");
+                    await MessageService.Error($"Error adding a file {file.Name}");
                 }
             }
             else
-                await Message.Error("File upload error");
+                await MessageService.Error("File upload error");
         }
     }
 
     private async Task SelectedExecutorHandler(Author author)
     {
-        if(CreatedCatalogTask is { InformationSystemId: not null, PriorityId: not null })
+        if(CreatedTask is { InformationSystemId: not null, PriorityId: not null })
         {
             IsLoading = true;
             StateHasChanged();
@@ -242,8 +246,8 @@ public partial class TaskCreateForm
             var taskInputDto = new TaskInputDto
             {
                 TaskExecutorId = author.Id,
-                InformationSystemId = Convert.ToDouble(CreatedCatalogTask.InformationSystemId),
-                PriorityId = Convert.ToDouble(CreatedCatalogTask.PriorityId)
+                InformationSystemId = Convert.ToDouble(CreatedTask.InformationSystemId),
+                PriorityId = Convert.ToDouble(CreatedTask.PriorityId)
             };
 
             await PredictProbability(SelectedExecutor, taskInputDto);
@@ -253,10 +257,10 @@ public partial class TaskCreateForm
         }
         else
         {
-            CreatedCatalogTask.TaskExecutorId = null;
+            CreatedTask.TaskExecutorId = null;
             StateHasChanged();
 
-            await Message.Warning("Fill in all the fields");
+            await MessageService.Warning("Fill in all the fields");
         }
     }
 
@@ -275,20 +279,20 @@ public partial class TaskCreateForm
             PredictProbabilityMessage = $"There is a {result.Body * 100}% chance that the performer {author.ShortName} is suitable for this task";
         }
         else
-            await Message.Error(result?.ErrorMessage);
+            await MessageService.Error(result?.ErrorMessage);
     }
 
     private async Task SelectedPriorityHandler(Priority priority)
     {
-        if (CreatedCatalogTask is { InformationSystemId: not null, TaskExecutorId: not null })
+        if (CreatedTask is { InformationSystemId: not null, TaskExecutorId: not null })
         {
             IsLoading = true;
             StateHasChanged();
 
             var taskInputDto = new TaskInputDto
             {
-                TaskExecutorId = Convert.ToDouble(CreatedCatalogTask.TaskExecutorId),
-                InformationSystemId = Convert.ToDouble(CreatedCatalogTask.InformationSystemId),
+                TaskExecutorId = Convert.ToDouble(CreatedTask.TaskExecutorId),
+                InformationSystemId = Convert.ToDouble(CreatedTask.InformationSystemId),
                 PriorityId = Convert.ToDouble(priority.Id)
             };
 
@@ -301,16 +305,16 @@ public partial class TaskCreateForm
 
     private async Task SelectedInformationSystemHandler(InformationSystem informationSystem)
     {
-        if (CreatedCatalogTask is { PriorityId: not null, TaskExecutorId: not null })
+        if (CreatedTask is { PriorityId: not null, TaskExecutorId: not null })
         {
             IsLoading = true;
             StateHasChanged();
 
             var taskInputDto = new TaskInputDto
             {
-                TaskExecutorId = Convert.ToDouble(CreatedCatalogTask.TaskExecutorId),
+                TaskExecutorId = Convert.ToDouble(CreatedTask.TaskExecutorId),
                 InformationSystemId = Convert.ToDouble(informationSystem.Id),
-                PriorityId = Convert.ToDouble(CreatedCatalogTask.PriorityId)
+                PriorityId = Convert.ToDouble(CreatedTask.PriorityId)
             };
 
             await PredictProbability(SelectedExecutor, taskInputDto);
@@ -319,4 +323,6 @@ public partial class TaskCreateForm
             StateHasChanged();
         }
     }
+
+    #endregion
 }
