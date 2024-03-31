@@ -2,7 +2,7 @@
 
 <PageTitle>Create Page</PageTitle>
 
-<br />
+<Divider />
 
 <Loading Spinning="IsLoading">
     <div class="createForm">
@@ -44,8 +44,8 @@
                         DataSource="@InformationSystemList"
                         EnableSearch
                         @bind-Value="@context.InformationSystemId"
-                        LabelName="@nameof(Priority.Name)"
-                        ValueName="@nameof(Priority.Id)">
+                        LabelName="@nameof(InformationSystem.Name)"
+                        ValueName="@nameof(InformationSystem.Id)">
                 </Select>
             </FormItem>
             <FormItem Label="Related tasks">
@@ -53,8 +53,8 @@
                         DataSource="@CatalogTaskList"
                         EnableSearch
                         @bind-Values="@RelatedTaskId"
-                        LabelName="@nameof(Priority.Name)"
-                        ValueName="@nameof(Priority.Id)">
+                        LabelName="@nameof(CatalogTask.Name)"
+                        ValueName="@nameof(CatalogTask.Id)">
                 </Select>
             </FormItem>
             <FormItem Label="Task status">
