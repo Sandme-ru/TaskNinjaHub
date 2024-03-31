@@ -27,11 +27,13 @@ public class Program
 
         var authUrl = builder.Configuration.GetSection("HttpClientSettings:DebugAuthUrl").Value;
         var apiUrl = builder.Configuration.GetSection("HttpClientSettings:DebugApiUrl").Value;
+        var machineLearningUrl = builder.Configuration.GetSection("HttpClientSettings:MachineLearningUrl").Value;
 
         #elif (RELEASE)
         
         var authUrl = builder.Configuration.GetSection("HttpClientSettings:ReleaseAuthUrl").Value;
         var apiUrl = builder.Configuration.GetSection("HttpClientSettings:ReleaseApiUrl").Value;
+        var machineLearningUrl = builder.Configuration.GetSection("HttpClientSettings:MachineLearningUrl").Value;
 
         #endif
 
@@ -54,6 +56,11 @@ public class Program
         builder.Services.AddHttpClient("Minio", client =>
         {
             client.BaseAddress = new Uri(minioUrl!);
+        });
+
+        builder.Services.AddHttpClient("MachineLearningApi", client =>
+        {
+            client.BaseAddress = new Uri(machineLearningUrl!);
         });
 
         builder.Services.AddWebClientServiceCollection();

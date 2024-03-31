@@ -217,7 +217,16 @@
     <img style="width: 100%" src="@FilePreviewUrl" alt="" />
 </Modal>
 
-@code {
+<Divider />
 
+<Loading Spinning="IsLoadingTaskList">
+    <div style="text-align: center;">
+        <Button Type="@ButtonType.Primary" Icon="@IconType.Outline.Search" @onclick="TrainModel">Train model</Button>
+    </div>
+</Loading>
+
+<Divider />
+
+@code {
     private RenderFragment _icon = @<Icon Type="exclamation-circle" Theme="outline"></Icon>;
 }
