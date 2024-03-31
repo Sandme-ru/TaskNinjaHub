@@ -25,16 +25,25 @@
                 <Select Mode="default"
                         DataSource="@AuthorsList"
                         EnableSearch
+                        TItemValue="int?"
+                        TItem="Author"
+                        OnSelectedItemChanged="SelectedExecutorHandler"
                         @bind-Value="@context.TaskExecutorId"
                         LabelName="@nameof(Author.FullName)"
                         ValueName="@nameof(Author.Id)">
                 </Select>
             </FormItem>
+            <FormItem Label="Probability">
+                <Text Type="@PredictProbabilityMessageStyle">@PredictProbabilityMessage</Text>
+            </FormItem>
             <FormItem Label="Priority">
                 <Select Mode="default"
                         DataSource="@PriorityList"
                         EnableSearch
+                        TItemValue="int?"
+                        TItem="Priority"
                         @bind-Value="@context.PriorityId"
+                        OnSelectedItemChanged="SelectedPriorityHandler"
                         LabelName="@nameof(Priority.Name)"
                         ValueName="@nameof(Priority.Id)">
                 </Select>
@@ -43,6 +52,9 @@
                 <Select Mode="default"
                         DataSource="@InformationSystemList"
                         EnableSearch
+                        TItemValue="int?"
+                        TItem="InformationSystem"
+                        OnSelectedItemChanged="SelectedInformationSystemHandler"
                         @bind-Value="@context.InformationSystemId"
                         LabelName="@nameof(InformationSystem.Name)"
                         ValueName="@nameof(InformationSystem.Id)">
