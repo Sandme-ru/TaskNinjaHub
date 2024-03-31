@@ -31,5 +31,5 @@ public class Author: BaseUserCU, IHaveId, IHaveName
     public int? CountPerformedTasks { get; set; }
 
     [NotMapped] 
-    public string? FullName => $"{ShortName} [{CountPerformedTasks}]";
+    public string? FullName => ShortName == null ? null : $"{ShortName} [{CountPerformedTasks}]";
 }

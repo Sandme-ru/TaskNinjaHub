@@ -126,8 +126,9 @@ public partial class TaskCreateForm
         IsLoading = true;
         StateHasChanged();
 
+        var taskAuthor = await AuthorService.GetAllByFilterAsync(new Author { Id = CurrentUser.Id });
         CreatedTask.TaskAuthorId =
-            (await AuthorService.GetAllByFilterAsync(new Author { AuthGuid = CurrentUser.AuthGuid }))
+            taskAuthor
             .FirstOrDefault()
             ?.Id;
 
