@@ -12,6 +12,8 @@ namespace TaskNinjaHub.WebClient.Components;
 
 public partial class Calendar
 {
+    #region INJECTIONS
+
     [Inject] 
     private IUserProviderService UserProviderService { get; set; } = null!;
 
@@ -20,6 +22,10 @@ public partial class Calendar
 
     [Inject]
     private AuthorService AuthorService { get; set; } = null!;
+
+    #endregion
+
+    #region PROPERTY
 
     private List<CatalogTask> Tasks { get; set; } = null!;
 
@@ -34,6 +40,10 @@ public partial class Calendar
     private const int DaysPeerWeek = 7;
 
     private const int MonthPeerYear = 12;
+
+    #endregion
+
+    #region METHODS
 
     private void GenerateCalendar(int year, int month)
     {
@@ -176,11 +186,13 @@ public partial class Calendar
         {
             var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(taskId.ToString()));
             var sb = new StringBuilder();
+
             for (var i = 0; i < hash.Length; i++)
-            {
                 sb.Append(hash[i].ToString("X2"));
-            }
+
             return "#" + sb.ToString().Substring(0, 6);
         }
     }
+
+    #endregion
 }

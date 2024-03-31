@@ -6,7 +6,7 @@
 
 <Loading Spinning="IsLoading">
     <div class="createForm">
-        <Form Model="@CreatedCatalogTask"
+        <Form Model="@CreatedTask"
               OnFinish="OnFinish"
               OnFinishFailed="OnFinishFailed"
               LabelColSpan="3"
@@ -23,7 +23,7 @@
             </FormItem>
             <FormItem Label="Task executor">
                 <Select Mode="default"
-                        DataSource="@AuthorsList"
+                        DataSource="@Authors"
                         EnableSearch
                         TItemValue="int?"
                         TItem="Author"
@@ -38,7 +38,7 @@
             </FormItem>
             <FormItem Label="Priority">
                 <Select Mode="default"
-                        DataSource="@PriorityList"
+                        DataSource="@Priorities"
                         EnableSearch
                         TItemValue="int?"
                         TItem="Priority"
@@ -50,7 +50,7 @@
             </FormItem>
             <FormItem Label="Information system">
                 <Select Mode="default"
-                        DataSource="@InformationSystemList"
+                        DataSource="@InformationSystems"
                         EnableSearch
                         TItemValue="int?"
                         TItem="InformationSystem"

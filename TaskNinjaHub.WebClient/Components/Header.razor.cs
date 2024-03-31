@@ -5,15 +5,25 @@ namespace TaskNinjaHub.WebClient.Components;
 
 public partial class Header
 {
+    #region INJECTIONS
+
     [Inject] 
     private IUserProviderService UserProviderService { get; set; } = null!;
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
+    #endregion
+
+    #region PROPERTY
+
     private string UserName { get; set; } = null!;
 
     private bool IsLoading { get; set; }
+
+    #endregion
+
+    #region METHODS
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -38,4 +48,6 @@ public partial class Header
     {
         NavigationManager.NavigateTo("/", true);
     }
+
+    #endregion
 }

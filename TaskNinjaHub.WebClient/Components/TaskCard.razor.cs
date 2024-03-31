@@ -10,8 +10,12 @@ namespace TaskNinjaHub.WebClient.Components;
 
 public partial class TaskCard
 {
+    #region PARAMETERS
+
     [Parameter]
     public int Id { get; set; }
+
+    #endregion
 
     #region INJECTIONS
 
@@ -31,9 +35,9 @@ public partial class TaskCard
 
     #region PROPERTY
 
-    public CatalogTask SelectedCatalogTask { get; set; } = null!;
+    private CatalogTask SelectedCatalogTask { get; set; } = null!;
 
-    public List<CatalogTask> CatalogTasks { get; set; } = null!;
+    private List<CatalogTask> CatalogTasks { get; set; } = null!;
 
     private List<string> HtmlMarkupForTask { get; set; } = null!;
 
@@ -47,7 +51,7 @@ public partial class TaskCard
 
     private bool IsLoading { get; set; }
 
-    public bool ShowRelatedTasks { get; set; } = true;
+    private bool ShowRelatedTasks { get; set; } = true;
 
     private bool PreviewVisible { get; set; } = false;
 
@@ -56,6 +60,8 @@ public partial class TaskCard
     private string ImgUrl { get; set; } = string.Empty;
 
     #endregion
+
+    #region METHODS
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -208,4 +214,6 @@ public partial class TaskCard
     {
         ShowRelatedTasks = !ShowRelatedTasks;
     }
+
+    #endregion
 }
