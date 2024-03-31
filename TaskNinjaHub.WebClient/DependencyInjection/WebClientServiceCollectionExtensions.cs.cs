@@ -16,6 +16,7 @@ public static class WebClientServiceCollectionExtensions
         services.AddScoped<RelatedTaskService>();
         services.AddScoped<MinioService>();
         services.AddScoped<MachineLearningService>();
+        services.AddScoped<TaskTypeService>();
 
         return services;
     }

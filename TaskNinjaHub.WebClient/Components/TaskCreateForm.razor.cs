@@ -11,6 +11,7 @@ using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Dto;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Enum;
+using TaskNinjaHub.Application.Entities.TaskTypes.Domain;
 using TaskNinjaHub.Application.Utilities.OperationResults;
 using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
@@ -58,6 +59,9 @@ public partial class TaskCreateForm
     [Inject]
     private MachineLearningService MachineLearningService { get; set; } = null!;
 
+    [Inject]
+    private TaskTypeService TaskTypeService { get; set; } = null!;
+
     #endregion
 
     #region PROPERTY
@@ -90,6 +94,8 @@ public partial class TaskCreateForm
 
     private Author SelectedExecutor { get; set; } = null!;
 
+    public IEnumerable<CatalogTaskType> CatalogTaskTypes { get; set; } = [];
+
     private List<IBrowserFile> _selectedFiles = [];
 
     #endregion
@@ -112,6 +118,7 @@ public partial class TaskCreateForm
             Priorities = (await PriorityService.GetAllAsync()).ToList();
             InformationSystems = (await InformationSystemService.GetAllAsync()).ToList();
             TaskStatuses = (await TaskStatusService.GetAllAsync()).ToList();
+            CatalogTaskTypes = await TaskTypeService.GetAllAsync();
             CatalogTaskList = (await CatalogTaskService.GetAllAsync()).Where(task => task.OriginalTaskId == null).ToList();
 
             DefaultStatus = TaskStatuses.FirstOrDefault(t => t.Id == (int)EnumTaskStatus.AwaitingExecution);

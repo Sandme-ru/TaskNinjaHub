@@ -3,6 +3,7 @@ using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
+using TaskNinjaHub.Application.Entities.TaskTypes.Domain;
 using TaskNinjaHub.Application.Interfaces.Haves;
 using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 
@@ -45,4 +46,8 @@ public class CatalogTask : BaseUserCU, IHaveId, IHaveName
     public DateTime? DateStart { get; set; }
 
     public DateTime? DateEnd { get; set; }
+
+    public int? TaskTypeId { get; set; }
+
+    public virtual CatalogTaskType? TaskType { get; set; }
 }

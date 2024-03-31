@@ -89,6 +89,29 @@
                                 <Popover Title="@context.TaskAuthor?.Name">
                                     <Avatar Size="small">U</Avatar>
                                 </Popover>
+                                <Popover Title="@context.TaskType?.Name">
+                                    @switch (context.TaskTypeId)
+                                    {
+                                        case (int)EnumTaskType.Bug:
+                                            <Icon Type="bug" Theme="outline" />
+                                            break;
+                                        case (int)EnumTaskType.Feature:
+                                            <Icon Type="file-add" Theme="outline" />
+                                            break;
+                                        case (int)EnumTaskType.Epic:
+                                            <Icon Type="crown" Theme="outline"/>
+                                            break;
+                                        case (int)EnumTaskType.Testing:
+                                            <Icon Type="trophy" Theme="outline" />
+                                            break;
+                                        case (int)EnumTaskType.Task:
+                                            <Icon Type="container" Theme="outline" />
+                                            break;
+                                        case (int)EnumTaskType.Requirement:
+                                            <Icon Type="file-done" Theme="outline" />
+                                            break;
+                                    }
+                                </Popover>
                                 <PriorityIcon PriorityName="@context.Priority?.Name"></PriorityIcon>
                                 <TaskStatusIcon TaskStatusName="@context.TaskStatus?.Name"></TaskStatusIcon>
                                 @if (context.Files is not null and { Count: > 0 })
@@ -156,6 +179,15 @@
                         EnableSearch
                         DataSource="@InformationSystems"
                         @bind-Value="@context.InformationSystemId"
+                        LabelName="@nameof(Priority.Name)"
+                        ValueName="@nameof(Priority.Id)">
+                </Select>
+            </FormItem>
+            <FormItem Label="Task type">
+                <Select Mode="default"
+                        EnableSearch
+                        DataSource="@TaskTypes"
+                        @bind-Value="@context.TaskTypeId"
                         LabelName="@nameof(Priority.Name)"
                         ValueName="@nameof(Priority.Id)">
                 </Select>

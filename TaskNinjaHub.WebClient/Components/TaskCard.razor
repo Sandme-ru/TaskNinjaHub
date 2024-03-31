@@ -1,4 +1,5 @@
 ﻿@page "/task-read/{Id:int}"
+@using TaskNinjaHub.Application.Entities.TaskTypes.Enum
 
 <PageTitle>Task card</PageTitle>
 
@@ -43,7 +44,32 @@
         <table class="task-table">
             <tr>
                 <td><strong>Name:</strong></td>
-                <td>@SelectedCatalogTask.Name</td>
+                <td>
+                    <Popover Title="@SelectedCatalogTask.TaskType?.Name">
+                        @switch (SelectedCatalogTask.TaskTypeId)
+                        {
+                            case (int)EnumTaskType.Bug:
+                                <Icon Type="bug" Theme="outline"/>
+                                break;
+                            case (int)EnumTaskType.Feature:
+                                <Icon Type="file-add" Theme="outline"/>
+                                break;
+                            case (int)EnumTaskType.Epic:
+                                <Icon Type="crown" Theme="outline"/>
+                                break;
+                            case (int)EnumTaskType.Testing:
+                                <Icon Type="trophy" Theme="outline"/>
+                                break;
+                            case (int)EnumTaskType.Task:
+                                <Icon Type="container" Theme="outline"/>
+                                break;
+                            case (int)EnumTaskType.Requirement:
+                                <Icon Type="file-done" Theme="outline"/>
+                                break;
+                        }
+                    </Popover>
+                    <span>@SelectedCatalogTask.Name</span>
+                </td>
             </tr>
             <tr>
                 <td><strong>Description:</strong></td>
