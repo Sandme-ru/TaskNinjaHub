@@ -1,4 +1,5 @@
 @page "/create-task"
+@using TaskNinjaHub.Application.Entities.TaskTypes.Domain
 
 <PageTitle>Create Page</PageTitle>
 
@@ -58,6 +59,17 @@
                         @bind-Value="@context.InformationSystemId"
                         LabelName="@nameof(InformationSystem.Name)"
                         ValueName="@nameof(InformationSystem.Id)">
+                </Select>
+            </FormItem>
+            <FormItem Label="Task type">
+                <Select Mode="default"
+                        DataSource="@CatalogTaskTypes"
+                        EnableSearch
+                        TItemValue="int?"
+                        TItem="CatalogTaskType"
+                        @bind-Value="@context.TaskTypeId"
+                        LabelName="@nameof(CatalogTaskType.Name)"
+                        ValueName="@nameof(CatalogTaskType.Id)">
                 </Select>
             </FormItem>
             <FormItem Label="Related tasks">

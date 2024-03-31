@@ -6,6 +6,7 @@ using TaskNinjaHub.Application.Entities.Priorities.Domain;
 using TaskNinjaHub.Application.Entities.RelatedTasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
+using TaskNinjaHub.Application.Entities.TaskTypes.Domain;
 using TaskNinjaHub.Application.Interfaces;
 using TaskNinjaHub.Persistence.DataSeeders;
 using TaskNinjaHub.Persistence.EntityTypeConfigurations;
@@ -22,6 +23,7 @@ public class TaskNinjaHubDbContext(DbContextOptions<TaskNinjaHubDbContext> optio
         modelBuilder = DataSeederInformationSystem.SeedData(modelBuilder);
         modelBuilder = DataSeederPriority.SeedData(modelBuilder);
         modelBuilder = DataSeederTaskStatus.SeedData(modelBuilder);
+        modelBuilder = DataSeederTaskType.SeedData(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
     }
@@ -29,8 +31,7 @@ public class TaskNinjaHubDbContext(DbContextOptions<TaskNinjaHubDbContext> optio
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseLazyLoadingProxies();
-        optionsBuilder
-            .ConfigureWarnings(x => x.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
+        optionsBuilder.ConfigureWarnings(x => x.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
     }
 
     #region ENTITIES
@@ -48,6 +49,8 @@ public class TaskNinjaHubDbContext(DbContextOptions<TaskNinjaHubDbContext> optio
     public DbSet<RelatedTask> RelatedTasks { get; set; } = null!;
 
     public DbSet<File> Files { get; set; } = null!;
+
+    public DbSet<CatalogTaskType> TaskTypes { get; set; } = null!;
 
     #endregion
 

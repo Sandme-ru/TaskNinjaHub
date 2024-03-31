@@ -8,6 +8,7 @@ using TaskNinjaHub.Application.Entities.Priorities.Domain;
 using TaskNinjaHub.Application.Entities.RelatedTasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
+using TaskNinjaHub.Application.Entities.TaskTypes.Domain;
 using TaskNinjaHub.Application.Filters;
 using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
@@ -57,6 +58,9 @@ public partial class TaskList
 
     [Inject]
     private MachineLearningService MachineLearningService { get; set; } = null!;
+
+    [Inject]
+    private TaskTypeService TaskTypeService { get; set; } = null!;
 
     #endregion
 
@@ -145,6 +149,8 @@ public partial class TaskList
 
     private string ImgUrl { get; set; } = string.Empty;
 
+    public IEnumerable<CatalogTaskType> TaskTypes { get; set; } = [];
+
     #endregion
 
     #region METHODS
@@ -162,6 +168,7 @@ public partial class TaskList
             Priorities = await PriorityService.GetAllAsync();
             InformationSystems = await InformationSystemService.GetAllAsync();
             TaskStatuses = await TaskStatusService.GetAllAsync();
+            TaskTypes = await TaskTypeService.GetAllAsync();
             CatalogTasks = (await CatalogTaskService.GetAllByPageAsync(new FilterModel { PageNumber = CurrentPage, PageSize = PageSize })).ToList();
             Tasks = (await CatalogTaskService.GetAllAsync()).Where(task => task.OriginalTaskId == null).ToList();
 
@@ -245,6 +252,7 @@ public partial class TaskList
             InformationSystemId = catalogTask?.InformationSystemId,
             PriorityId = catalogTask?.PriorityId,
             TaskStatusId = catalogTask?.TaskStatusId,
+            TaskTypeId = catalogTask?.TaskTypeId,
             Files = catalogTask?.Files
         };
 
@@ -273,6 +281,7 @@ public partial class TaskList
             EditedTask.InformationSystemId = CloneTask?.InformationSystemId;
             EditedTask.PriorityId = CloneTask?.PriorityId;
             EditedTask.TaskStatusId = CloneTask?.TaskStatusId;
+            EditedTask.TaskTypeId = CloneTask?.TaskTypeId;
         }
 
         DefaultFileList = [];
@@ -332,6 +341,7 @@ public partial class TaskList
                     InformationSystemId = CloneTask?.InformationSystemId,
                     PriorityId = CloneTask?.PriorityId,
                     TaskStatusId = CloneTask?.TaskStatusId,
+                    TaskTypeId = CloneTask?.TaskTypeId,
                     OriginalTaskId = EditedTask.Id,
                     DateCreated = EditedTask.DateUpdated,
                     UserCreated = EditedTask.UserUpdated,
@@ -373,6 +383,7 @@ public partial class TaskList
                && EditedTask?.InformationSystemId == CloneTask?.InformationSystemId
                && EditedTask?.PriorityId == CloneTask?.PriorityId
                && EditedTask?.TaskStatusId == CloneTask?.TaskStatusId
+               && EditedTask?.TaskTypeId == CloneTask?.TaskTypeId
                && Equals(EditedTask?.Files?.ToArray(), DefaultFileList?.ToArray());
     }
 
@@ -411,6 +422,8 @@ public partial class TaskList
             EditedTask.Priority = Priorities.FirstOrDefault(a => a.Id == EditedTask.PriorityId);
         if (TaskStatuses != null)
             EditedTask.TaskStatus = TaskStatuses.FirstOrDefault(a => a.Id == EditedTask.TaskStatusId);
+        if (TaskStatuses != null)
+            EditedTask.TaskType = TaskTypes.FirstOrDefault(a => a.Id == EditedTask.TaskTypeId);
     }
 
     private void DeleteTask(CatalogTask task)

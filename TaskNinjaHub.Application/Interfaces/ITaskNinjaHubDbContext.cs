@@ -5,6 +5,8 @@ using TaskNinjaHub.Application.Entities.Priorities.Domain;
 using TaskNinjaHub.Application.Entities.RelatedTasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
+using TaskNinjaHub.Application.Entities.TaskTypes.Domain;
+using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 
 namespace TaskNinjaHub.Application.Interfaces;
 
@@ -21,4 +23,8 @@ public interface ITaskNinjaHubDbContext
     DbSet<CatalogTaskStatus> TaskStatuses { get; set; }
 
     DbSet<RelatedTask> RelatedTasks { get; set; }
+
+    DbSet<File> Files { get; set; }
+
+    DbSet<CatalogTaskType> TaskTypes { get; set; }
 }
