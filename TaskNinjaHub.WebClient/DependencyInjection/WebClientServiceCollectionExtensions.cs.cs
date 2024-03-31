@@ -15,6 +15,7 @@ public static class WebClientServiceCollectionExtensions
         services.AddScoped<AuthService>();
         services.AddScoped<RelatedTaskService>();
         services.AddScoped<MinioService>();
+        services.AddScoped<MachineLearningService>();
 
         return services;
     }

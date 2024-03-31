@@ -58,6 +58,9 @@ public partial class TaskList
     [Inject]
     private MinioService MinioService { get; set; } = null!;
 
+    [Inject]
+    private MachineLearningService MachineLearningService { get; set; } = null!;
+
     #endregion
 
     #region PROPERTY
@@ -524,5 +527,22 @@ public partial class TaskList
                 await FileService.DeleteAsync(Convert.ToInt32(exceptedPicture.Id));
             }
         }
+    }
+
+    private async Task TrainModel()
+    {
+        IsLoadingTaskList = true;
+        StateHasChanged();
+
+        await MessageService.Info("Training model started");
+        var result = await MachineLearningService.TrainTasksModel();
+
+        if (result!.Success)
+            await MessageService.Success("Training model finished");
+        else
+            await MessageService.Error(result.ErrorMessage);
+
+        IsLoadingTaskList = false;
+        StateHasChanged();
     }
 }
