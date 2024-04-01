@@ -7,4 +7,6 @@ public class TaskInputDto
     public double InformationSystemId { get; set; }
 
     public double TaskExecutorId { get; set; }
+
+    public double TaskTypeId { get; set; }
 }

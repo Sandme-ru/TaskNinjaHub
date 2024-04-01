@@ -254,7 +254,8 @@ public partial class TaskCreateForm
             {
                 TaskExecutorId = author.Id,
                 InformationSystemId = Convert.ToDouble(CreatedTask.InformationSystemId),
-                PriorityId = Convert.ToDouble(CreatedTask.PriorityId)
+                PriorityId = Convert.ToDouble(CreatedTask.PriorityId),
+                TaskTypeId = Convert.ToDouble(CreatedTask.TaskTypeId)
             };
 
             await PredictProbability(SelectedExecutor, taskInputDto);
@@ -291,7 +292,7 @@ public partial class TaskCreateForm
 
     private async Task SelectedPriorityHandler(Priority priority)
     {
-        if (CreatedTask is { InformationSystemId: not null, TaskExecutorId: not null })
+        if (CreatedTask is { InformationSystemId: not null, TaskExecutorId: not null, TaskTypeId: not null })
         {
             IsLoading = true;
             StateHasChanged();
@@ -300,7 +301,8 @@ public partial class TaskCreateForm
             {
                 TaskExecutorId = Convert.ToDouble(CreatedTask.TaskExecutorId),
                 InformationSystemId = Convert.ToDouble(CreatedTask.InformationSystemId),
-                PriorityId = Convert.ToDouble(priority.Id)
+                PriorityId = Convert.ToDouble(priority.Id),
+                TaskTypeId = Convert.ToDouble(CreatedTask.TaskTypeId)
             };
 
             await PredictProbability(SelectedExecutor, taskInputDto);
@@ -312,7 +314,7 @@ public partial class TaskCreateForm
 
     private async Task SelectedInformationSystemHandler(InformationSystem informationSystem)
     {
-        if (CreatedTask is { PriorityId: not null, TaskExecutorId: not null })
+        if (CreatedTask is { PriorityId: not null, TaskExecutorId: not null, TaskStatusId: not null})
         {
             IsLoading = true;
             StateHasChanged();
@@ -321,7 +323,8 @@ public partial class TaskCreateForm
             {
                 TaskExecutorId = Convert.ToDouble(CreatedTask.TaskExecutorId),
                 InformationSystemId = Convert.ToDouble(informationSystem.Id),
-                PriorityId = Convert.ToDouble(CreatedTask.PriorityId)
+                PriorityId = Convert.ToDouble(CreatedTask.PriorityId),
+                TaskTypeId = Convert.ToDouble(CreatedTask.TaskTypeId)
             };
 
             await PredictProbability(SelectedExecutor, taskInputDto);
@@ -332,4 +335,26 @@ public partial class TaskCreateForm
     }
 
     #endregion
+
+    private async Task SelectedTaskTypeHandler(CatalogTaskType taskType)
+    {
+        if (CreatedTask is { PriorityId: not null, TaskExecutorId: not null, InformationSystemId: not null })
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            var taskInputDto = new TaskInputDto
+            {
+                TaskExecutorId = Convert.ToDouble(CreatedTask.TaskExecutorId),
+                InformationSystemId = Convert.ToDouble(CreatedTask.InformationSystemId),
+                PriorityId = Convert.ToDouble(CreatedTask.PriorityId),
+                TaskTypeId = Convert.ToDouble(taskType.Id)
+            };
+
+            await PredictProbability(SelectedExecutor, taskInputDto);
+
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
 }
