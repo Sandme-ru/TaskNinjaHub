@@ -67,6 +67,7 @@
                         EnableSearch
                         TItemValue="int?"
                         TItem="CatalogTaskType"
+                        OnSelectedItemChanged="SelectedTaskTypeHandler"
                         @bind-Value="@context.TaskTypeId"
                         LabelName="@nameof(CatalogTaskType.Name)"
                         ValueName="@nameof(CatalogTaskType.Id)">
