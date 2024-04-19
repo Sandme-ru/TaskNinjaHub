@@ -3,7 +3,7 @@ using DiffMatchPatch;
 using Microsoft.AspNetCore.Components;
 using TaskNinjaHub.Application.Entities.RelatedTasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
-using TaskNinjaHub.WebClient.Services;
+using TaskNinjaHub.WebClient.Services.HttpClientServices;
 using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 
 namespace TaskNinjaHub.WebClient.Components;

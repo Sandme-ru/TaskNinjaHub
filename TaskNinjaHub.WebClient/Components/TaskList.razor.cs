@@ -10,8 +10,8 @@ using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.Application.Entities.TaskTypes.Domain;
 using TaskNinjaHub.Application.Filters;
-using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
+using TaskNinjaHub.WebClient.Services.HttpClientServices;
 using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 
 namespace TaskNinjaHub.WebClient.Components;

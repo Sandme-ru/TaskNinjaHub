@@ -1,4 +1,4 @@
-﻿namespace TaskNinjaHub.WebClient.Services;
+﻿namespace TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 public class MinioService(IHttpClientFactory httpClientFactory)
 {

@@ -2,7 +2,7 @@
 using TaskNinjaHub.Application.Entities.Tasks.Dto;
 using TaskNinjaHub.Application.Utilities.OperationResults;
 
-namespace TaskNinjaHub.WebClient.Services;
+namespace TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 public class MachineLearningService(IHttpClientFactory httpClientFactory, CatalogTaskService taskService)
 {

@@ -1,7 +1,7 @@
 ﻿using TaskNinjaHub.Application.Entities.Priorities.Domain;
 using TaskNinjaHub.WebClient.Services.Bases;
 
-namespace TaskNinjaHub.WebClient.Services;
+namespace TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 public class PriorityService(IHttpClientFactory httpClientFactory) : BaseService<Priority>(httpClientFactory)
 {

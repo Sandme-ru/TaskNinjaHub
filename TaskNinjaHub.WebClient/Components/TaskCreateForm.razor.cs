@@ -13,8 +13,8 @@ using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Enum;
 using TaskNinjaHub.Application.Entities.TaskTypes.Domain;
 using TaskNinjaHub.Application.Utilities.OperationResults;
-using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
+using TaskNinjaHub.WebClient.Services.HttpClientServices;
 using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 
 namespace TaskNinjaHub.WebClient.Components;
@@ -61,6 +61,9 @@ public partial class TaskCreateForm
 
     [Inject]
     private TaskTypeService TaskTypeService { get; set; } = null!;
+
+    [Inject]
+    private IMachineLearningModeOptionService MachineLearningModeOptionService { get; set; } = null!;
 
     #endregion
 
@@ -241,39 +244,29 @@ public partial class TaskCreateForm
         }
     }
 
-    private async Task SelectedExecutorHandler(Author author)
+    private async Task PredictProbability()
     {
-        if(CreatedTask is { InformationSystemId: not null, PriorityId: not null })
+        if (CreatedTask.TaskExecutorId == null ||
+            CreatedTask.InformationSystemId == null ||
+            CreatedTask.PriorityId == null ||
+            CreatedTask.TaskTypeId == null)
         {
-            IsLoading = true;
-            StateHasChanged();
-
-            SelectedExecutor = author;
-
-            var taskInputDto = new TaskInputDto
-            {
-                TaskExecutorId = author.Id,
-                InformationSystemId = Convert.ToDouble(CreatedTask.InformationSystemId),
-                PriorityId = Convert.ToDouble(CreatedTask.PriorityId),
-                TaskTypeId = Convert.ToDouble(CreatedTask.TaskTypeId)
-            };
-
-            await PredictProbability(SelectedExecutor, taskInputDto);
-
-            IsLoading = false;
-            StateHasChanged();
+            PredictProbabilityMessageStyle = "warning";
+            PredictProbabilityMessage = "Please fill in all fields before predicting probability.";
+            return;
         }
-        else
+
+        IsLoading = true;
+        StateHasChanged();
+
+        var taskInputDto = new TaskInputDto
         {
-            CreatedTask.TaskExecutorId = null;
-            StateHasChanged();
+            TaskExecutorId = Convert.ToDouble(CreatedTask.TaskExecutorId),
+            InformationSystemId = Convert.ToDouble(CreatedTask.InformationSystemId),
+            PriorityId = Convert.ToDouble(CreatedTask.PriorityId),
+            TaskTypeId = Convert.ToDouble(CreatedTask.TaskTypeId)
+        };
 
-            await MessageService.Warning("Fill in all the fields");
-        }
-    }
-
-    private async Task PredictProbability(Author author, TaskInputDto taskInputDto)
-    {
         var result = await MachineLearningService.PredictProbability(taskInputDto);
         if (result is { Success: true })
         {
@@ -284,77 +277,14 @@ public partial class TaskCreateForm
                 _ => "danger"
             };
 
-            PredictProbabilityMessage = $"There is a {result.Body * 100}% chance that the performer {author.ShortName} is suitable for this task";
+            PredictProbabilityMessage = $"There is a {result.Body * 100}% chance that the performer is suitable for this task";
         }
         else
             await MessageService.Error(result?.ErrorMessage);
-    }
 
-    private async Task SelectedPriorityHandler(Priority priority)
-    {
-        if (CreatedTask is { InformationSystemId: not null, TaskExecutorId: not null, TaskTypeId: not null })
-        {
-            IsLoading = true;
-            StateHasChanged();
-
-            var taskInputDto = new TaskInputDto
-            {
-                TaskExecutorId = Convert.ToDouble(CreatedTask.TaskExecutorId),
-                InformationSystemId = Convert.ToDouble(CreatedTask.InformationSystemId),
-                PriorityId = Convert.ToDouble(priority.Id),
-                TaskTypeId = Convert.ToDouble(CreatedTask.TaskTypeId)
-            };
-
-            await PredictProbability(SelectedExecutor, taskInputDto);
-
-            IsLoading = false;
-            StateHasChanged();
-        }
-    }
-
-    private async Task SelectedInformationSystemHandler(InformationSystem informationSystem)
-    {
-        if (CreatedTask is { PriorityId: not null, TaskExecutorId: not null, TaskStatusId: not null})
-        {
-            IsLoading = true;
-            StateHasChanged();
-
-            var taskInputDto = new TaskInputDto
-            {
-                TaskExecutorId = Convert.ToDouble(CreatedTask.TaskExecutorId),
-                InformationSystemId = Convert.ToDouble(informationSystem.Id),
-                PriorityId = Convert.ToDouble(CreatedTask.PriorityId),
-                TaskTypeId = Convert.ToDouble(CreatedTask.TaskTypeId)
-            };
-
-            await PredictProbability(SelectedExecutor, taskInputDto);
-
-            IsLoading = false;
-            StateHasChanged();
-        }
+        IsLoading = false;
+        StateHasChanged();
     }
 
     #endregion
-
-    private async Task SelectedTaskTypeHandler(CatalogTaskType taskType)
-    {
-        if (CreatedTask is { PriorityId: not null, TaskExecutorId: not null, InformationSystemId: not null })
-        {
-            IsLoading = true;
-            StateHasChanged();
-
-            var taskInputDto = new TaskInputDto
-            {
-                TaskExecutorId = Convert.ToDouble(CreatedTask.TaskExecutorId),
-                InformationSystemId = Convert.ToDouble(CreatedTask.InformationSystemId),
-                PriorityId = Convert.ToDouble(CreatedTask.PriorityId),
-                TaskTypeId = Convert.ToDouble(taskType.Id)
-            };
-
-            await PredictProbability(SelectedExecutor, taskInputDto);
-
-            IsLoading = false;
-            StateHasChanged();
-        }
-    }
 }

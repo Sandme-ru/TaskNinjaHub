@@ -2,7 +2,7 @@
 using TaskNinjaHub.Application.Entities.Authors.Dto;
 using TaskNinjaHub.WebClient.Data;
 
-namespace TaskNinjaHub.WebClient.Services;
+namespace TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 public class AuthService(IHttpClientFactory httpClientFactory)
 {

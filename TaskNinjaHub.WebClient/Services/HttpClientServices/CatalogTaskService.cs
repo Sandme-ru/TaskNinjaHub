@@ -3,7 +3,7 @@ using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Utilities.OperationResults;
 using TaskNinjaHub.WebClient.Services.Bases;
 
-namespace TaskNinjaHub.WebClient.Services;
+namespace TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 public class CatalogTaskService(IHttpClientFactory httpClientFactory) : BaseService<CatalogTask>(httpClientFactory)
 {

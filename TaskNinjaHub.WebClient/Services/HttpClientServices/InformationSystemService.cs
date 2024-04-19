@@ -1,7 +1,7 @@
 ﻿using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.WebClient.Services.Bases;
 
-namespace TaskNinjaHub.WebClient.Services;
+namespace TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 public class InformationSystemService(IHttpClientFactory httpClientFactory) : BaseService<InformationSystem>(httpClientFactory)
 {

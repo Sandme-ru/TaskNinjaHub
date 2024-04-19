@@ -1,7 +1,7 @@
 ﻿using TaskNinjaHub.Application.Entities.RelatedTasks.Domain;
 using TaskNinjaHub.WebClient.Services.Bases;
 
-namespace TaskNinjaHub.WebClient.Services;
+namespace TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 public class RelatedTaskService(IHttpClientFactory httpClientFactory) : BaseService<RelatedTask>(httpClientFactory)
 {

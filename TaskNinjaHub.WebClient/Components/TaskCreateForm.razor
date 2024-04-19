@@ -1,5 +1,4 @@
-@page "/create-task"
-@using TaskNinjaHub.Application.Entities.TaskTypes.Domain
+﻿@page "/create-task"
 
 <PageTitle>Create Page</PageTitle>
 
@@ -28,15 +27,22 @@
                         EnableSearch
                         TItemValue="int?"
                         TItem="Author"
-                        OnSelectedItemChanged="SelectedExecutorHandler"
                         @bind-Value="@context.TaskExecutorId"
                         LabelName="@nameof(Author.FullName)"
                         ValueName="@nameof(Author.Id)">
                 </Select>
             </FormItem>
-            <FormItem Label="Probability">
-                <Text Type="@PredictProbabilityMessageStyle">@PredictProbabilityMessage</Text>
-            </FormItem>
+            @if(MachineLearningModeOptionService.IsEnabled)
+            {
+                <FormItem Label="Predict">
+                    <Button Block Type="@ButtonType.Default" OnClick="PredictProbability">
+                        ↻
+                    </Button>
+                </FormItem>
+                <FormItem Label="Probability">
+                    <Text Type="@PredictProbabilityMessageStyle">@PredictProbabilityMessage</Text>
+                </FormItem>
+            }
             <FormItem Label="Priority">
                 <Select Mode="default"
                         DataSource="@Priorities"
@@ -44,7 +50,6 @@
                         TItemValue="int?"
                         TItem="Priority"
                         @bind-Value="@context.PriorityId"
-                        OnSelectedItemChanged="SelectedPriorityHandler"
                         LabelName="@nameof(Priority.Name)"
                         ValueName="@nameof(Priority.Id)">
                 </Select>
@@ -55,7 +60,6 @@
                         EnableSearch
                         TItemValue="int?"
                         TItem="InformationSystem"
-                        OnSelectedItemChanged="SelectedInformationSystemHandler"
                         @bind-Value="@context.InformationSystemId"
                         LabelName="@nameof(InformationSystem.Name)"
                         ValueName="@nameof(InformationSystem.Id)">
@@ -67,7 +71,6 @@
                         EnableSearch
                         TItemValue="int?"
                         TItem="CatalogTaskType"
-                        OnSelectedItemChanged="SelectedTaskTypeHandler"
                         @bind-Value="@context.TaskTypeId"
                         LabelName="@nameof(CatalogTaskType.Name)"
                         ValueName="@nameof(CatalogTaskType.Id)">
