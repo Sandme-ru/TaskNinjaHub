@@ -1,7 +1,7 @@
 ﻿using TaskNinjaHub.WebClient.Services.Bases;
 using File = TaskNinjaHub.Application.Entities.Files.Domain.File;
 
-namespace TaskNinjaHub.WebClient.Services;
+namespace TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 public class FileService(IHttpClientFactory httpClientFactory) : BaseService<File>(httpClientFactory)
 {

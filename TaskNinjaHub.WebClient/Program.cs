@@ -10,8 +10,6 @@ using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using TaskNinjaHub.WebClient.Data;
 using TaskNinjaHub.WebClient.DependencyInjection;
-using TaskNinjaHub.WebClient.Services;
-using TaskNinjaHub.WebClient.Services.Bases;
 
 namespace TaskNinjaHub.WebClient;
 
@@ -71,7 +69,6 @@ public class Program
         builder.Services.AddTransient<OidcEvents>();
 
         builder.Services.AddSingleton<IUserTokenStore, ServerSideTokenStore>();
-        builder.Services.AddScoped<IUserProviderService, UserProviderService>();
 
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 

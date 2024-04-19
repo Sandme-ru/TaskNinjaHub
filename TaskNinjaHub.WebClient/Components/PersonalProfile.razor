@@ -30,5 +30,21 @@
 
             <button type="submit" class="profile-button">@Localizer["Save"]</button>
         </form>
+        
+        <div class="profile-settings">
+            <h3>@Localizer["Settings"]</h3>
+            @if (MachineLearningModeOptionService.IsEnabled)
+            {
+                <button style="background-color:red" type="button" class="profile-button" @onclick="ToggleMachineLearningMode">
+                    <span>@Localizer["DisableMachineLearning"]</span>
+                </button>
+            }
+            else
+            {
+                <button style="background-color:forestgreen" type="button" class="profile-button" @onclick="ToggleMachineLearningMode">
+                    <span >@Localizer["EnableMachineLearning"]</span>
+                </button>
+            }
+        </div>
     </Loading>
 </div>

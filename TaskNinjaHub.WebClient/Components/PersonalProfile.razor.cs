@@ -4,7 +4,7 @@ using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.Authors.Dto;
 using TaskNinjaHub.Application.Entities.Authors.Enums;
 using TaskNinjaHub.WebClient.Services.Bases;
-using TaskNinjaHub.WebClient.Services;
+using TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 namespace TaskNinjaHub.WebClient.Components;
 
@@ -26,6 +26,9 @@ public partial class PersonalProfile
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
+    private IMachineLearningModeOptionService MachineLearningModeOptionService { get; set; } = null!;
 
     #endregion
 
@@ -93,6 +96,12 @@ public partial class PersonalProfile
         }
 
         IsLoading = false;
+        StateHasChanged();
+    }
+    
+    private void ToggleMachineLearningMode()
+    {
+        MachineLearningModeOptionService.IsEnabled = !MachineLearningModeOptionService.IsEnabled;
         StateHasChanged();
     }
 

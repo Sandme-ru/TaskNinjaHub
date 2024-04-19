@@ -5,8 +5,8 @@ using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.CalendarDay.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Enum;
-using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
+using TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 namespace TaskNinjaHub.WebClient.Components;
 

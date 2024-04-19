@@ -1,7 +1,7 @@
 ﻿using TaskNinjaHub.Application.Entities.TaskTypes.Domain;
 using TaskNinjaHub.WebClient.Services.Bases;
 
-namespace TaskNinjaHub.WebClient.Services;
+namespace TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 public class TaskTypeService(IHttpClientFactory httpClientFactory) : BaseService<CatalogTaskType>(httpClientFactory)
 {

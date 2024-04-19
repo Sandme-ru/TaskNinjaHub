@@ -2,8 +2,9 @@
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.Authors.Enums;
 using TaskNinjaHub.WebClient.Services.Bases;
+using TaskNinjaHub.WebClient.Services.HttpClientServices;
 
-namespace TaskNinjaHub.WebClient.Services;
+namespace TaskNinjaHub.WebClient.Services.UserProviders;
 
 public class UserProviderService(AuthenticationStateProvider stateProvider, AuthorService authorService) : IUserProviderService
 {

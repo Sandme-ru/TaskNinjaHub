@@ -1,7 +1,7 @@
 ﻿using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.WebClient.Services.Bases;
 
-namespace TaskNinjaHub.WebClient.Services;
+namespace TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 public class TaskStatusService(IHttpClientFactory httpClientFactory) : BaseService<CatalogTaskStatus>(httpClientFactory)
 {

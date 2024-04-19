@@ -1,7 +1,7 @@
 ﻿using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.WebClient.Services.Bases;
 
-namespace TaskNinjaHub.WebClient.Services;
+namespace TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 public class AuthorService(IHttpClientFactory httpClientFactory) : BaseService<Author>(httpClientFactory)
 {

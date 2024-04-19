@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using TaskNinjaHub.WebClient.Services;
 using TaskNinjaHub.WebClient.Services.Bases;
+using TaskNinjaHub.WebClient.Services.HttpClientServices;
 
 namespace TaskNinjaHub.WebClient;
 
