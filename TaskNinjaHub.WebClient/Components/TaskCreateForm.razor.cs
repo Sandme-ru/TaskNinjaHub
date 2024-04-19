@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.IdentityModel.Tokens;
-using System.Text.Json;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
@@ -83,7 +82,7 @@ public partial class TaskCreateForm
 
     private List<CatalogTaskStatus> TaskStatuses { get; set; } = [];
 
-    private CatalogTaskStatus? DefaultStatus { get; set; } = new();
+    private CatalogTaskStatus DefaultStatus { get; set; } = new();
 
     private bool IsLoading { get; set; }
 
@@ -95,11 +94,11 @@ public partial class TaskCreateForm
 
     private string PredictProbabilityMessageStyle { get; set; } = string.Empty;
 
-    private Author SelectedExecutor { get; set; } = null!;
-
     public IEnumerable<CatalogTaskType> CatalogTaskTypes { get; set; } = [];
 
     private List<IBrowserFile> _selectedFiles = [];
+
+    private EditContext EditContext { get; set; } = null!;
 
     #endregion
 
@@ -108,6 +107,7 @@ public partial class TaskCreateForm
     protected override void OnInitialized()
     {
         CurrentUser = UserProviderService.User;
+        EditContext = new EditContext(CreatedTask);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -124,8 +124,9 @@ public partial class TaskCreateForm
             CatalogTaskTypes = await TaskTypeService.GetAllAsync();
             CatalogTaskList = (await CatalogTaskService.GetAllAsync()).Where(task => task.OriginalTaskId == null).ToList();
 
-            DefaultStatus = TaskStatuses.FirstOrDefault(t => t.Id == (int)EnumTaskStatus.AwaitingExecution);
-
+            DefaultStatus = TaskStatuses.Single(t => t.Id == (int)EnumTaskStatus.AwaitingExecution);
+            CreatedTask.TaskStatusId = DefaultStatus.Id;
+            
             IsLoading = false;
             StateHasChanged();
         }
@@ -133,16 +134,17 @@ public partial class TaskCreateForm
 
     private async Task CreateTask()
     {
+        var isValid = EditContext.Validate();
+
+        if (!isValid)
+            return;
+
         IsLoading = true;
         StateHasChanged();
-
+        
         var taskAuthor = await AuthorService.GetAllByFilterAsync(new Author { Id = CurrentUser.Id });
-        CreatedTask.TaskAuthorId =
-            taskAuthor
-            .FirstOrDefault()
-            ?.Id;
-
-        CreatedTask.TaskStatusId = DefaultStatus?.Id;
+        
+        CreatedTask.TaskAuthorId = taskAuthor.FirstOrDefault()!.Id;
         CreatedTask.UserCreated = CurrentUser.Name;
         CreatedTask.DateCreated = DateTime.UtcNow;
 
@@ -191,18 +193,6 @@ public partial class TaskCreateForm
         }
     }
 
-    private void OnFinish()
-    {
-        Console.WriteLine($"Success:{JsonSerializer.Serialize(CreatedTask)}");
-    }
-
-    private void OnFinishFailed()
-    {
-        Console.WriteLine($"Failed:{JsonSerializer.Serialize(CreatedTask)}");
-    }
-
-    // TODO: ПОДУМАТЬ НАД РЕМУВОМ
-
     private void HandleFileSelected(InputFileChangeEventArgs e)
     {
         _selectedFiles.Clear();
@@ -246,10 +236,10 @@ public partial class TaskCreateForm
 
     private async Task PredictProbability()
     {
-        if (CreatedTask.TaskExecutorId == null ||
-            CreatedTask.InformationSystemId == null ||
-            CreatedTask.PriorityId == null ||
-            CreatedTask.TaskTypeId == null)
+        if (CreatedTask.TaskExecutorId == 0 ||
+            CreatedTask.InformationSystemId == 0 ||
+            CreatedTask.PriorityId == 0 ||
+            CreatedTask.TaskTypeId == 0)
         {
             PredictProbabilityMessageStyle = "warning";
             PredictProbabilityMessage = "Please fill in all fields before predicting probability.";

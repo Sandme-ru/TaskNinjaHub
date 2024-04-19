@@ -78,9 +78,9 @@ public partial class TaskList
         set => UserProviderService.User.Name = value;
     }
 
-    private CatalogTask? EditedTask { get; set; }
+    private CatalogTask EditedTask { get; set; }
 
-    private CatalogTask? CloneTask { get; set; }
+    private CatalogTask CloneTask { get; set; }
 
     private CatalogTask? CatalogTaskForChangelog { get; set; }
 
@@ -113,11 +113,11 @@ public partial class TaskList
 
     private Func<ModalClosingEventArgs, Task> _onOk;
 
-    private InformationSystem? SelectedInformationSystem { get; set; }
+    private InformationSystem SelectedInformationSystem { get; set; }
 
-    private Author? SelectedAuthor { get; set; }
+    private Author SelectedAuthor { get; set; }
 
-    private Author? SelectedExecutor { get; set; }
+    private Author SelectedExecutor { get; set; }
 
     private File File { get; set; } = null!;
 
@@ -243,18 +243,19 @@ public partial class TaskList
             DefaultFileList = [];
         }
 
-        CloneTask = new CatalogTask
-        {
-            Name = catalogTask?.Name,
-            Description = catalogTask?.Description,
-            TaskAuthorId = catalogTask?.TaskAuthorId,
-            TaskExecutorId = catalogTask?.TaskExecutorId,
-            InformationSystemId = catalogTask?.InformationSystemId,
-            PriorityId = catalogTask?.PriorityId,
-            TaskStatusId = catalogTask?.TaskStatusId,
-            TaskTypeId = catalogTask?.TaskTypeId,
-            Files = catalogTask?.Files
-        };
+        if (catalogTask != null)
+            CloneTask = new CatalogTask
+            {
+                Name = catalogTask.Name,
+                Description = catalogTask.Description,
+                TaskAuthorId = catalogTask.TaskAuthorId,
+                TaskExecutorId = catalogTask.TaskExecutorId,
+                InformationSystemId = catalogTask.InformationSystemId,
+                PriorityId = catalogTask.PriorityId,
+                TaskStatusId = catalogTask.TaskStatusId,
+                TaskTypeId = catalogTask.TaskTypeId,
+                Files = catalogTask.Files
+            };
 
         _visibleModal = true;
 
@@ -274,14 +275,14 @@ public partial class TaskList
     {
         if (EditedTask != null)
         {
-            EditedTask.Name = CloneTask?.Name ?? string.Empty;
-            EditedTask.Description = CloneTask?.Description;
-            EditedTask.TaskAuthorId = CloneTask?.TaskAuthorId;
-            EditedTask.TaskExecutorId = CloneTask?.TaskExecutorId;
-            EditedTask.InformationSystemId = CloneTask?.InformationSystemId;
-            EditedTask.PriorityId = CloneTask?.PriorityId;
-            EditedTask.TaskStatusId = CloneTask?.TaskStatusId;
-            EditedTask.TaskTypeId = CloneTask?.TaskTypeId;
+            EditedTask.Name = CloneTask.Name;
+            EditedTask.Description = CloneTask.Description;
+            EditedTask.TaskAuthorId = CloneTask.TaskAuthorId;
+            EditedTask.TaskExecutorId = CloneTask.TaskExecutorId;
+            EditedTask.InformationSystemId = CloneTask.InformationSystemId;
+            EditedTask.PriorityId = CloneTask.PriorityId;
+            EditedTask.TaskStatusId = CloneTask.TaskStatusId;
+            EditedTask.TaskTypeId = CloneTask.TaskTypeId;
         }
 
         DefaultFileList = [];
@@ -334,14 +335,14 @@ public partial class TaskList
 
                 CatalogTaskForChangelog = new CatalogTask
                 {
-                    Name = CloneTask?.Name,
-                    Description = CloneTask?.Description,
-                    TaskAuthorId = CloneTask?.TaskAuthorId,
-                    TaskExecutorId = CloneTask?.TaskExecutorId,
-                    InformationSystemId = CloneTask?.InformationSystemId,
-                    PriorityId = CloneTask?.PriorityId,
-                    TaskStatusId = CloneTask?.TaskStatusId,
-                    TaskTypeId = CloneTask?.TaskTypeId,
+                    Name = CloneTask.Name,
+                    Description = CloneTask.Description,
+                    TaskAuthorId = CloneTask.TaskAuthorId,
+                    TaskExecutorId = CloneTask.TaskExecutorId,
+                    InformationSystemId = CloneTask.InformationSystemId,
+                    PriorityId = CloneTask.PriorityId,
+                    TaskStatusId = CloneTask.TaskStatusId,
+                    TaskTypeId = CloneTask.TaskTypeId,
                     OriginalTaskId = EditedTask.Id,
                     DateCreated = EditedTask.DateUpdated,
                     UserCreated = EditedTask.UserUpdated,
@@ -351,7 +352,7 @@ public partial class TaskList
                 var createRet = await CatalogTaskService.CreateChangelogTaskAsync(CatalogTaskForChangelog, true);
                 if (createRet.Success)
                 {
-                    Console.WriteLine($"{EditedTask?.Id} {EditedTask?.Name} is updated.");
+                    Console.WriteLine($"{EditedTask.Id} {EditedTask.Name} is updated.");
                     if (CatalogTaskForChangelog.Files is { Count: > 0 })
                     {
                         var createdTask = createRet.Body;
@@ -448,9 +449,9 @@ public partial class TaskList
         Filter = new CatalogTask
         {
             Id = SelectedTaskId ?? 0,
-            InformationSystemId = SelectedInformationSystem?.Id,
-            TaskAuthorId = SelectedAuthor?.Id,
-            TaskExecutorId = SelectedExecutor?.Id
+            InformationSystemId = SelectedInformationSystem.Id,
+            TaskAuthorId = SelectedAuthor.Id,
+            TaskExecutorId = SelectedExecutor.Id
         };
 
         var result = (await CatalogTaskService.GetAllByFilterByPageAsync(Filter, CurrentPage, PageSize)).ToList();

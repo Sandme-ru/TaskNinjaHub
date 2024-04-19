@@ -1,4 +1,6 @@
-﻿using TaskNinjaHub.Application.BaseUsers;
+﻿using System.ComponentModel.DataAnnotations;
+using TaskNinjaHub.Application.Attributes.ValidationAttributes;
+using TaskNinjaHub.Application.BaseUsers;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
 using TaskNinjaHub.Application.Entities.Priorities.Domain;
@@ -13,27 +15,33 @@ public class CatalogTask : BaseUserCU, IHaveId, IHaveName
 {
     public int Id { get; set; }
 
-    public string? Name { get; set; }
+    [Required(ErrorMessage = "Name is required field")]
+    public string Name { get; set; }
 
     public string? Description { get; set; }
 
-    public int? TaskAuthorId { get; set; }
+    [Required(ErrorMessage = "Task author is required field")]
+    public int TaskAuthorId { get; set; }
 
     public virtual Author? TaskAuthor { get; set; }
 
-    public int? TaskExecutorId { get; set; }
+    [NotZero(ErrorMessage = "Task executor is required field")]
+    public int TaskExecutorId { get; set; }
 
     public virtual Author? TaskExecutor { get; set; }
 
-    public int? InformationSystemId { get; set; }
+    [NotZero(ErrorMessage = "Information system is required field")]
+    public int InformationSystemId { get; set; }
 
     public virtual InformationSystem? InformationSystem { get; set; }
 
-    public int? PriorityId { get; set; }
+    [NotZero(ErrorMessage = "Priority is required field")]
+    public int PriorityId { get; set; }
 
     public virtual Priority? Priority { get; set; }
 
-    public int? TaskStatusId { get; set; }
+    [NotZero(ErrorMessage = "Task status is required field")]
+    public int TaskStatusId { get; set; }
 
     public virtual CatalogTaskStatus? TaskStatus { get; set; }
 
@@ -47,7 +55,8 @@ public class CatalogTask : BaseUserCU, IHaveId, IHaveName
 
     public DateTime? DateEnd { get; set; }
 
-    public int? TaskTypeId { get; set; }
+    [NotZero(ErrorMessage = "Task type is required field")]
+    public int TaskTypeId { get; set; }
 
     public virtual CatalogTaskType? TaskType { get; set; }
 }
