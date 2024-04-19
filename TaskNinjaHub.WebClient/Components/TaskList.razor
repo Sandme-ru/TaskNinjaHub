@@ -112,8 +112,8 @@
                                             break;
                                     }
                                 </Popover>
-                                <PriorityIcon PriorityName="@context.Priority?.Name"></PriorityIcon>
-                                <TaskStatusIcon TaskStatusName="@context.TaskStatus?.Name"></TaskStatusIcon>
+                                <PriorityIcon PriorityName="@context.Priority.Name"></PriorityIcon>
+                                <TaskStatusIcon TaskStatusName="@context.TaskStatus.Name"></TaskStatusIcon>
                                 @if (context.Files is not null and { Count: > 0 })
                                 {
                                     <Popover Title="Files">

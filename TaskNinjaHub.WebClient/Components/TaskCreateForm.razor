@@ -5,97 +5,114 @@
 <Divider />
 
 <Loading Spinning="IsLoading">
-    <div class="createForm">
-        <Form Model="@CreatedTask"
-              OnFinish="OnFinish"
-              OnFinishFailed="OnFinishFailed"
-              LabelColSpan="3"
-              WrapperColSpan="21"
-              Size="AntSizeLDSType.Small">
-            <FormItem Label="Name">
-                <Input @bind-Value="@context.Name" />
-            </FormItem>
-            <FormItem Label="Description">
-                <TextArea @bind-Value="@context.Description"></TextArea>
-            </FormItem>
-            <FormItem Label="Task author">
-                <Input @bind-Value="@CurrentUser.Name" Disabled />
-            </FormItem>
-            <FormItem Label="Task executor">
-                <Select Mode="default"
-                        DataSource="@Authors"
-                        EnableSearch
-                        TItemValue="int?"
-                        TItem="Author"
-                        @bind-Value="@context.TaskExecutorId"
-                        LabelName="@nameof(Author.FullName)"
-                        ValueName="@nameof(Author.Id)">
-                </Select>
-            </FormItem>
-            @if(MachineLearningModeOptionService.IsEnabled)
-            {
-                <FormItem Label="Predict">
-                    <Button Block Type="@ButtonType.Default" OnClick="PredictProbability">
-                        ↻
-                    </Button>
-                </FormItem>
-                <FormItem Label="Probability">
-                    <Text Type="@PredictProbabilityMessageStyle">@PredictProbabilityMessage</Text>
-                </FormItem>
-            }
-            <FormItem Label="Priority">
-                <Select Mode="default"
-                        DataSource="@Priorities"
-                        EnableSearch
-                        TItemValue="int?"
-                        TItem="Priority"
-                        @bind-Value="@context.PriorityId"
-                        LabelName="@nameof(Priority.Name)"
-                        ValueName="@nameof(Priority.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Information system">
-                <Select Mode="default"
-                        DataSource="@InformationSystems"
-                        EnableSearch
-                        TItemValue="int?"
-                        TItem="InformationSystem"
-                        @bind-Value="@context.InformationSystemId"
-                        LabelName="@nameof(InformationSystem.Name)"
-                        ValueName="@nameof(InformationSystem.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Task type">
-                <Select Mode="default"
-                        DataSource="@CatalogTaskTypes"
-                        EnableSearch
-                        TItemValue="int?"
-                        TItem="CatalogTaskType"
-                        @bind-Value="@context.TaskTypeId"
-                        LabelName="@nameof(CatalogTaskType.Name)"
-                        ValueName="@nameof(CatalogTaskType.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Related tasks">
-                <Select Mode="multiple"
-                        DataSource="@CatalogTaskList"
-                        EnableSearch
-                        @bind-Values="@RelatedTaskId"
-                        LabelName="@nameof(CatalogTask.Name)"
-                        ValueName="@nameof(CatalogTask.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Task status">
-                <Input @bind-Value="@DefaultStatus!.Name" Disabled />
-            </FormItem>
-            <FormItem Label="Files">
-                <InputFile multiple OnChange="HandleFileSelected" />
-            </FormItem>
-        </Form>
-        <div class="createTaskButton">
-            <Button Block Type="@ButtonType.Primary" HtmlType="submit" OnClick="CreateTask">
-                Create task
-            </Button>
+    <EditForm EditContext="@EditContext" OnSubmit="CreateTask" class="create-form">
+        <DataAnnotationsValidator/>
+
+        <div class="form-item">
+            <label for="name">Name <span class="required">*</span></label>
+            <Input id="name" @bind-Value="@CreatedTask.Name"/>
+            <ValidationMessage For="@(() => CreatedTask.Name)"/>
         </div>
-    </div>
+
+        <div class="form-item">
+            <label for="description">Description</label>
+            <TextArea id="description" @bind-Value="@CreatedTask.Description"></TextArea>
+        </div>
+
+        <div class="form-item">
+            <label for="taskExecutor">Task executor <span class="required">*</span></label>
+            <Select id="taskExecutor"
+                    Mode="default"
+                    DataSource="@Authors"
+                    EnableSearch
+                    TItemValue="int"
+                    TItem="Author"
+                    @bind-Value="@CreatedTask.TaskExecutorId"
+                    LabelName="@nameof(Author.FullName)"
+                    ValueName="@nameof(Author.Id)">
+            </Select>
+            <ValidationMessage For="@(() => CreatedTask.TaskExecutorId)"/>
+        </div>
+
+        @if (MachineLearningModeOptionService.IsEnabled)
+        {
+            <div class="form-item">
+                <Button Block Type="@ButtonType.Default" OnClick="PredictProbability">
+                    Predict
+                </Button>
+            </div>
+            <div class="form-item">
+                <Text Type="@PredictProbabilityMessageStyle">@PredictProbabilityMessage</Text>
+            </div>
+        }
+
+        <div class="form-item">
+            <label for="priority">Priority <span class="required">*</span></label>
+            <Select id="priority"
+                    Mode="default"
+                    DataSource="@Priorities"
+                    EnableSearch
+                    TItemValue="int"
+                    TItem="Priority"
+                    @bind-Value="@CreatedTask.PriorityId"
+                    LabelName="@nameof(Priority.Name)"
+                    ValueName="@nameof(Priority.Id)">
+            </Select>
+            <ValidationMessage For="@(() => CreatedTask.PriorityId)"/>
+        </div>
+
+        <div class="form-item">
+            <label for="informationSystem">Information system <span class="required">*</span></label>
+            <Select id="informationSystem"
+                    Mode="default"
+                    DataSource="@InformationSystems"
+                    EnableSearch
+                    TItemValue="int"
+                    TItem="InformationSystem"
+                    @bind-Value="@CreatedTask.InformationSystemId"
+                    LabelName="@nameof(InformationSystem.Name)"
+                    ValueName="@nameof(InformationSystem.Id)">
+            </Select>
+            <ValidationMessage For="@(() => CreatedTask.InformationSystemId)"/>
+        </div>
+
+        <div class="form-item">
+            <label for="taskType">Task type <span class="required">*</span></label>
+            <Select id="taskType"
+                    Mode="default"
+                    DataSource="@CatalogTaskTypes"
+                    EnableSearch
+                    TItemValue="int"
+                    TItem="CatalogTaskType"
+                    @bind-Value="@CreatedTask.TaskTypeId"
+                    LabelName="@nameof(CatalogTaskType.Name)"
+                    ValueName="@nameof(CatalogTaskType.Id)">
+            </Select>
+            <ValidationMessage For="@(() => CreatedTask.TaskTypeId)"/>
+        </div>
+
+        <div class="form-item">
+            <label for="relatedTasks">Related tasks</label>
+            <Select id="relatedTasks"
+                    Mode="multiple"
+                    DataSource="@CatalogTaskList"
+                    EnableSearch
+                    @bind-Values="@RelatedTaskId"
+                    LabelName="@nameof(CatalogTask.Name)"
+                    ValueName="@nameof(CatalogTask.Id)">
+            </Select>
+        </div>
+
+        <div class="form-item">
+            <label for="taskStatus">Task status <span class="required">*</span></label>
+            <Input id="taskStatus" @bind-Value="@DefaultStatus.Name" Disabled/>
+        </div>
+
+        <div class="form-item">
+            <label for="files">Files</label>
+            <InputFile id="files" multiple OnChange="HandleFileSelected"/>
+        </div>
+
+        <button type="submit">Создать задачу</button>
+    </EditForm>
 </Loading>

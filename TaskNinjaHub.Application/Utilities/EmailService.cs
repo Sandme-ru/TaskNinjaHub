@@ -13,7 +13,7 @@ public class EmailService : IEmailService
 
     private const string SmtpUsername = "zhurnal.kuratora@mail.ru";
 
-    private const string SmtpPassword = "wuxREz6iDKYuegwCQuEm";
+    private const string SmtpPassword = "DtfZFNDequ4)FdY";
 
     private readonly SmtpClient _smtpClient = new(SmtpServer, SmtpPort)
     {
