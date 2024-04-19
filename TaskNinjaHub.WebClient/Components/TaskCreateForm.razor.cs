@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.IdentityModel.Tokens;
-using OneOf.Types;
 using System.Text.Json;
 using TaskNinjaHub.Application.Entities.Authors.Domain;
 using TaskNinjaHub.Application.Entities.InformationSystems.Domain;
@@ -275,22 +274,20 @@ public partial class TaskCreateForm
 
     private async Task PredictProbability(Author author, TaskInputDto taskInputDto)
     {
-        PredictProbabilityMessage = $"There is a {1 * 100}% chance that the performer {author.ShortName} is suitable for this task";
+        var result = await MachineLearningService.PredictProbability(taskInputDto);
+        if (result is { Success: true })
+        {
+            PredictProbabilityMessageStyle = result.Body switch
+            {
+                > 0.75 => "success",
+                > 0.5 => "warning",
+                _ => "danger"
+            };
 
-        //var result = await MachineLearningService.PredictProbability(taskInputDto);
-        //if (result is { Success: true })
-        //{
-        //    PredictProbabilityMessageStyle = result.Body switch
-        //    {
-        //        > 0.75 => "success",
-        //        > 0.5 => "warning",
-        //        _ => "danger"
-        //    };
-
-        //    PredictProbabilityMessage = $"There is a {result.Body * 100}% chance that the performer {author.ShortName} is suitable for this task";
-        //}
-        //else
-        //    await MessageService.Error(result?.ErrorMessage);
+            PredictProbabilityMessage = $"There is a {result.Body * 100}% chance that the performer {author.ShortName} is suitable for this task";
+        }
+        else
+            await MessageService.Error(result?.ErrorMessage);
     }
 
     private async Task SelectedPriorityHandler(Priority priority)
