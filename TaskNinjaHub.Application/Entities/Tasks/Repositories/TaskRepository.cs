@@ -8,6 +8,7 @@ using TaskNinjaHub.Application.Entities.Tasks.Domain;
 using TaskNinjaHub.Application.Entities.Tasks.Interfaces;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Domain;
 using TaskNinjaHub.Application.Entities.TaskStatuses.Enum;
+using TaskNinjaHub.Application.Entities.TaskTypes.Domain;
 using TaskNinjaHub.Application.Interfaces;
 using TaskNinjaHub.Application.Utilities.OperationResults;
 
@@ -134,6 +135,7 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
             entity.Priority = await Context.Set<Priority>().FindAsync(entity.PriorityId);
             entity.InformationSystem = await Context.Set<InformationSystem>().FindAsync(entity.InformationSystemId);
             entity.TaskStatus = await Context.Set<CatalogTaskStatus>().FindAsync(entity.TaskStatusId);
+            entity.TaskType = await Context.Set<CatalogTaskType>().FindAsync(entity.TaskTypeId);
             
             await emailService.SendCreateEmailAsync(entity);
 
@@ -157,6 +159,7 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
             entity.Priority = await Context.Set<Priority>().FindAsync(entity.PriorityId);
             entity.InformationSystem = await Context.Set<InformationSystem>().FindAsync(entity.InformationSystemId);
             entity.TaskStatus = await Context.Set<CatalogTaskStatus>().FindAsync(entity.TaskStatusId);
+            entity.TaskType = await Context.Set<CatalogTaskType>().FindAsync(entity.TaskTypeId);
 
             if (!isUpdated)
                 await emailService.SendCreateEmailAsync(entity);
@@ -188,6 +191,7 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
 
             entity.TaskAuthor = await Context.Set<Author>().FindAsync(entity.TaskAuthorId);
             entity.TaskExecutor = await Context.Set<Author>().FindAsync(entity.TaskExecutorId);
+            entity.TaskType = await Context.Set<CatalogTaskType>().FindAsync(entity.TaskTypeId);
 
             await emailService.SendUpdateEmailAsync(entity);
 
