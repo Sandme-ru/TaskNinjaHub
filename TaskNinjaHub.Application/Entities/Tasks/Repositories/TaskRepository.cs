@@ -134,8 +134,8 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
             entity.Priority = await Context.Set<Priority>().FindAsync(entity.PriorityId);
             entity.InformationSystem = await Context.Set<InformationSystem>().FindAsync(entity.InformationSystemId);
             entity.TaskStatus = await Context.Set<CatalogTaskStatus>().FindAsync(entity.TaskStatusId);
-
-            await emailService.SendCreateEmailAsync(entity.TaskExecutor?.Name! , entity);
+            
+            await emailService.SendCreateEmailAsync(entity);
 
             return OperationResult<CatalogTask>.SuccessResult(entity);
         }
@@ -159,7 +159,7 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
             entity.TaskStatus = await Context.Set<CatalogTaskStatus>().FindAsync(entity.TaskStatusId);
 
             if (!isUpdated)
-                await emailService.SendCreateEmailAsync(entity.TaskExecutor?.Name! , entity);
+                await emailService.SendCreateEmailAsync(entity);
 
             return OperationResult<CatalogTask>.SuccessResult(entity);
         }
@@ -189,7 +189,7 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
             entity.TaskAuthor = await Context.Set<Author>().FindAsync(entity.TaskAuthorId);
             entity.TaskExecutor = await Context.Set<Author>().FindAsync(entity.TaskExecutorId);
 
-            await emailService.SendUpdateEmailAsync(entity.TaskExecutor?.Name! , entity);
+            await emailService.SendUpdateEmailAsync(entity);
 
             return OperationResult<CatalogTask>.SuccessResult(entity);
         }
