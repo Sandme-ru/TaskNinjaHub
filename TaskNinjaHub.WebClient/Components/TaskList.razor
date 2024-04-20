@@ -58,30 +58,30 @@
     <div class="task-list">
         <AntList Grid="_grid" DataSource="@CatalogTasks">
             <ListItem>
-                <Card Bordered Title="@($"{context.Id.ToString()}. {context.TaskAuthor?.Name}")" Id="MainCard">
+                <Card Bordered Title="@($"[{context.Id}] {context.Name}")" Id="MainCard">
                     <Extra>
                         <Popover Title="Read task">
                             <Icon class="maincardIcon" Type="up-circle" Theme="fill" @onclick="async (_) => await Open(context)" />
                         </Popover>
                         <Popover Title="Edit task">
-                            <Icon class="maincardIcon" Type="edit" Theme="fill" OnClick="async () => await EditTaskEnabled(context)" />
+                            <Icon class="maincardIcon" Type="edit" Theme="fill" @onclick="async () => await EditTaskEnabled(context)" />
                         </Popover>
                         <Popover Title="Delete task">
-                            <Icon class="maincardIcon" Type="delete" Theme="fill" OnClick="async () => DeleteTask(context)" />
+                            <Icon class="maincardIcon" Type="delete" Theme="fill" @onclick="async () => DeleteTask(context)" />
                         </Popover>
                     </Extra>
                     <Body>
                         <div>
                             <Descriptions Bordered>
-                                <Paragraph Copyable>
-                                    @if (context.Name!.Length > 20)
+                                <Paragraph>
+                                    @if (context.Description is { Length: > 20 })
                                     {
-                                        @context.Name.Substring(0, 20)
+                                        @context.Description[..20]
                                         <a style="cursor: default; color: black">...</a>
                                     }
                                     else
                                     {
-                                        @context.Name
+                                        @context.Description
                                     }
                                 </Paragraph>
                             </Descriptions>
@@ -112,8 +112,8 @@
                                             break;
                                     }
                                 </Popover>
-                                <PriorityIcon PriorityName="@context.Priority.Name"></PriorityIcon>
-                                <TaskStatusIcon TaskStatusName="@context.TaskStatus.Name"></TaskStatusIcon>
+                                <PriorityIcon PriorityName="@context.Priority?.Name"/>
+                                <TaskStatusIcon TaskStatusName="@context.TaskStatus?.Name"/>
                                 @if (context.Files is not null and { Count: > 0 })
                                 {
                                     <Popover Title="Files">
@@ -179,8 +179,8 @@
                         EnableSearch
                         DataSource="@InformationSystems"
                         @bind-Value="@context.InformationSystemId"
-                        LabelName="@nameof(Priority.Name)"
-                        ValueName="@nameof(Priority.Id)">
+                        LabelName="@nameof(InformationSystem.Name)"
+                        ValueName="@nameof(InformationSystem.Id)">
                 </Select>
             </FormItem>
             <FormItem Label="Task type">
@@ -188,8 +188,8 @@
                         EnableSearch
                         DataSource="@TaskTypes"
                         @bind-Value="@context.TaskTypeId"
-                        LabelName="@nameof(Priority.Name)"
-                        ValueName="@nameof(Priority.Id)">
+                        LabelName="@nameof(CatalogTaskType.Name)"
+                        ValueName="@nameof(CatalogTaskType.Id)">
                 </Select>
             </FormItem>
             <FormItem Label="Task status">
