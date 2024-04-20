@@ -113,11 +113,11 @@ public partial class TaskList
 
     private Func<ModalClosingEventArgs, Task> _onOk;
 
-    private InformationSystem SelectedInformationSystem { get; set; }
+    private InformationSystem SelectedInformationSystem { get; set; } = new();
 
-    private Author SelectedAuthor { get; set; }
+    private Author SelectedAuthor { get; set; } = new();
 
-    private Author SelectedExecutor { get; set; }
+    private Author SelectedExecutor { get; set; } = new();
 
     private File File { get; set; } = null!;
 
@@ -446,12 +446,25 @@ public partial class TaskList
         IsLoadingTaskList = true;
         StateHasChanged();
 
+        var selectedInformationSystem = 0;
+        var selectedAuthor = 0;
+        var selectedExecutor = 0;
+
+        if(SelectedInformationSystem != null)
+            selectedInformationSystem = SelectedInformationSystem.Id;
+
+        if (SelectedAuthor != null)
+            selectedAuthor = SelectedAuthor.Id;
+
+        if (SelectedExecutor != null)
+            selectedExecutor = SelectedExecutor.Id;
+
         Filter = new CatalogTask
         {
             Id = SelectedTaskId ?? 0,
-            InformationSystemId = SelectedInformationSystem.Id,
-            TaskAuthorId = SelectedAuthor.Id,
-            TaskExecutorId = SelectedExecutor.Id
+            InformationSystemId = selectedInformationSystem,
+            TaskAuthorId = selectedAuthor,
+            TaskExecutorId = selectedExecutor
         };
 
         var result = (await CatalogTaskService.GetAllByFilterByPageAsync(Filter, CurrentPage, PageSize)).ToList();
