@@ -1,0 +1,138 @@
+﻿@page "/edit-task/{Id:int}"
+
+<PageTitle>Edit Page</PageTitle>
+
+<Divider />
+
+@if (EditedTask != null)
+{
+    <EditForm EditContext="@EditContext" OnSubmit="@SaveEditedTask" class="create-form">
+        <DataAnnotationsValidator />
+
+            <Input Type="hidden" @bind-Value="@EditedTask.Id" />
+
+            <div class="form-item">
+                <label>Name</label>
+                <Input Type="text" @bind-Value="@EditedTask.Name" />
+                <ValidationMessage For="@(() => EditedTask.Name)" />
+            </div>
+
+            <div class="form-item">
+                <label>Description</label>
+                <TextArea @bind-Value="@EditedTask.Description"></TextArea>
+            </div>
+
+            <div class="form-item">
+                <label>Task author</label>
+                <Input @bind-Value="@CurrentUser" Disabled />
+            </div>
+
+            <div class="form-item">
+                <label>Task executor</label>
+                <Select Mode="default"
+                        DataSource="@Authors"
+                        EnableSearch
+                        @bind-Value="@EditedTask.TaskExecutorId"
+                        LabelName="@nameof(Author.FullName)"
+                        ValueName="@nameof(Author.Id)">
+                </Select>
+                <ValidationMessage For="@(() => EditedTask.TaskExecutorId)" />
+            </div>
+
+            <div class="form-item">
+                <label>Priority</label>
+                <Select Mode="default"
+                        DataSource="@Priorities"
+                        EnableSearch
+                        @bind-Value="@EditedTask.PriorityId"
+                        LabelName="@nameof(Priority.Name)"
+                        ValueName="@nameof(Priority.Id)">
+                </Select>
+                <ValidationMessage For="@(() => EditedTask.PriorityId)" />
+            </div>
+
+            <div class="form-item">
+                <label>Information system</label>
+                <Select Mode="default"
+                        DataSource="@InformationSystems"
+                        EnableSearch
+                        @bind-Value="@EditedTask.InformationSystemId"
+                        LabelName="@nameof(InformationSystem.Name)"
+                        ValueName="@nameof(InformationSystem.Id)">
+                </Select>
+                <ValidationMessage For="@(() => EditedTask.InformationSystemId)" />
+            </div>
+
+            <div class="form-item">
+                <label>Task type</label>
+                <Select Mode="default"
+                        DataSource="@TaskTypes"
+                        EnableSearch
+                        @bind-Value="@EditedTask.TaskTypeId"
+                        LabelName="@nameof(CatalogTaskType.Name)"
+                        ValueName="@nameof(CatalogTaskType.Id)">
+                </Select>
+                <ValidationMessage For="@(() => EditedTask.TaskTypeId)" />
+            </div>
+
+            <div class="form-item">
+                <label>Task status</label>
+                <Select Mode="default"
+                        DataSource="@TaskTypes"
+                        EnableSearch
+                        @bind-Value="@EditedTask.TaskStatusId"
+                        LabelName="@nameof(CatalogTaskStatus.Name)"
+                        ValueName="@nameof(CatalogTaskStatus.Id)">
+                </Select>
+                <ValidationMessage For="@(() => EditedTask.TaskStatusId)" />
+            </div>
+
+            <div class="form-item">
+                <label>Related tasks</label>
+                <Select Mode="multiple"
+                        DataSource="@Tasks"
+                        EnableSearch
+                        @bind-Values="@RelatedTaskIds"
+                        LabelName="@nameof(CatalogTask.Name)"
+                        ValueName="@nameof(CatalogTask.Id)">
+                </Select>
+                <ValidationMessage For="@(() => RelatedTaskIds)" />
+            </div>
+
+            <div class="form-item">
+                <label>Documents</label>
+                <Upload Action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                        Name="file"
+                        ShowButton="false"
+                        @bind-FileList="DefaultFileList"
+                        ListType="picture-card"
+                        OnPreview="(file)=> {
+                              if (file.IsPicture()){
+                                  PreviewVisible = true;
+                                  PreviewTitle = file.FileName;
+                                  ImgUrl = file.Url;
+                              }
+                              else
+                                  NavigationManager.NavigateTo(file.Url);
+                            }">
+                </Upload>
+                <Modal Visible="PreviewVisible"
+                       Title="@PreviewTitle"
+                       OnCancel="() => PreviewVisible = false"
+                       OnOk="() => NavigationManager.NavigateTo(ImgUrl)"
+                       OkText="@("Download")"
+                       CancelText="@("Cancel")">
+                    <img style="width: 100%" src="@ImgUrl" />
+                </Modal>
+            </div>
+
+            <div class="form-item">
+                <label>Upload</label>
+                <InputFile multiple OnChange="HandleFileSelected" />
+            </div>
+
+            <div>
+                <button type="submit">Save</button>
+            </div>
+    </EditForm>
+}

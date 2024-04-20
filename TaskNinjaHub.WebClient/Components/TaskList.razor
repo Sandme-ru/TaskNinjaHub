@@ -135,112 +135,7 @@
     </div>
 </Loading>
 
-@if (EditedTask != null)
-{
-    <Modal Title="EDIT TASK"
-           Visible="@_visibleModal"
-           OnOk="@SaveEditedTask"
-           OnCancel="@HandleCancel">
-        <Form Model="@EditedTask"
-              LabelColSpan="8"
-              WrapperColSpan="16">
-            <FormItem>
-                <Input Type="hidden" @bind-Value="@context.Id" />
-            </FormItem>
-            <FormItem Label="Name">
-                <Input Type="text" @bind-Value="@context.Name" />
-            </FormItem>
-            <FormItem Label="Description">
-                <TextArea @bind-Value="@context.Description"></TextArea>
-            </FormItem>
-            <FormItem Label="Task author">
-                <Input @bind-Value="@CurrentUser" Disabled />
-            </FormItem>
-            <FormItem Label="Task executor">
-                <Select Mode="default"
-                        EnableSearch
-                        DataSource="@Authors"
-                        @bind-Value="@context.TaskExecutorId"
-                        LabelName="@nameof(Author.Name)"
-                        ValueName="@nameof(Author.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Priority">
-                <Select Mode="default"
-                        EnableSearch
-                        DataSource="@Priorities"
-                        @bind-Value="@context.PriorityId"
-                        LabelName="@nameof(Priority.Name)"
-                        ValueName="@nameof(Priority.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Information system">
-                <Select Mode="default"
-                        EnableSearch
-                        DataSource="@InformationSystems"
-                        @bind-Value="@context.InformationSystemId"
-                        LabelName="@nameof(InformationSystem.Name)"
-                        ValueName="@nameof(InformationSystem.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Task type">
-                <Select Mode="default"
-                        EnableSearch
-                        DataSource="@TaskTypes"
-                        @bind-Value="@context.TaskTypeId"
-                        LabelName="@nameof(CatalogTaskType.Name)"
-                        ValueName="@nameof(CatalogTaskType.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Task status">
-                <Select Mode="default"
-                        EnableSearch
-                        DataSource="@TaskStatuses"
-                        @bind-Value="@context.TaskStatusId"
-                        LabelName="@nameof(CatalogTaskStatus.Name)"
-                        ValueName="@nameof(CatalogTaskStatus.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Related tasks">
-                <Select Mode="multiple"
-                        DataSource="@Tasks"
-                        EnableSearch
-                        @bind-Values="@RelatedTaskIds"
-                        LabelName="@nameof(CatalogTask.Name)"
-                        ValueName="@nameof(CatalogTask.Id)">
-                </Select>
-            </FormItem>
-            <FormItem Label="Documents">
-                <Upload Action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                        Name="file"
-                        ShowButton="false"
-                        @bind-FileList="DefaultFileList"
-                        ListType="picture-card"
-                        OnPreview="(file)=> { 
-                          if (file.IsPicture()){
-                              PreviewVisible = true;
-                              PreviewTitle = file.FileName;
-                              ImgUrl = file.Url;
-                          }
-                          else
-                              NavigationManager.NavigateTo(file.Url); 
-                        }">
-                </Upload>
-                <Modal Visible="PreviewVisible"
-                       Title="@PreviewTitle"
-                       OnCancel="() => PreviewVisible = false"
-                       OnOk="() => NavigationManager.NavigateTo(ImgUrl)"
-                       OkText="@("Download")"
-                       CancelText="@("Cancel")">
-                    <img style="width: 100%" src="@ImgUrl"/>
-                </Modal>
-            </FormItem>
-            <FormItem Label="Upload">
-                <InputFile multiple OnChange="HandleFileSelected" />
-            </FormItem>
-        </Form>
-    </Modal>
-}
+
 
 <Modal Footer="null"
        Visible="IsPreviewVisible"
@@ -260,5 +155,7 @@
 <Divider />
 
 @code {
+
     private RenderFragment _icon = @<Icon Type="exclamation-circle" Theme="outline"></Icon>;
+
 }
