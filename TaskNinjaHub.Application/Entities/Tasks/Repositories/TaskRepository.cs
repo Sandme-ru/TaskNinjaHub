@@ -134,7 +134,7 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
             entity.Priority = await Context.Set<Priority>().FindAsync(entity.PriorityId);
             entity.InformationSystem = await Context.Set<InformationSystem>().FindAsync(entity.InformationSystemId);
             entity.TaskStatus = await Context.Set<CatalogTaskStatus>().FindAsync(entity.TaskStatusId);
-
+            
             await emailService.SendCreateEmailAsync(entity);
 
             return OperationResult<CatalogTask>.SuccessResult(entity);
