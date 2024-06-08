@@ -97,7 +97,7 @@ public class Program
                 options.Authority = authUrl;
 
                 options.ClientId = "TaskNinjaHub";
-                options.ClientSecret = "901564A5-E7FE-42CB-B10D-61EF6A8F3655";
+                options.ClientSecret = "";
                 options.ResponseType = OpenIdConnectResponseType.Code;
                 options.RequireHttpsMetadata = true;
 
