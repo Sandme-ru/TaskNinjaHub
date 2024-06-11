@@ -136,8 +136,14 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
             entity.InformationSystem = await Context.Set<InformationSystem>().FindAsync(entity.InformationSystemId);
             entity.TaskStatus = await Context.Set<CatalogTaskStatus>().FindAsync(entity.TaskStatusId);
             entity.TaskType = await Context.Set<CatalogTaskType>().FindAsync(entity.TaskTypeId);
-            
-            await emailService.SendCreateEmailAsync(entity);
+            try
+            {
+                await emailService.SendCreateEmailAsync(entity);
+            }
+            catch
+            {
+
+            }
 
             return OperationResult<CatalogTask>.SuccessResult(entity);
         }
