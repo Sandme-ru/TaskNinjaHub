@@ -207,8 +207,8 @@ public class TaskRepository(ITaskNinjaHubDbContext context, IEmailService emailS
     {
         try
         {
-            var catalogTasks = Context.Set<CatalogTask>().Where(t => t.OriginalTaskId == task.Id);
-            catalogTasks.Append(task);
+            var catalogTasks = await Context.Set<CatalogTask>().Where(t => t.OriginalTaskId == task.Id).ToListAsync();
+            catalogTasks.Add(task);
 
             Context.Set<CatalogTask>().RemoveRange(catalogTasks);
             await Context.SaveChangesAsync();

@@ -66,9 +66,9 @@
                         <Popover Title="Edit task">
                             <Icon class="maincardIcon" Type="edit" Theme="fill" @onclick="async () => await EditTaskEnabled(context)" />
                         </Popover>
-                        <Popover Title="Delete task">
+                        <Popconfirm Title="Are you sure delete this task?" OnConfirm="@(async () => DeleteTaskHandler())">
                             <Icon class="maincardIcon" Type="delete" Theme="fill" @onclick="async () => DeleteTask(context)" />
-                        </Popover>
+                        </Popconfirm>
                     </Extra>
                     <Body>
                         <div>
