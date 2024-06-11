@@ -152,8 +152,8 @@ public partial class TaskCreateForm
 
         if (result.Success)
         {
-            foreach (var file in _selectedFiles)
-                await UploadFile(file, result.Body);
+            //foreach (var file in _selectedFiles)
+            //    await UploadFile(file, result.Body);
 
             await MessageService.Success("The task was successfully added.");
 
@@ -221,13 +221,13 @@ public partial class TaskCreateForm
                     DateCreated = DateTime.UtcNow.AddHours(3),
                 };
 
-                var result = await FileService.CreateAsync(File);
+                //var result = await FileService.CreateAsync(File);
 
-                if (!result.Success)
-                {
-                    await MinioService.UploadFileByName(fileName);
-                    await MessageService.Error($"Error adding a file {file.Name}");
-                }
+                //if (!result.Success)
+                //{
+                //    await MinioService.UploadFileByName(fileName);
+                //    await MessageService.Error($"Error adding a file {file.Name}");
+                //}
             }
             else
                 await MessageService.Error("File upload error");

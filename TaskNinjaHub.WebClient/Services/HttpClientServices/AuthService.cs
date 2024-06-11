@@ -10,7 +10,7 @@ public class AuthService(IHttpClientFactory httpClientFactory)
 
     public async Task<BaseResult> EditUserAsync(AuthorDto entity)
     {
-        var response = await _httpClient.PostAsJsonAsync("Admin/EditUser", entity);
+        var response = await _httpClient.PutAsJsonAsync("Admin/EditUser", entity);
         var stringContent = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<BaseResult>(stringContent);
 
