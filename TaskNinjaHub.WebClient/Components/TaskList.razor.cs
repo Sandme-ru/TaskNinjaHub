@@ -198,6 +198,8 @@ public partial class TaskList
         }
 
         StateHasChanged();
+
+        NavigationManager.NavigateTo("/catalog-tasks", true);
     }
 
     private Func<ModalClosingEventArgs, Task> _onCancel = (e) =>
@@ -430,15 +432,6 @@ public partial class TaskList
     private void DeleteTask(CatalogTask task)
     {
         DeletedTask = task;
-        ModalService.Confirm(new ConfirmOptions
-        {
-            Title = $"Are you sure delete this task {task.Id} {task.Name}?",
-            Icon = _icon,
-            Content = "Some descriptions",
-            OnOk = _onOk,
-            OnCancel = _onCancel,
-            OkType = "danger"
-        });
     }
 
     private async Task FilterSelectionChanged()
