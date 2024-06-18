@@ -1,6 +1,7 @@
 ﻿@page "/calendar"
+@inject IStringLocalizer<Calendar> Localizer
 
-<PageTitle>Calendar</PageTitle>
+<PageTitle>@Localizer["CalendarTitle"]</PageTitle>
 
 <div class="calendar-container">
     <div class="navigation-buttons">
@@ -10,7 +11,7 @@
     </div>
 
     <div class="filter-container">
-        <label for="author">Select executor:</label>
+        <label for="author">@Localizer["CalendarExecuter"]:</label>
 
         <select id="author" @onchange="HandleExecutorChange">
             @foreach (var author in Authors)
@@ -26,7 +27,7 @@
             }
         </select>
 
-        <label for="month">Select month:</label>
+        <label for="month">@Localizer["CalendarMonth"]:</label>
         <select id="month" @onchange="HandleMonthChange">
             @for (var i = 1; i <= MonthPeerYear; i++)
             {
@@ -34,9 +35,9 @@
             }
         </select>
 
-        <label for="year">Enter year:</label>
+        <label for="year">@Localizer["CalendarYear"]:</label>
         <input type="number" id="year" @bind-value="_year" min="1900" max="2100" @oninput="GoToSelectedMonthYear" />
-        <button class="go-button" @onclick="GoToSelected">Go</button>
+        <button class="go-button" @onclick="GoToSelected">@Localizer["GoBtn"]</button>
     </div>
 
     @if (CalendarDays != null)
@@ -44,13 +45,13 @@
         <table class="calendar-table">
             <thead>
                 <tr>
-                    <th>Mon</th>
-                    <th>Tue</th>
-                    <th>Wed</th>
-                    <th>Thu</th>
-                    <th>Fri</th>
-                    <th>Sat</th>
-                    <th>Sun</th>
+                    <th>@Localizer["CalendarMon"]</th>
+                    <th>@Localizer["CalendarTue"]</th>
+                    <th>@Localizer["CalendarWed"]</th>
+                    <th>@Localizer["CalendarThu"]</th>
+                    <th>@Localizer["CalendarFri"]</th>
+                    <th>@Localizer["CalendarSat"]</th>
+                    <th>@Localizer["CalendarSun"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,7 +71,7 @@
                                             <div class="task-block" style="background-color: @task.Color;">
                                                 <div>
                                                     <a href="/task-read/@(task.TaskId)" class="task-link">
-                                                        Задача: @task.TaskId
+                                                        @Localizer["CalendarTask"]: @task.TaskId
                                                     </a>
                                                 </div>
                                             </div>

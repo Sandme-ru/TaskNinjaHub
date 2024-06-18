@@ -1,4 +1,6 @@
 ﻿@page "/create-task"
+@inject IStringLocalizer<TaskCreateForm> Localizer
+
 
 <PageTitle>Create Page</PageTitle>
 
@@ -9,18 +11,18 @@
         <DataAnnotationsValidator/>
 
         <div class="form-item">
-            <label for="name">Name <span class="required">*</span></label>
+            <label for="name">@Localizer["CreatedName"] <span class="required">*</span></label>
             <Input id="name" @bind-Value="@CreatedTask.Name"/>
             <ValidationMessage For="@(() => CreatedTask.Name)"/>
         </div>
 
         <div class="form-item">
-            <label for="description">Description</label>
+            <label for="description">@Localizer["CreatedDescription"]</label>
             <TextArea id="description" @bind-Value="@CreatedTask.Description"></TextArea>
         </div>
 
         <div class="form-item">
-            <label for="taskExecutor">Task executor <span class="required">*</span></label>
+            <label for="taskExecutor">@Localizer["CreatedTaskExecutor"] <span class="required">*</span></label>
             <Select id="taskExecutor"
                     Mode="default"
                     DataSource="@Authors"
@@ -38,7 +40,7 @@
         {
             <div class="form-item">
                 <Button Block Type="@ButtonType.Default" OnClick="PredictProbability">
-                    Predict
+                     @Localizer["CreatedPredict"]
                 </Button>
             </div>
             <div class="form-item">
@@ -47,7 +49,7 @@
         }
 
         <div class="form-item">
-            <label for="priority">Priority <span class="required">*</span></label>
+            <label for="priority">@Localizer["CreatedPriority"] <span class="required">*</span></label>
             <Select id="priority"
                     Mode="default"
                     DataSource="@Priorities"
@@ -62,7 +64,7 @@
         </div>
 
         <div class="form-item">
-            <label for="informationSystem">Information system <span class="required">*</span></label>
+             <label for="informationSystem">@Localizer["CreatedInformationSystem"] <span class="required">*</span></label>
             <Select id="informationSystem"
                     Mode="default"
                     DataSource="@InformationSystems"
@@ -77,7 +79,7 @@
         </div>
 
         <div class="form-item">
-            <label for="taskType">Task type <span class="required">*</span></label>
+             <label for="taskType">@Localizer["CreatedTaskType"] <span class="required">*</span></label>
             <Select id="taskType"
                     Mode="default"
                     DataSource="@CatalogTaskTypes"
@@ -92,7 +94,7 @@
         </div>
 
         <div class="form-item">
-            <label for="relatedTasks">Related tasks</label>
+             <label for="relatedTasks">@Localizer["CreatedRelatedTasks"]</label>
             <Select id="relatedTasks"
                     Mode="multiple"
                     DataSource="@CatalogTaskList"
@@ -104,15 +106,15 @@
         </div>
 
         <div class="form-item">
-            <label for="taskStatus">Task status <span class="required">*</span></label>
+                 <label for="taskStatus">@Localizer["CreatedTaskStatus"] <span class="required">*</span></label>
             <Input id="taskStatus" @bind-Value="@DefaultStatus.Name" Disabled/>
         </div>
 
         <div class="form-item">
-            <label for="files">Files</label>
+             <label for="files">@Localizer["CreatedFiles"]</label>
             <InputFile id="files" multiple OnChange="HandleFileSelected"/>
         </div>
 
-        <button type="submit">Создать задачу</button>
+        <button type="submit">@Localizer["CreatedCreateTask"]</button>
     </EditForm>
 </Loading>

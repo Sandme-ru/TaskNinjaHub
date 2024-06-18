@@ -1,9 +1,10 @@
 ﻿@page "/"
+@inject IStringLocalizer<Index> Localizer
 
-<PageTitle>Informers</PageTitle>
+<PageTitle>@Localizer["InformersTitle"]</PageTitle>
 
 <div class="text-center title">
-    <h2>All tasks</h2>
+        <h2>@Localizer["InformersAllTasks"]</h2>
 </div>
 <div>
     <Loading Spinning="IsLoading">
@@ -15,7 +16,7 @@
 </div>
 
 <div class="text-center title">
-    <h2>My tasks</h2>
+    <h2>@Localizer["InformersMyTasks"]</h2>
 </div>
 <div>
     <Loading Spinning="IsLoading">      
@@ -67,22 +68,22 @@
             _allData = [
                 new
             {
-                type = "Ожидает выполнения",
+                    type = Localizer["InformersAwaitEcecute"],
                 value = CatalogTasks.Count(e => e.TaskStatusId == 1)
             },
             new
             {
-                type = "В работе",
+                    type = Localizer["InformersAtWork"],
                 value = CatalogTasks.Count(e => e.TaskStatusId == 2)
             },
             new
             {
-                type = "На проверке",
+                    type = Localizer["InformersCheck"],
                 value = CatalogTasks.Count(e => e.TaskStatusId == 3)
             },
             new
             {
-                type = "Завершена",
+                    type = Localizer["InformersEnd"],
                 value = CatalogTasks.Count(e => e.TaskStatusId == 4)
             }
             ];
@@ -90,22 +91,22 @@
             _myData = [
                 new
             {
-                type = "Ожидает выполнения",
+                    type = Localizer["InformersAwaitEcecute"],
                 value = MyCatalogTasks.Count(e => e.TaskStatusId == 1)
             },
             new
             {
-                type = "В работе",
+                    type = Localizer["InformersAtWork"],
                 value = MyCatalogTasks.Count(e => e.TaskStatusId == 2)
             },
             new
             {
-                type = "На проверке",
+                    type = Localizer["InformersCheck"],
                 value = MyCatalogTasks.Count(e => e.TaskStatusId == 3)
             },
             new
             {
-                type = "Завершена",
+                    type = Localizer["InformersEnd"],
                 value = MyCatalogTasks.Count(e => e.TaskStatusId == 4)
             }
             ];

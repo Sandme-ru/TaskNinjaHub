@@ -1,10 +1,12 @@
 ﻿@page "/task-read/{Id:int}"
+@inject IStringLocalizer<TaskCard> Localizer
+
 
 <PageTitle>Task card</PageTitle>
 
 @if (SelectedCatalogTask != null)
 {
-    <button class="back-button" @onclick="GoBack">Go back</button>
+    <button class="back-button" @onclick="GoBack">@Localizer["BackButton"]</button>
 
     <div class="card">
         
@@ -13,28 +15,28 @@
                 @switch (SelectedCatalogTask.TaskStatusId)
                 {
                     case (int)EnumTaskStatus.AwaitingExecution:
-                        <Step Status="finish" Title="Awaiting execution" Icon="user"/>
-                        <Step Status="process" Title="At work" Icon="solution" />
-                        <Step Status="wait" Title="Awaiting verification" Icon="bulb" />
-                        <Step Status="wait" Title="Done" Icon="smile" />
+                        <Step Status="finish" Title="@Localizer["AwaitingExecutionStatus"]" Icon="user" />
+                        <Step Status="process" Title="@Localizer["WorkStatus"]" Icon="solution" />
+                        <Step Status="wait" Title="@Localizer["AwaitingVerificationStatus"]" Icon="bulb" />
+                        <Step Status="wait" Title="@Localizer["DoneStatus"]" Icon="smile" />
                         break;
                     case (int)EnumTaskStatus.AtWork:
-                        <Step Status="finish" Title="Awaiting execution" Icon="user"/>
-                        <Step Status="finish" Title="At work" Icon="solution" />
-                        <Step Status="process" Title="Awaiting verification" Icon="bulb" />
-                        <Step Status="wait" Title="Done" Icon="smile" />
+                        <Step Status="finish" Title="@Localizer["AwaitingExecutionStatus"]" Icon="user" />
+                        <Step Status="finish" Title="@Localizer["WorkStatus"]" Icon="solution" />
+                        <Step Status="process" Title="@Localizer["AwaitingVerificationStatus"]" Icon="bulb" />
+                        <Step Status="wait" Title="@Localizer["DoneStatus"]" Icon="smile" />
                         break;
                     case (int)EnumTaskStatus.AwaitingVerification:
-                        <Step Status="finish" Title="Awaiting execution" Icon="user"/>
-                        <Step Status="finish" Title="At work" Icon="solution" />
-                        <Step Status="finish" Title="Awaiting verification" Icon="bulb" />
-                        <Step Status="process" Title="Done" Icon="smile" />
+                        <Step Status="finish" Title="@Localizer["AwaitingExecutionStatus"]" Icon="user" />
+                        <Step Status="finish" Title="@Localizer["WorkStatus"]" Icon="solution" />
+                        <Step Status="finish" Title="@Localizer["AwaitingVerificationStatus"]" Icon="bulb" />
+                        <Step Status="process" Title="@Localizer["DoneStatus"]" Icon="smile" />
                         break;
                     case (int)EnumTaskStatus.Done:
-                        <Step Status="finish" Title="Awaiting execution" Icon="user"/>
-                        <Step Status="finish" Title="At work" Icon="solution" />
-                        <Step Status="finish" Title="Awaiting verification" Icon="bulb" />
-                        <Step Status="finish" Title="Done" Icon="smile" />
+                        <Step Status="finish" Title="@Localizer["AwaitingExecutionStatus"]" Icon="user" />
+                        <Step Status="finish" Title="@Localizer["WorkStatus"]" Icon="solution" />
+                        <Step Status="finish" Title="@Localizer["AwaitingVerificationStatus"]" Icon="bulb" />
+                        <Step Status="finish" Title="@Localizer["DoneStatus"]" Icon="smile" />
                         break;
                 }
             </Steps>
@@ -42,7 +44,7 @@
 
         <table class="task-table">
             <tr>
-                <td><strong>Name:</strong></td>
+                <td><strong>@Localizer["TableTaskName"]:</strong></td>
                 <td>
                     <Popover Title="@SelectedCatalogTask.TaskType?.Name">
                         @switch (SelectedCatalogTask.TaskTypeId)
@@ -71,15 +73,15 @@
                 </td>
             </tr>
             <tr>
-                <td><strong>Description:</strong></td>
+                <td><strong>@Localizer["TableTaskDescription"]:</strong></td>
                 <td>@SelectedCatalogTask.Description</td>
             </tr>
             <tr>
-                <td><strong>Information System:</strong></td>
+                <td><strong>@Localizer["TableInformationSystem"]:</strong></td>
                 <td>@SelectedCatalogTask.InformationSystem?.Name</td>
             </tr>
             <tr>
-                <td><strong>Task Executor:</strong></td>
+                <td><strong>@Localizer["TableTaskExecutor"]:</strong></td>
                 <td>@SelectedCatalogTask.TaskExecutor?.Name</td>
             </tr>
         </table>
@@ -88,7 +90,7 @@
         {
             <div class="related-tasks">
                 <h3 class="related-tasks-header">
-                    <span class="related-tasks-header-text">Related tasks</span>
+                    <span class="related-tasks-header-text">@Localizer["TableRelatedTasks"]</span>
                     <button class="toggle-button" @onclick="ToggleRelatedTasks">
                         @if (ShowRelatedTasks)
                         {
@@ -150,8 +152,8 @@
                Title="@PreviewTitle"
                OnCancel="() => PreviewVisible = false"
                OnOk="() => NavigationManager.NavigateTo(ImgUrl)"
-               OkText="@("Download")"
-               CancelText="@("Cancel")">
+               OkText="@Localizer["ImageDownload"].ToString()"
+               CancelText="@Localizer["ImageCancle"].ToString()">
             <img style="width: 100%" src="@ImgUrl"/>
         </Modal>
     </div>
