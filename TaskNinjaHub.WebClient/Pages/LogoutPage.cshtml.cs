@@ -19,6 +19,10 @@ public class LogoutModel : PageModel
 
     private AuthenticationProperties AuthProps() => new()
     {
+        RedirectUri = Url.Content("https://auth.sandme.ru/")
+    };
+    private AuthenticationProperties SignProps() => new()
+    {
         RedirectUri = Url.Content("~/")
     };
 }
