@@ -1,13 +1,14 @@
 ﻿@page "/catalog-tasks"
+@inject IStringLocalizer<TaskList> Localizer
 
-<PageTitle>Catalog tasks</PageTitle>
+<PageTitle>@Localizer["TaskListTitle"]</PageTitle>
 
 <div class="filter-box">
     <Space Style="width: 100%; justify-content: stretch;" Direction="DirectionVHType.Horizontal">
         <SpaceItem Style="width: 100%">
             <Input min="0"
                    Type="number"
-                   Placeholder="Enter task number"
+                       Placeholder="@Localizer["TaskListTaskNumber"]"
                    AllowClear
                    @bind-Value="@SelectedTaskId"
                    OnChange="new EventCallback<int?>(this, async () => await FilterSelectionChanged())" />
@@ -15,7 +16,7 @@
         <SpaceItem Style="width: 100%">
             <Select DataSource="@Authors"
                     LabelName="@nameof(Author.ShortName)"
-                    Placeholder="Choose author"
+                     Placeholder="@Localizer["TaskListAuthor"]"
                     AllowClear
                     EnableSearch
                     @bind-Value="@SelectedAuthor"
@@ -25,7 +26,7 @@
         <SpaceItem Style="width: 100%">
             <Select DataSource="@Authors"
                     LabelName="@nameof(Author.ShortName)"
-                    Placeholder="Choose executor"
+                         Placeholder="@Localizer["TaskListExrcuter"]"
                     AllowClear
                     EnableSearch
                     @bind-Value="@SelectedExecutor"
@@ -35,7 +36,7 @@
         <SpaceItem Style="width: 100%">
             <Select DataSource="@InformationSystems"
                     LabelName="@nameof(InformationSystem.Name)"
-                    Placeholder="Choose system"
+                         Placeholder="@Localizer["TaskListSystem"]"
                     AllowClear
                     EnableSearch
                     @bind-Value="@SelectedInformationSystem"
@@ -48,7 +49,7 @@
 <Divider />
 
 <div style="text-align: center;">
-    <span style="font-size: larger;">Records count: </span>
+                 <span style="font-size: larger;">@Localizer["TaskListRecord"]: </span>
     <span class="badge bg-primary">@CatalogTasksCount</span>
 </div>
 
@@ -60,13 +61,13 @@
             <ListItem>
                 <Card Bordered Title="@($"[{context.Id}] {context.Name}")" Id="MainCard">
                     <Extra>
-                        <Popover Title="Read task">
+                         <Popover Title="@Localizer["TaskListReadTask"]">
                             <Icon class="maincardIcon" Type="up-circle" Theme="fill" @onclick="async (_) => await Open(context)" />
                         </Popover>
-                        <Popover Title="Edit task">
+                         <Popover Title="@Localizer["TaskListEditTask"]">
                             <Icon class="maincardIcon" Type="edit" Theme="fill" @onclick="async () => await EditTaskEnabled(context)" />
                         </Popover>
-                        <Popconfirm Title="Are you sure delete this task?" OnConfirm="@(async () => DeleteTaskHandler())">
+                         <Popconfirm Title="@Localizer["TaskListDelete"]" OnConfirm="@(async () => DeleteTaskHandler())">
                             <Icon class="maincardIcon" Type="delete" Theme="fill" @onclick="async () => DeleteTask(context)" />
                         </Popconfirm>
                     </Extra>
@@ -116,7 +117,7 @@
                                 <TaskStatusIcon TaskStatusName="@context.TaskStatus?.Name"/>
                                 @if (context.Files is not null and { Count: > 0 })
                                 {
-                                    <Popover Title="Files">
+                                    <Popover Title="@Localizer["TaskListEditFiles"]">
                                         <Icon Type="file" Theme="outline" @onclick="async (_) => await Open(context)" />
                                     </Popover>
                                 }
@@ -137,7 +138,7 @@
 
 @if (EditedTask != null)
 {
-    <Modal Title="EDIT TASK"
+    <Modal Title="@Localizer["TaskListEditTitlre"]"
            Visible="@_visibleModal"
            OnOk="@SaveEditedTask"
            OnCancel="@HandleCancel">
@@ -147,16 +148,16 @@
             <FormItem>
                 <Input Type="hidden" @bind-Value="@context.Id" />
             </FormItem>
-            <FormItem Label="Name">
+            <FormItem Label="@Localizer["TaskListEditName"]">
                 <Input Type="text" @bind-Value="@context.Name" />
             </FormItem>
-            <FormItem Label="Description">
+            <FormItem Label="@Localizer["TaskListEditDescription"]">
                 <TextArea @bind-Value="@context.Description"></TextArea>
             </FormItem>
-            <FormItem Label="Task author">
+            <FormItem Label="@Localizer["TaskListEditAuthor"]">
                 <Input @bind-Value="@CurrentUser" Disabled />
             </FormItem>
-            <FormItem Label="Task executor">
+             <FormItem Label="@Localizer["TaskListEditExecutor"]">
                 <Select Mode="default"
                         EnableSearch
                         DataSource="@Authors"
@@ -165,7 +166,7 @@
                         ValueName="@nameof(Author.Id)">
                 </Select>
             </FormItem>
-            <FormItem Label="Priority">
+                 <FormItem Label="@Localizer["TaskListEditPriority"]">
                 <Select Mode="default"
                         EnableSearch
                         DataSource="@Priorities"
@@ -174,7 +175,7 @@
                         ValueName="@nameof(Priority.Id)">
                 </Select>
             </FormItem>
-            <FormItem Label="Information system">
+                 <FormItem Label="@Localizer["TaskListEditIS"]">
                 <Select Mode="default"
                         EnableSearch
                         DataSource="@InformationSystems"
@@ -183,7 +184,7 @@
                         ValueName="@nameof(InformationSystem.Id)">
                 </Select>
             </FormItem>
-            <FormItem Label="Task type">
+                 <FormItem Label="@Localizer["TaskListEditType"]">
                 <Select Mode="default"
                         EnableSearch
                         DataSource="@TaskTypes"
@@ -192,7 +193,7 @@
                         ValueName="@nameof(CatalogTaskType.Id)">
                 </Select>
             </FormItem>
-            <FormItem Label="Task status">
+                 <FormItem Label="@Localizer["TaskListEditStatus"]">
                 <Select Mode="default"
                         EnableSearch
                         DataSource="@TaskStatuses"
@@ -201,7 +202,7 @@
                         ValueName="@nameof(CatalogTaskStatus.Id)">
                 </Select>
             </FormItem>
-            <FormItem Label="Related tasks">
+                 <FormItem Label="@Localizer["TaskListEditRelatedTasks"]">
                 <Select Mode="multiple"
                         DataSource="@Tasks"
                         EnableSearch
@@ -210,7 +211,7 @@
                         ValueName="@nameof(CatalogTask.Id)">
                 </Select>
             </FormItem>
-            <FormItem Label="Documents">
+                     <FormItem Label="@Localizer["TaskListEditDocuments"]">
                 <Upload Action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                         Name="file"
                         ShowButton="false"
@@ -230,12 +231,12 @@
                        Title="@PreviewTitle"
                        OnCancel="() => PreviewVisible = false"
                        OnOk="() => NavigationManager.NavigateTo(ImgUrl)"
-                       OkText="@("Download")"
-                       CancelText="@("Cancel")">
+                            OkText="@Localizer["TaskListEditDownload"].Value"
+                            CancelText="@Localizer["TaskListEditCancle"].Value">
                     <img style="width: 100%" src="@ImgUrl"/>
                 </Modal>
             </FormItem>
-            <FormItem Label="Upload">
+                     <FormItem Label="@Localizer["TaskListEditUpload"]">
                 <InputFile multiple OnChange="HandleFileSelected" />
             </FormItem>
         </Form>
@@ -253,7 +254,7 @@
 
 <Loading Spinning="IsLoadingTaskList">
     <div style="text-align: center;">
-        <Button Type="@ButtonType.Primary" Icon="@IconType.Outline.Search" @onclick="TrainModel">Train model</Button>
+        <Button Type="@ButtonType.Primary" Icon="@IconType.Outline.Search" @onclick="TrainModel">@Localizer["TaskListTrainModel"]</Button>
     </div>
 </Loading>
 
